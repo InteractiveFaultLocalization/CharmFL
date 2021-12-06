@@ -12,10 +12,9 @@
             <add-to-group group-id="MainMenu" anchor="last" />
             <action id="CharmFl.Run" class="actions.PluginTestRun" text="Run" description="Run test" icon="menu-icons/run.png" />
             <action id="CharmFl.Clear" class="actions.PluginTestClear" text="Clear" description="Clear test" icon="menu-icons/clear.png" />
-            <action id="CharmFl.View" class="actions.PluginTestView" text="View" description="View results" icon="menu-icons/view.png" />
+            <action id="CharmFl.View" class="actions.PluginTableView" text="View" description="View results" icon="menu-icons/view.png" />
             <separator></separator>
-<!--            <action id="CharmFl.TurnColoringOn" class="actions.PluginColoringTurnOn" text="Turn Coloring On" description="Turn Coloring On" icon="menu-icons/turn-on.png" />-->
-<!--            <action id="CharmFl.TurnColoringOff" class="actions.PluginColoringTurnOff" text="Turn Coloring Off" description="Turn Coloring Off" icon="menu-icons/turn-off.png" />-->
+            <action id="CharmFl.AdvancedOptions" class="actions.PluginAdvancedOptions" text="Options" description="Advanced options" icon="menu-icons/options.png" />
         </group>
     </actions>
 </idea-plugin>

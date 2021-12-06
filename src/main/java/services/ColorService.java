@@ -9,22 +9,24 @@ import com.intellij.openapi.editor.markup.HighlighterLayer;
 import com.intellij.openapi.editor.markup.TextAttributes;
 
 import models.bean.FileLineScoreData;
+import models.bean.TestData;
+import modules.PluginModule;
 
 public class ColorService {
     private Color[] errorColors = new Color[10];
     private Editor editor = null;
 
     public ColorService() {
-        errorColors[0] = new Color(255, 0, 0);
-        errorColors[1] = new Color(255, 25, 25);
-        errorColors[2] = new Color(255, 50, 50);
-        errorColors[3] = new Color(255, 76, 76);
-        errorColors[4] = new Color(255, 102, 102);
-        errorColors[5] = new Color(255, 127, 127);
-        errorColors[6] = new Color(255, 153, 153);
-        errorColors[7] = new Color(255, 178, 178);
-        errorColors[8] = new Color(255, 204, 204);
-        errorColors[9] = new Color(255, 229, 229);
+        errorColors[0] = new Color(102, 0, 0);
+        errorColors[1] = new Color(142, 35, 35);
+        errorColors[2] = new Color(202, 0, 0);
+        errorColors[3] = new Color(204, 17, 0);
+        errorColors[4] = new Color(205, 92, 92);
+        errorColors[5] = new Color(198, 93, 87);
+        errorColors[6] = new Color(255, 48, 48);
+        errorColors[7] = new Color(255, 102, 102);
+        errorColors[8] = new Color(255, 130, 130);
+        errorColors[9] = new Color(255, 163, 163);
     }
 
     public Editor getEditor() {
@@ -74,10 +76,29 @@ public class ColorService {
         }
     }
 
-    public void setColorsByEditor(ArrayList<FileLineScoreData> fileTestData) {
-        if(fileTestData != null) {
-            for (int i = 0; i < fileTestData.size(); i++) {
-                setLineColorByScore(fileTestData.get(i).getLineNumber(), fileTestData.get(i).getLineScore());
+    public void setColorsByEditor(TestData testData, String path) {
+        int line = 0;
+        double score = 0;
+        if(testData != null) {
+            for(int i = 0; i < testData.getClasses().size(); i++) {
+                if(testData.getClasses().get(i).getPath().equals(path)) {
+                    for(int j = 0; j < testData.getClasses().get(i).getMethods().size(); j++) {
+                        for(int k = 0; k < testData.getClasses().get(i).getMethods().get(j).getStatements().size(); k++) {
+                            line = testData.getClasses().get(i).getMethods().get(j).getStatements().get(k).getLine();
+                            if(PluginModule.isTarantulaSelected()) {
+                                score = testData.getClasses().get(i).getMethods().get(j).getStatements().get(k).getTarantula();
+                            }
+                            else if(PluginModule.isOchiaiSelected()) {
+                                score = testData.getClasses().get(i).getMethods().get(j).getStatements().get(k).getOchiai();
+                            }
+                            else if(PluginModule.isDStarSelected() || PluginModule.isWongIISelected()) {
+                                score = testData.getClasses().get(i).getMethods().get(j).getStatements().get(k).getWong2();
+                            }
+                            setLineColorByScore(line, score);
+                        }
+                    }
+                    break;
+                }
             }
         }
     }

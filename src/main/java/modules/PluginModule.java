@@ -6,11 +6,13 @@ import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.extensions.PluginId;
 
 public class PluginModule {
+    private static final String PLUGIN_NAME = "CharmFL";
     private static final String PLUGIN_ID = "hu.szte.raymonddrakon.charmfl";
     private static final String pyflBin = "main.py";
     private static final String checkPipBin = "check_pip.py";
     private static final String pipBin = "pip";
     private static final String requirementsFileName = "requirements.txt";
+    private static final String resultsJSONFileName = "results.json";
     private static PluginId pluginId = null;
     private static String pluginPath = "";
     private static String pyflBinPath = "";
@@ -18,6 +20,15 @@ public class PluginModule {
     private static final String pythonScriptsFolderName = "Scripts";
     private static String pythonBinPath;
     private static String pipBinPath;
+
+    private static boolean tarantulaSelected = true;
+    private static boolean ochiaiSelected = false;
+    private static boolean dStarSelected = false;
+    private static boolean wongIISelected = false;
+
+    private static boolean maximumSelected = true;
+    private static boolean minimumSelected = false;
+    private static boolean averageSelected = false;
 
     public static void refreshPluginId() {
         pluginId = PluginId.getId(PLUGIN_ID);
@@ -30,6 +41,10 @@ public class PluginModule {
     public static void refreshPluginPythonBinPath() {
         pyflBinPath = pluginPath + File.separator + pyflBin;
         checkPipBinPath = pluginPath + File.separator + checkPipBin;
+    }
+
+    public static String getPluginName() {
+        return PLUGIN_NAME;
     }
 
     public static String getPluginId() {
@@ -76,6 +91,10 @@ public class PluginModule {
         return pluginPath + File.separator + requirementsFileName;
     }
 
+    public static final String getResultsJSONFileName() {
+        return resultsJSONFileName;
+    }
+
     public static String getPythonScriptsFolderName() {
         return pythonScriptsFolderName;
     }
@@ -84,26 +103,61 @@ public class PluginModule {
         PluginModule.pythonBinPath = pythonBinPath;
     }
 
-    /*public static boolean parsePipBinPath(String pythonBinPath) {
-        int projectSdkPathIndex = pythonBinPath.lastIndexOf("\\");
-        if(projectSdkPathIndex == -1) {
-            projectSdkPathIndex = pythonBinPath.lastIndexOf("/");
-        }
-        if(projectSdkPathIndex == -1) {
-            return false;
-        }
+    public static boolean isTarantulaSelected() {
+        return tarantulaSelected;
+    }
 
-        String projectSdkPath = pythonBinPath.substring(0, projectSdkPathIndex + 1);
-        String pipBinPath = "";
-        if(projectSdkPath.endsWith(PluginModule.getPythonScriptsFolderName() + File.separator)) {
-            pipBinPath = projectSdkPath + PluginModule.getPipBin();
-        }
-        else {
-            pipBinPath = projectSdkPath + PluginModule.getPythonScriptsFolderName() + File.separator + PluginModule.getPipBin();
-        }
-        setPipBinPath(pipBinPath);
-        return true;
-    }*/
+    public static void setTarantulaSelected(boolean tarantulaSelected) {
+        PluginModule.tarantulaSelected = tarantulaSelected;
+    }
+
+    public static boolean isOchiaiSelected() {
+        return ochiaiSelected;
+    }
+
+    public static void setOchiaiSelected(boolean ochiaiSelected) {
+        PluginModule.ochiaiSelected = ochiaiSelected;
+    }
+
+    public static boolean isDStarSelected() {
+        return dStarSelected;
+    }
+
+    public static void setDStarSelected(boolean dStarSelected) {
+        PluginModule.dStarSelected = dStarSelected;
+    }
+
+    public static boolean isWongIISelected() {
+        return wongIISelected;
+    }
+
+    public static void setWongIISelected(boolean wongIISelected) {
+        PluginModule.wongIISelected = wongIISelected;
+    }
+
+    public static boolean isMaximumSelected() {
+        return maximumSelected;
+    }
+
+    public static void setMaximumSelected(boolean maximumSelected) {
+        PluginModule.maximumSelected = maximumSelected;
+    }
+
+    public static boolean isMinimumSelected() {
+        return minimumSelected;
+    }
+
+    public static void setMinimumSelected(boolean minimumSelected) {
+        PluginModule.minimumSelected = minimumSelected;
+    }
+
+    public static boolean isAverageSelected() {
+        return averageSelected;
+    }
+
+    public static void setAverageSelected(boolean averageSelected) {
+        PluginModule.averageSelected = averageSelected;
+    }
 
     public static void setPipBinPath(String pipBinPath) {
         PluginModule.pipBinPath = pipBinPath;

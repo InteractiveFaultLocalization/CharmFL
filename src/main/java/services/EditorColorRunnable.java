@@ -1,7 +1,6 @@
 package services;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.Messages;
 
 import modules.DocumentModule;
@@ -9,10 +8,10 @@ import modules.ProjectModule;
 import ui.ViewResult;
 
 public class EditorColorRunnable implements Runnable {
-    private AnActionEvent e;
+    private Editor editor;
 
-    public EditorColorRunnable(AnActionEvent e) {
-        this.e = e;
+    public EditorColorRunnable(Editor editor) {
+        this.editor = editor;
     }
 
     @Override
@@ -27,12 +26,11 @@ public class EditorColorRunnable implements Runnable {
                 return;
             }
 
-            if(flService.isColoringTurnOn()) {
-                ColorService colorService = new ColorService();
-                colorService.setEditor(e.getData(CommonDataKeys.EDITOR));
-                colorService.removeColorsByEditor();
-                colorService.setColorsByEditor(flService.getTestData().get(relativeFilePath));
-            }
+            ColorService colorService = new ColorService();
+
+            colorService.setEditor(editor);
+            colorService.removeColorsByEditor();
+            colorService.setColorsByEditor(flService.getTestData(), relativeFilePath);
         }
 
         flService.startFileEditorManagerListener(ProjectModule.getProject());

@@ -1,15 +1,5 @@
 package ui;
 
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
-
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -18,13 +8,21 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBScrollPane;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.ui.table.JBTable;
 
+import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.io.File;
+
 import services.FlService;
 import services.FlServiceImpl;
+import modules.PluginModule;
 import modules.ProjectModule;
 
 public class ViewResult extends DialogWrapper {
@@ -32,7 +30,21 @@ public class ViewResult extends DialogWrapper {
 
     public ViewResult() {
         super(true);
-        setTitle("Fault Localization results");
+
+        String title = "SBFL Results";
+        String spectraMetrics = "";
+        if(PluginModule.isTarantulaSelected()) {
+            spectraMetrics = " (Tarantula)";
+        }
+        else if(PluginModule.isOchiaiSelected()) {
+            spectraMetrics = " (Ochiai)";
+        }
+        else if(PluginModule.isDStarSelected() || PluginModule.isWongIISelected()) {
+            spectraMetrics = " (WongII)";
+        }
+        title += spectraMetrics;
+        setTitle(title);
+
         setModal(false);
         init();
     }
@@ -43,69 +55,39 @@ public class ViewResult extends DialogWrapper {
         flService = new FlServiceImpl();
 
         JPanel dialogPanel = new JPanel(new BorderLayout());
-        //dialogPanel.setPreferredSize(new Dimension(100, 100));
-        TableModel tableModel = new TableModel() {
-            private String[] columnNames = {"File", "Number of Line", "Score"};
-            private String[][] data = flService.prepareTestDataForTable();
-
-            @Override
-            public int getRowCount() {
-                return data.length;
-            }
-
-            @Override
-            public int getColumnCount() {
-                return columnNames.length;
-            }
-
-            @Nls
-            @Override
-            public String getColumnName(int columnIndex) {
-                return columnNames[columnIndex];
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return data[0][columnIndex].getClass();
-            }
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
-            }
-
-            @Override
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                return data[rowIndex][columnIndex];
-            }
-
-            @Override
-            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-                data[rowIndex][columnIndex] = (String)aValue;
-            }
-
-            @Override
-            public void addTableModelListener(TableModelListener l) {
-
-            }
-
-            @Override
-            public void removeTableModelListener(TableModelListener l) {
-
-            }
-        };
-
+        dialogPanel.setPreferredSize(new Dimension(300, 300));
+        ViewResultTableModel tableModel = new ViewResultTableModel();
         JTable resultTable = new JBTable(tableModel);
         resultTable.addMouseListener(new MouseInputAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-                    VirtualFile selectedFile = LocalFileSystem.getInstance().findFileByPath(ProjectModule.getProjectPath() + File.separator + (String)resultTable.getValueAt(resultTable.getSelectedRow(), 0));
-                    if(selectedFile != null && ProjectModule.getProject() != null) {
-                        Project project = ProjectModule.getProject();
-                        FileEditorManager.getInstance(project).openFile(selectedFile, true);
-                        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                        editor.getCaretModel().moveToLogicalPosition(new LogicalPosition(Integer.parseInt((String)resultTable.getValueAt(resultTable.getSelectedRow(), 1)) - 1, 0));
+                int selectedRow = resultTable.getSelectedRow();
+                boolean openInEditor = tableModel.isSelectedRowOpenInEditor(selectedRow);
+
+                String fileName = "", fileNamePath = "";
+                int line = 0;
+
+                if(e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
+                    if(!openInEditor) {
+                        tableModel.toggleDataShow(selectedRow);
+                        resultTable.revalidate();
+                    }
+                }
+                else if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+                    if(openInEditor) {
+                        fileName = (String)resultTable.getValueAt(resultTable.getSelectedRow(), 0);
+                        fileName = fileName.substring(ViewResultTableModel.TABLE_ROW_IDENT_PREFIX.length() * 2);
+                        System.out.println(fileName);
+                        fileNamePath = ProjectModule.getProjectPath() + File.separator + fileName;
+                        System.out.println(fileNamePath);
+                        VirtualFile selectedFile = LocalFileSystem.getInstance().findFileByPath(fileNamePath);
+                        if(selectedFile != null && ProjectModule.getProject() != null) {
+                            Project project = ProjectModule.getProject();
+                            FileEditorManager.getInstance(project).openFile(selectedFile, true);
+                            Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+                            line = (int)resultTable.getValueAt(resultTable.getSelectedRow(), 1) - 1;
+                            editor.getCaretModel().moveToLogicalPosition(new LogicalPosition(line, 0));
+                        }
                     }
                 }
             }
@@ -141,9 +123,15 @@ public class ViewResult extends DialogWrapper {
             }
         });
         resultTable.setSelectionMode(SINGLE_SELECTION);
-        resultTable.setAutoCreateRowSorter(true);
+        resultTable.getColumnModel().getColumn(0).setPreferredWidth(280);
+        resultTable.getColumnModel().getColumn(1).setPreferredWidth(5);
+        resultTable.getColumnModel().getColumn(2).setPreferredWidth(5);
+        resultTable.getColumnModel().getColumn(3).setPreferredWidth(5);
+        resultTable.getColumnModel().getColumn(4).setPreferredWidth(5);
+        //resultTable.setAutoCreateRowSorter(true);
 
         JScrollPane scrollableTextArea = new JBScrollPane(resultTable);
+        scrollableTextArea.setPreferredSize(new Dimension(300, 300));
         scrollableTextArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollableTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -152,7 +140,7 @@ public class ViewResult extends DialogWrapper {
     }
 
     @Override
-    protected Action @NotNull [] createActions() {
+    protected @NotNull Action[] createActions() {
         //super.createDefaultActions();
         Action close = new AbstractAction() {
             @Override

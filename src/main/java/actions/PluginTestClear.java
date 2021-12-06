@@ -18,7 +18,6 @@ public class PluginTestClear extends DumbAwareAction {
         FlService flService = new FlServiceImpl();
         flService.clearTestData();
         flService.setTestDataCollected(false);
-        flService.setColoringTurnOn(true);
     }
 
     @Override
