@@ -46,7 +46,7 @@ def get_tests_results(project_path):
         pytest_args.append(project_path + os.path.sep + test_folder + os.path.sep + file)
 
     pytest_args.append("--excelreport=" + project_path + os.path.sep + EXCEL_REPORT_FILE_NAME)
-    # print(pytest_args)
+
 
     pytest.main(pytest_args)
     report_file = project_path + os.path.sep + EXCEL_REPORT_FILE_NAME
@@ -75,7 +75,6 @@ def get_tests_results(project_path):
             results_dict[coverage_test_name] = test_result
 
     if results_dict:
-        # print("result_dict: ", results_dict)
         return results_dict
     else:
         sys.exit(RESULT_DICT_EMPTY)

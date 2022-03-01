@@ -98,12 +98,6 @@ public class ViewResultTableModel implements TableModel {
                 }
             }
         }
-
-        // Only for debug!
-        /*for(int i = 0; i < tableData.length; i++) {
-            System.out.println("i: " + i + " name: " + tableData[i].getName() + " path: " + tableData[i].getPath());
-        }*/
-
         return tableData;
     }
 
@@ -171,11 +165,6 @@ public class ViewResultTableModel implements TableModel {
                 }
             }
         }
-
-        // Only for debug!
-        /*for(i = 0; i < data.length; i++) {
-            System.out.println("i: " + i + " name: " + data[i].getName() + " path: " + data[i].getPath() + " hide: " + data[i].isHide());
-        }*/
     }
 
     @Override

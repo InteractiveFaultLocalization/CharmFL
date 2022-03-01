@@ -31,22 +31,20 @@ def main():
     prepare_rc_file(plugin_path, project_path)
     os.chdir(project_path)
 
-    #ranking.scores_ranking(path+"results.json",  "average")
-    #sys.exit(0)
     res_dict = test_utils.get_tests_results(project_path)
     coverage_matrix.get_coverage_json(project_path)
 
-    #method_cov = make_coverage.make_method_cov(project_path)
+
     method_cov = {}
-    #class_cov = make_coverage.make_class_cov(project_path)
+
     class_cov = {}
 
     cov_matrix = coverage_matrix.make_cov_matrix(res_dict, project_path)
-    #print(cov_matrix)
 
-    #method_cov_matrix = coverageMatrix.make_cov_matrix(res_dict, path, 'method')
+
+
     counters = statistics.basic_stats(cov_matrix, res_dict)
-    #print(counters)
+
 
     if method_cov and class_cov:
         metrics.make_score_json(counters, method_cov, class_cov)
@@ -54,8 +52,7 @@ def main():
         metrics.make_score_json(counters, method_cov)
     else:
         metrics.make_score_json(counters)
-    #metrics.tarantula(counters)
-    #ranking.
+
 
 
 def prepare_rc_file(plugin_path, project_path):

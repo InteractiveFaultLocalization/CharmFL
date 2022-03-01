@@ -21,7 +21,6 @@ def get_coverage_json(project_path):
         command.append("\"" + project_path + os.path.sep + tests_folder + os.path.sep + file + "\"")
     for file in test_files:
         command.append("\"" + project_path + os.path.sep + test_folder + os.path.sep + file + "\"")
-    #print(command)
 
     shell_execute(command)
     shell_execute(['coverage', 'json', '--show-contexts'])
@@ -31,10 +30,8 @@ def make_cov_matrix(res_dict, project_path):
     cov_matrix = {}
 
     for key in res_dict.keys():
-        #print("yo_key", key)
         cov_matrix[key] = []
 
-    # it is actually called in main.py before make_cov_matrix function
     if not os.path.exists(COVERAGE_JSON_FILE_NAME):
         get_coverage_json(project_path)
 
@@ -81,26 +78,26 @@ def make_cov_matrix(res_dict, project_path):
                     for file in statement_data["files"]:
 
                         for method in method_data["files"][file]["contexts"]:
-                            #method_tcs = method_data["files"][file]["contexts"][method]["tc"]
+
                             start_line = int(method_data["files"][file]["contexts"][method]["start_line"])
                             last_line = int(method_data["files"][file]["contexts"][method]["end_line"])
-                            #print(method, start_line, last_line)
+
 
                             for statement in statement_data["files"][file]["contexts"]:
                                 if start_line <= int(statement) <= last_line:
-                                    #print(statement)
+
                                     tcs = statement_data["files"][file]["contexts"][statement]
-                                    #print(tcs)
+
                                     try:
                                         for tc in tcs:
                                             tc = tc.replace('.', "/", 1)
                                             tc = tc.replace('.', "\\", 1)
                                             print(tc)
                                             print(str(file + ":" + method + ":" + statement))
-                                            print("MIAFASZ", cov_matrix[tc])
+
 
                                             cov_matrix[tc].append(str(file + ":" + method + ":" + statement))
-                                        print("This is mething,", cov_matrix)
+
                                     except Exception as ex:
                                         print("Exception: ", ex)
 
@@ -109,11 +106,10 @@ def make_cov_matrix(res_dict, project_path):
             statement_data = json.load(cov_json)
 
             for file in statement_data["files"]:
-                #print(data["files"][file]["contexts"])
 
                 for statement in statement_data["files"][file]["contexts"]:
                     tcs = statement_data["files"][file]["contexts"][statement]
-                    #print(file, statement)
+
                     try:
                         for tc in tcs:
                             print(type(tc))
@@ -126,9 +122,9 @@ def make_cov_matrix(res_dict, project_path):
                         print("Exception: ", ex)
 
     if cov_matrix:
-        #print(cov_matrix)
+
         with open(COVERAGE_MATRIX_JSON_FILE_NAME, "w") as outfile:
-            #print(cov_matrix)
+
             json.dump(cov_matrix, outfile)
             return cov_matrix
     else:

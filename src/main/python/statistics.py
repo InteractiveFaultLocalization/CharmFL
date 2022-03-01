@@ -5,7 +5,6 @@ import sys
 basic_statistics = {}
 
 def basic_stats(matrix, res_dict):
-    # This makes the dict that contains the ef, ep etc.
     if os.path.exists("method_cov.json") and not os.stat("method_cov.json").st_size == 0:
         if os.path.exists("class_cov.json") and not os.stat("class_cov.json").st_size == 0:
             for test in matrix:
@@ -81,5 +80,4 @@ def basic_stats(matrix, res_dict):
             json.dump(basic_statistics, outfile)
             return basic_statistics
     else:
-        #raise Exception('No statistics matrix made!')
         sys.exit(5)

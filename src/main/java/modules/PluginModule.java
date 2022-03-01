@@ -7,7 +7,7 @@ import com.intellij.openapi.extensions.PluginId;
 
 public class PluginModule {
     private static final String PLUGIN_NAME = "CharmFL";
-    private static final String PLUGIN_ID = "hu.szte.raymonddrakon.charmfl";
+    private static final String PLUGIN_ID = "hu.szte.sed.charmfl";
     private static final String pyflBin = "main.py";
     private static final String checkPipBin = "check_pip.py";
     private static final String pipBin = "pip";

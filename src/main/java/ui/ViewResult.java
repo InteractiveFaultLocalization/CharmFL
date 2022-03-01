@@ -150,8 +150,7 @@ public class ViewResult extends DialogWrapper {
 
             }
         };
-        //Action close = getCancelAction();
-        //setCancelButtonText("Close");
+
         close.putValue(Action.NAME, "Close");
         return new Action[] {close};
     }

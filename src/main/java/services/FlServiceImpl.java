@@ -67,16 +67,7 @@ public class FlServiceImpl implements FlService {
                     pyflPath.replaceAll(" ", "\\ ") + " -d " +
                     projectPath.replaceAll(" ", "\\ ");
         }
-        // Only for debug!
-        //System.out.println(command);
         return executeCommand(command);
-        /*//MOCK
-        ProcessResult processResult = new ProcessResult();
-        processResult.setExitCode(0);
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add("{\"files\": [{\"path\": \"example.py\", \"classes\": [{\"name\": \"\", \"line\": 0, \"methods\": [{\"name\": \"addToCart\", \"line\": 8, \"statements\": [{\"line\": \"8\", \"tar\": 0.4800000000000001, \"och\": 0.2773500981126146, \"wong2\": 0.0, \"faulty\": \"false\"}, {\"line\": \"34\", \"tar\": 0.4800000000000001, \"och\": 0.2773500981126146, \"wong2\": 0.0, \"faulty\": \"false\"}, {\"line\": \"15\", \"tar\": 0.4800000000000001, \"och\": 0.19611613513818404, \"wong2\": 0.0, \"faulty\": \"false\"}], \"tar\": 0.5806451612903226, \"och\": 0.5262348115842176, \"wong2\": 2.0, \"faulty\": \"false\"}, {\"name\": \"getProductCount\", \"line\": 34, \"statements\": [{\"line\": \"34\", \"tar\": 0.4800000000000001, \"och\": 0.2773500981126146, \"wong2\": 0.0, \"faulty\": \"false\"}, {\"line\": \"15\", \"tar\": 0.4800000000000001, \"och\": 0.19611613513818404, \"wong2\": 0.0, \"faulty\": \"false\"}], \"tar\": 0.4800000000000001, \"och\": 0.3922322702763681, \"wong2\": 0.0, \"faulty\": \"false\"}, {\"name\": \"removeFromCart\", \"line\": 15, \"statements\": [{\"line\": \"15\", \"tar\": 0.4800000000000001, \"och\": 0.19611613513818404, \"wong2\": 0.0, \"faulty\": \"false\"}], \"tar\": 0.4090909090909091, \"och\": 0.3144854510165755, \"wong2\": -1.0, \"faulty\": \"false\"}]}]}]}");
-        processResult.setOutput(lines);
-        return processResult;*/
     }
 
     @Override
@@ -94,8 +85,6 @@ public class FlServiceImpl implements FlService {
                     "install -r " +
                     requirementsPath.replaceAll(" ", "\\ ");
         }
-        // Only for debug!
-        //System.out.println(command);
         return executeCommand(command);
     }
 
@@ -110,8 +99,6 @@ public class FlServiceImpl implements FlService {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     checkPipBinPath.replaceAll(" ", "\\ ");
         }
-        // Only for debug!
-        //System.out.println(command);
         return executeCommand(command);
     }
 
@@ -294,38 +281,6 @@ public class FlServiceImpl implements FlService {
         return testData;
     }
 
-    /*@Override
-    public TestData parseTestOutput(ArrayList<String> lines) {
-        HashMap<String, ArrayList<FileLineScoreData>> testData = new HashMap<>();
-        String dataMarker = "----------";
-        boolean dataProcess = false;
-        for(int i = 0; i < lines.size(); i++) {
-            if(lines.get(i).equals(dataMarker) && dataProcess) {
-                dataProcess = false;
-            }
-            if(dataProcess) {
-                int fileIndex = lines.get(i).lastIndexOf(":");
-                if (fileIndex != -1) {
-                    String fileName = lines.get(i).substring(0, fileIndex);
-                    String subLine = lines.get(i).substring(lines.get(i).lastIndexOf(":") + 1);
-                    String[] splitLine = subLine.split(" ");
-                    int lineNumber = Integer.parseInt(splitLine[0]);
-                    double lineScore = round(Double.parseDouble(splitLine[1]), 2);
-
-                    if(!testData.containsKey(fileName)) {
-                        testData.put(fileName, new ArrayList<>());
-                    }
-                    testData.get(fileName).add(new FileLineScoreData(lineNumber, lineScore));
-                }
-            }
-            if(lines.get(i).equals(dataMarker) && !dataProcess) {
-                dataProcess = true;
-            }
-        }
-
-        return testData;
-    }*/
-
     @Override
     public TestData getTestData() {
         return FlServiceImpl.testData;
@@ -348,15 +303,6 @@ public class FlServiceImpl implements FlService {
     public void startFileEditorManagerListener(Project project) {
         MessageBus messageBus = project.getMessageBus();
         messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-            /*@Override
-            public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-                System.out.println(file.getName() + " is opened!");
-            }
-
-            @Override
-            public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-                System.out.println(file.getName() + " is closed!");
-            }*/
 
             @Override
             public void selectionChanged(@NotNull FileEditorManagerEvent e) {
@@ -423,59 +369,6 @@ public class FlServiceImpl implements FlService {
     public void setTestDataCollecting(boolean testDataCollecting) {
         FlServiceImpl.testDataCollecting = testDataCollecting;
     }
-
-    /*@Override
-    public int getTestDataRowCount() {
-        if(testData == null) {
-            return 0;
-        }
-
-        int sum = 0;
-        for(Map.Entry<String, ArrayList<FileLineScoreData>> entry : testData.entrySet()) {
-            sum += testData.get(entry.getKey()).size();
-        }
-        return sum;
-    }*/
-
-    /*public String[][] prepareTestDataForTable() {
-        String[][] data = new String[getTestDataRowCount()][3];
-        int rowIndex = 0;
-        for(Map.Entry<String, ArrayList<FileLineScoreData>> entry : testData.entrySet()) {
-            for(int i = 0; i < entry.getValue().size(); i++) {
-                data[rowIndex][0] = entry.getKey();
-                data[rowIndex][1] = String.valueOf(entry.getValue().get(i).getLineNumber());
-                data[rowIndex][2] = String.valueOf(entry.getValue().get(i).getLineScore());
-                rowIndex++;
-            }
-        }
-
-        int minindex = -1;
-        String tmpFileName = "";
-        String tmpLineNumber = "";
-        String tmpLineScore = "";
-        for(int i = 0; i < data.length - 1; i++){
-            minindex = i;
-            for(int j = i + 1 ;j < data.length; j++){
-                if(Double.parseDouble(data[j][2]) > Double.parseDouble(data[minindex][2])){
-                    minindex = j;
-                }
-            }
-
-            tmpFileName = data[i][0];
-            tmpLineNumber = data[i][1];
-            tmpLineScore = data[i][2];
-
-            data[i][0] = data[minindex][0];
-            data[i][1] = data[minindex][1];
-            data[i][2] = data[minindex][2];
-
-            data[minindex][0] = tmpFileName;
-            data[minindex][1] = tmpLineNumber;
-            data[minindex][2] = tmpLineScore;
-        }
-
-        return data;
-    }*/
 
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();

@@ -28,15 +28,14 @@ def last_line_num(element, lineno):
         return last_element.lineno
 
 
-#https://stackoverflow.com/questions/44698193/how-to-get-a-list-of-classes-and-functions-from-a-python-file-without-importing
 def show_info(functionNode, filename, class_name = ''):
     if class_name not in asd_cov[str(filename)]:
         asd_cov[str(filename)][class_name] = {}
     first_element = functionNode.body[0]
     last_element = functionNode.body[-1]
-    #print(first_element.lineno) # body's first line, if this is hit, then the method was covered
-    last_lineno = last_line_num(functionNode.body, functionNode.lineno) # This is the last number
-    #print(last_lineno)
+
+    last_lineno = last_line_num(functionNode.body, functionNode.lineno)
+
     asd_cov[str(filename)][class_name][str(functionNode.name)] = {"class": class_name, "start": first_element.lineno, "end": last_lineno}
 
 
@@ -51,7 +50,7 @@ def do_ur_magic(filename):
     classes = [n for n in node.body if isinstance(n, ast.ClassDef)]
 
     if classes:
-        #print(classes)
+
         for class_ in classes:
                 print("Class name:", class_.name)
 
@@ -98,7 +97,7 @@ def make_method_cov(path):
                             print(ex)
 
 
-            #json.dump(method_cov,output)
+
     return method_cov
 
 
@@ -115,41 +114,30 @@ def make_class_cov(path):
             for file in data["files"]:
                 class_cov["files"][str(file)] = {"contexts": {}}
                 for line in data["files"][file]["contexts"]:
-                    print(class_dict)
-                    print("Clas_cov", asd_cov)
+
                     for _class in class_dict[str(file)]:
                          try:
-                            #print("0.0")
-                            #print(asd_cov)
                             start_line = sys.maxsize
-                            #start_line = int(asd_cov[str(file)][_class][str(next(iter(asd_cov[str(file)][_class])))]["start"])
-
                             end_line = 0
-                            print(_class)
-                            print(asd_cov[str(file)][_class])
+
                             for functions in asd_cov[str(file)][_class]:
                                 if int(asd_cov[str(file)][_class][functions]["start"]) < start_line:
                                     start_line = int(asd_cov[str(file)][_class][functions]["start"])
                                 if int(asd_cov[str(file)][_class][functions]["end"]) > end_line:
                                     end_line =int(asd_cov[str(file)][_class][functions]["end"])
-                            #end_line = int(asd_cov[str(file)][_class][str(next(iter(asd_cov[str(file)][_class])))]["end"])
-                            print("0.1", start_line, _class)
-                            print("0.9", end_line, line)
+
                             if start_line <= int(line) < end_line:
                                 tc = data["files"][file]["contexts"][line]
                                 print(tc)
                                 if _class in class_cov["files"][str(file)]["contexts"]:
                                     tc = list(set(class_cov["files"][str(file)]["contexts"][_class]) | set(tc))
 
-                                print("1")
+
                                 class_cov["files"][str(file)]["contexts"][_class] = {"start_line": start_line, "end_line": end_line}
-                                print("2")
+
                                 class_cov["files"][str(file)]["contexts"][_class]["tc"] = tc
-                                print("3")
+
                          except Exception as ex:
-                            print("Something's wrong with", _class)
-                            print(class_dict[str(file)][_class])
                             print(ex)
-            #json.dump(class_cov,output)
     return class_cov
 
