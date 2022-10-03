@@ -1,4 +1,4 @@
-![Build ](https://github.com/SzatmariA/pyfl/actions/workflows/main.yml/badge.svg)
+![Build ](https://github.com/SzatmariA/CharmFL-dev/actions/workflows/main.yml/badge.svg)
 
 
 ![](src/main/resources/CharmFL_logo_with_both_texts_shadsie_little_1_270x300.png)
