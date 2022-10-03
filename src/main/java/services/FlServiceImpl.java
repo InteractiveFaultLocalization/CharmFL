@@ -1,13 +1,7 @@
 package services;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
@@ -23,63 +17,87 @@ import org.json.JSONObject;
 
 import modules.ProjectModule;
 
-public class FlServiceImpl implements FlService {
+import static services.ProcessService.executeCommand;
+
+public class FlServiceImpl {
     private static TestData testData = null;
     private static boolean testDataCollected = false;
     private static boolean fileEditorColoringEnabled = false;
     private static boolean viewResultTableDialogOpened = false;
     private static boolean testDataCollecting = false;
 
-    @Override
-    public ProcessResult executeCommand(String command) {
-        try {
-            Runtime run = Runtime.getRuntime();
-            Process proc = run.exec(command);
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            String line;
-            ArrayList<String> lines = new ArrayList<>();
-            while((line = in.readLine()) != null) {
-                lines.add(line);
-                // Only for debug!
-                //System.out.println(line);
-            }
-            proc.waitFor();
-            in.close();
-            return new ProcessResult(lines, proc.exitValue());
-        }
-        catch(IOException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+    /**
+     * This calls the subprocess of executing the call graph
+     * @param callGraphScriptName
+     * @param projectPath
+     * @param mainFileName
+     * @param pythonBinPath
+     * @return
+     */
+    public ProcessResultData executeCallGraph(String callGraphScriptName, String projectPath, Object mainFileName, String pythonBinPath) {
+        String command = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " + "\"" + callGraphScriptName + "\" " + "\"" + projectPath + "\" " + "\"" + mainFileName + "\" " + " -cg";
     }
 
-    @Override
-    public ProcessResult executeTest(String pythonBinPath, String pyflPath, String projectPath) {
+        return executeCommand(command);
+    }
+
+    /**
+     * This calls the subprocess of executing the call graph highlight
+     * @param callGraphScriptName
+     * @param projectPath
+     * @param methodName
+     * @param pythonBinPath
+     * @return
+     */
+    public ProcessResultData executeAddHighlightToCallGraph(String callGraphScriptName, String projectPath, Object methodName, String pythonBinPath) {
         String command = "";
-        if(SystemUtils.IS_OS_WINDOWS) {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " + "\"" + callGraphScriptName + "\" " + "\"" + projectPath + "\" " + methodName + " -cg";
+        }
+
+        return executeCommand(command);
+    }
+
+    /**
+     * This calls the subprocess which executed the main.py
+     * @param pythonBinPath
+     * @param pyflPath
+     * @param projectPath
+     * @return
+     */
+    public ProcessResultData executeTest(String pythonBinPath, String pyflPath, String projectPath) {
+        String command = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
             command = "\"" + pythonBinPath + "\" " +
                     "\"" + pyflPath + "\" -d " +
-                    "\"" + projectPath + "\"";
-        }
-        else if(SystemUtils.IS_OS_LINUX) {
+                    "\"" + projectPath + "\"" +
+                    " -fl";
+        } else if (SystemUtils.IS_OS_LINUX) {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     pyflPath.replaceAll(" ", "\\ ") + " -d " +
-                    projectPath.replaceAll(" ", "\\ ");
+                    projectPath.replaceAll(" ", "\\ ") + " -fl";
         }
         return executeCommand(command);
     }
 
-    @Override
-    public ProcessResult executeRequirementsInstall(String pythonBinPath, String pipBinPath, String requirementsPath, String projectPath) {
+    /**
+     * This checks whether the packages are installed
+     * @param pythonBinPath
+     * @param pipBinPath
+     * @param requirementsPath
+     * @param projectPath
+     * @return
+     */
+    public ProcessResultData executeRequirementsInstall(String pythonBinPath, String pipBinPath, String requirementsPath, String projectPath) {
         String command = "";
-        if(SystemUtils.IS_OS_WINDOWS) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             command = "\"" + pythonBinPath + "\" " +
                     "\"" + pipBinPath + "\" " +
                     "install -r " +
                     "\"" + requirementsPath + "\"";
-        }
-        else if(SystemUtils.IS_OS_LINUX) {
+        } else if (SystemUtils.IS_OS_LINUX) {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     pipBinPath.replaceAll(" ", "\\ ") + " " +
                     "install -r " +
@@ -88,27 +106,35 @@ public class FlServiceImpl implements FlService {
         return executeCommand(command);
     }
 
-    @Override
-    public ProcessResult executeGetPipBinPath(String pythonBinPath, String checkPipBinPath) {
+    /**
+     * This executes the subprocess which gets the pip path
+     * @param pythonBinPath
+     * @param checkPipBinPath
+     * @return
+     */
+    public ProcessResultData executeGetPipBinPath(String pythonBinPath, String checkPipBinPath) {
         String command = "";
-        if(SystemUtils.IS_OS_WINDOWS) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             command = "\"" + pythonBinPath + "\" " +
                     "\"" + checkPipBinPath + "\"";
-        }
-        else if(SystemUtils.IS_OS_LINUX) {
+        } else if (SystemUtils.IS_OS_LINUX) {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     checkPipBinPath.replaceAll(" ", "\\ ");
         }
         return executeCommand(command);
     }
 
-    @Override
+    /**
+     * This reads the file (e.g. results.json)
+     * @param fileName
+     * @return
+     */
     public ArrayList<String> readTextFile(String fileName) {
         ArrayList<String> lines = new ArrayList<>();
 
         File file = new File(fileName);
         try {
-            if(file.exists()) {
+            if (file.exists()) {
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 String line;
 
@@ -116,15 +142,20 @@ public class FlServiceImpl implements FlService {
                     lines.add(line);
                 }
             }
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return lines;
     }
 
-    @Override
-    public TestData parseTestDataJSON(ArrayList<String> lines)  {
+    //TODO: composite design pattern
+    /**
+     * This parses the results.json to Test Data
+     * Gets the classes methods and statements and make the connections.
+     * @param lines the lines of the document that will be parsed
+     * @return
+     */
+    public TestData parseTestDataJSON(ArrayList<String> lines) {
         TestData testData = new TestData();
         String json = String.join(" ", lines);
         JSONObject jsonObject = new JSONObject(json);
@@ -135,53 +166,48 @@ public class FlServiceImpl implements FlService {
         double tarantula, ochiai, wong2;
         int rank;
         boolean faulty;
-        String path;
+        String relativePath;
         ClassTestData classTestData;
         MethodTestData methodTestData;
         StatementTestData statementTestData;
         JSONArray filesArray, classesArray, methodsArray, statementsArray;
 
         filesArray = jsonObject.getJSONArray("files");
-        for(int i = 0; i < filesArray.length(); i++) {
+        for (int i = 0; i < filesArray.length(); i++) {
             fileObject = filesArray.getJSONObject(i);
             classesArray = fileObject.getJSONArray("classes");
-            path = fileObject.getString("path");
+            relativePath = fileObject.getString("relativePath");
 
-            for(int j = 0; j < classesArray.length(); j++) {
+            for (int j = 0; j < classesArray.length(); j++) {
                 classObject = classesArray.getJSONObject(j);
                 name = classObject.getString("name");
-                if(name.equals("")) {
+                if (name.equals("")) {
                     name = "<not_class>";
                 }
                 line = classObject.getInt("line");
-                if(classObject.has("tar")) {
+                if (classObject.has("tar")) {
                     tarantula = classObject.getDouble("tar");
-                }
-                else {
+                } else {
                     tarantula = 0;
                 }
-                if(classObject.has("och")) {
+                if (classObject.has("och")) {
                     ochiai = classObject.getDouble("och");
+                } else {
+                    ochiai = 0;
                 }
-                else {
-                    ochiai = 0;;
-                }
-                if(classObject.has("wong2")) {
+                if (classObject.has("wong2")) {
                     wong2 = classObject.getDouble("wong2");
-                }
-                else {
+                } else {
                     wong2 = 0;
                 }
-                if(classObject.has("rank")) {
+                if (classObject.has("rank")) {
                     rank = classObject.getInt("rank");
-                }
-                else {
+                } else {
                     rank = 0;
                 }
-                if(classObject.has("faulty")) {
+                if (classObject.has("faulty")) {
                     faulty = classObject.getBoolean("faulty");
-                }
-                else {
+                } else {
                     faulty = false;
                 }
 
@@ -193,44 +219,39 @@ public class FlServiceImpl implements FlService {
                 classTestData.setWong2(wong2);
                 classTestData.setRank(rank);
                 classTestData.setFaulty(faulty);
-                classTestData.setPath(path);
+                classTestData.setRelativePath(relativePath);
 
                 methodsArray = classObject.getJSONArray("methods");
-                for(int k = 0; k < methodsArray.length(); k++) {
+                for (int k = 0; k < methodsArray.length(); k++) {
                     methodObject = methodsArray.getJSONObject(k);
                     name = methodObject.getString("name");
-                    if(name.equals("")) {
+                    if (name.equals("")) {
                         name = "<not_method>";
                     }
                     line = methodObject.getInt("line");
-                    if(methodObject.has("tar")) {
+                    if (methodObject.has("tar")) {
                         tarantula = methodObject.getDouble("tar");
-                    }
-                    else {
+                    } else {
                         tarantula = 0;
                     }
-                    if(methodObject.has("och")) {
+                    if (methodObject.has("och")) {
                         ochiai = methodObject.getDouble("och");
+                    } else {
+                        ochiai = 0;
                     }
-                    else {
-                        ochiai = 0;;
-                    }
-                    if(methodObject.has("wong2")) {
+                    if (methodObject.has("wong2")) {
                         wong2 = methodObject.getDouble("wong2");
-                    }
-                    else {
+                    } else {
                         wong2 = 0;
                     }
-                    if(methodObject.has("rank")) {
+                    if (methodObject.has("rank")) {
                         rank = methodObject.getInt("rank");
-                    }
-                    else {
+                    } else {
                         rank = 0;
                     }
-                    if(methodObject.has("faulty")) {
+                    if (methodObject.has("faulty")) {
                         faulty = methodObject.getBoolean("faulty");
-                    }
-                    else {
+                    } else {
                         faulty = false;
                     }
 
@@ -244,21 +265,22 @@ public class FlServiceImpl implements FlService {
                     methodTestData.setFaulty(faulty);
 
                     statementsArray = methodObject.getJSONArray("statements");
-                    for(int l = 0; l < statementsArray.length(); l++) {
+                    for (int l = 0; l < statementsArray.length(); l++) {
                         statementObject = statementsArray.getJSONObject(l);
                         line = statementObject.getInt("line");
                         tarantula = statementObject.getDouble("tar");
                         ochiai = statementObject.getDouble("och");
                         wong2 = statementObject.getDouble("wong2");
-                        if(statementObject.has("rank")) {
+                        if (statementObject.has("rank")) {
                             rank = statementObject.getInt("rank");
-                        }
-                        else {
+                        } else {
                             rank = 0;
                         }
                         faulty = statementObject.getBoolean("faulty");
 
                         statementTestData = new StatementTestData();
+                        statementTestData.setClassName(classTestData.getName());
+                        statementTestData.setMethodName(methodTestData.getName());
                         statementTestData.setLine(line);
                         statementTestData.setTarantula(tarantula);
                         statementTestData.setOchiai(ochiai);
@@ -270,49 +292,46 @@ public class FlServiceImpl implements FlService {
                     }
 
                     classTestData.getMethods().add(methodTestData);
-                    classTestData.getShowStatements().add(false);
                 }
 
                 testData.getClasses().add(classTestData);
-                testData.getShowMethods().add(false);
             }
         }
 
         return testData;
     }
 
-    @Override
     public TestData getTestData() {
         return FlServiceImpl.testData;
     }
 
-    @Override
     public void setTestData(TestData testData) {
         FlServiceImpl.testData = testData;
     }
 
-    @Override
     public void clearTestData() {
-        if(FlServiceImpl.testData != null) {
+        if (FlServiceImpl.testData != null) {
             FlServiceImpl.testData.getClasses().clear();
-            FlServiceImpl.testData.getShowMethods().clear();
         }
     }
 
-    @Override
+    /**
+     * Sets the file to be editable and colorable.
+     * @param project
+     */
     public void startFileEditorManagerListener(Project project) {
         MessageBus messageBus = project.getMessageBus();
         messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
 
             @Override
             public void selectionChanged(@NotNull FileEditorManagerEvent e) {
-                if(e.getManager() != null) {
+                if (e.getManager() != null) {
                     Editor editor = e.getManager().getSelectedTextEditor();
-                    if(editor != null) {
+                    if (editor != null) {
                         ColorService colorService = new ColorService();
                         colorService.setEditor(editor);
                         colorService.removeColorsByEditor();
-                        if(testDataCollected) {
+                        if (testDataCollected) {
                             String relativeFilePath = parseRelativeFilePath(e.getNewFile().getPath(), ProjectModule.getProjectPath());
                             colorService.setColorsByEditor(testData, relativeFilePath);
                         }
@@ -322,7 +341,12 @@ public class FlServiceImpl implements FlService {
         });
     }
 
-    @Override
+    /**
+     * This will replace the separator charachters to the separator charachters used in the current system
+     * @param currentFilePath
+     * @param projectPath
+     * @return
+     */
     public String parseRelativeFilePath(String currentFilePath, String projectPath) {
         String relativeFilePath = currentFilePath.substring(projectPath.length() + 1);
         relativeFilePath = relativeFilePath.replace("\\", File.separator);
@@ -330,51 +354,35 @@ public class FlServiceImpl implements FlService {
         return relativeFilePath;
     }
 
-    @Override
     public boolean isTestDataCollected() {
         return testDataCollected;
     }
 
-    @Override
     public boolean isFileEditorColoringEnabled() {
         return fileEditorColoringEnabled;
     }
 
-    @Override
     public void setTestDataCollected(boolean status) {
         testDataCollected = status;
     }
 
-    @Override
     public void setFileEditorColoringEnabled(boolean status) {
         fileEditorColoringEnabled = status;
     }
 
-    @Override
     public boolean isViewResultTableDialogOpened() {
         return viewResultTableDialogOpened;
     }
 
-    @Override
     public void setViewResultTableDialogOpened(boolean viewResultTableDialogOpened) {
         FlServiceImpl.viewResultTableDialogOpened = viewResultTableDialogOpened;
     }
 
-    @Override
     public boolean isTestDataCollecting() {
         return testDataCollecting;
     }
 
-    @Override
     public void setTestDataCollecting(boolean testDataCollecting) {
         FlServiceImpl.testDataCollecting = testDataCollecting;
-    }
-
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 }

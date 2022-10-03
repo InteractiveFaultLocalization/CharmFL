@@ -1,6 +1,7 @@
 COVERAGE_RC_FILE_NAME = ".coveragerc"
 EXCEL_REPORT_FILE_NAME = "report.xlsx"
-COVERAGE_JSON_FILE_NAME = "coverage.json"
+JSON_REPORT_FILE_NAME = ".report.json"
+COVERAGE_JSON_FILE_NAME = "cov.json"
 CLASS_COVERAGE_JSON_FILE_NAME = "class_cov.json"
 METHOD_COVERAGE_JSON_FILE_NAME = "method_cov.json"
 COVERAGE_MATRIX_JSON_FILE_NAME = "coverage_matrix.json"

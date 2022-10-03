@@ -1,0 +1,616 @@
+Index: cov/Line_Coverage.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import coverage\r\nimport os\r\n\r\n\r\nclass Line_Coverage():\r\n    line_coverage_with_context = {}\r\n\r\n    def __init__(self):\r\n        pass\r\n\r\n\r\n    def get_coverage_with_context(self):\r\n        covdb = coverage.CoverageData()\r\n\r\n        covdb.read()\r\n        measured_files = covdb.measured_files()\r\n\r\n        for file in measured_files:\r\n            self.line_coverage_with_context[file] = covdb.contexts_by_lineno(file)\r\n        return self.__clean(self.line_coverage_with_context)\r\n\r\n    def __clean(self, line_coverage_with_context):\r\n        cleaned_line_coverage_with_context = {}\r\n        temp_coverage_data = {}\r\n        for file_name, coverage_data in line_coverage_with_context.items():\r\n            if \"test\" + os.path.sep in file_name or \"tests\" + os.path.sep in file_name:\r\n                continue\r\n            for code_element, covered_test_list in coverage_data.items():\r\n                if len(covered_test_list) == 1 and covered_test_list[0] == '':\r\n                    continue\r\n                else:\r\n                    temp_coverage_data[code_element] = covered_test_list\r\n            cleaned_line_coverage_with_context[file_name] = temp_coverage_data\r\n        return cleaned_line_coverage_with_context\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cov/Line_Coverage.py b/cov/Line_Coverage.py
+--- a/cov/Line_Coverage.py	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/cov/Line_Coverage.py	(date 1663054698853)
+@@ -8,8 +8,7 @@
+     def __init__(self):
+         pass
+ 
+-
+-    def get_coverage_with_context(self):
++    def make_coverage_with_context(self):
+         covdb = coverage.CoverageData()
+ 
+         covdb.read()
+@@ -17,6 +16,8 @@
+ 
+         for file in measured_files:
+             self.line_coverage_with_context[file] = covdb.contexts_by_lineno(file)
++
++    def get_coverage_with_context(self):
+         return self.__clean(self.line_coverage_with_context)
+ 
+     def __clean(self, line_coverage_with_context):
+@@ -31,5 +32,4 @@
+                 else:
+                     temp_coverage_data[code_element] = covered_test_list
+             cleaned_line_coverage_with_context[file_name] = temp_coverage_data
+-        return cleaned_line_coverage_with_context
+-
++        return cleaned_line_coverage_with_context
+\ No newline at end of file
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import os\r\nimport argparse\r\nfrom cov.Line_Coverage import Line_Coverage\r\nfrom testing.Use_PyTest import Use_Pytest\r\nfrom faultloc.Spectra import Spectra\r\nfrom faultloc.Metrics import Metrics\r\nfrom utils.Result_Builder import Result_Builder\r\n\r\n\r\n# import call_graphs.statical_call_graph as cg\r\n\r\nfrom constans import COVERAGE_RC_FILE_NAME\r\nfrom error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVERAGE_RC_FILE\r\n\r\n\r\n# from call_graph_maker import make_call_graph\r\n\r\n# logging.basicConfig(filename='charmfl.log', level=logging.INFO, format='%(levelname)s:%(filename)s:%(lineno)d:%(message)s')\r\n\r\n\r\ndef main():\r\n    parser = argparse.ArgumentParser(add_help=False)\r\n    parser.version = '1.5'\r\n    parser.add_argument(\"-d\", \"--directory\", action=\"store\", metavar=\"PROJECT_DIRECTORY\",\r\n                        help=\"Project directory absolute path.\", required=True)\r\n    parser.add_argument(\"-fl\", \"--FaultLoc\", help=\"To start the Fault Localization process\", action=\"store_true\")\r\n    parser.add_argument(\"-cg\", \"--CallGraph\", help=\"To start the statical call graph construction\", action=\"store_true\")\r\n    parser.add_argument(\"-c\", \"--class-cov\", action=\"store\", metavar=\"CLASS_COVERAGE_FILENAME\",\r\n                        help=\"To get class cov.\")\r\n    parser.add_argument(\"-m\", \"--method-cov\", action=\"store\", metavar=\"METHOD_COVERAGE_FILENAME\",\r\n                        help=\"To get method cov.\")\r\n    parser.add_argument(\"-s\", \"--spectrum\", action=\"store\", metavar=\"SPECTRUM\", help=\"To get the spectrum.\")\r\n    parser.add_argument(\"-h\", \"--help\", action=\"help\", help=\"Show this help message.\")\r\n    parser.add_argument(\"-v\", \"--version\", action=\"version\", help=\"Show version number.\")\r\n\r\n    args = vars(parser.parse_args())\r\n    plugin_path = os.path.dirname(os.path.abspath(__file__))\r\n    project_path = args[\"directory\"]\r\n    os.chdir(project_path)\r\n    if (args[\"FaultLoc\"] == True):\r\n        tests = Use_Pytest(project_path)\r\n        line_cov = Line_Coverage()\r\n        spectra = Spectra()\r\n        metrics = Metrics()\r\n        result_builder = Result_Builder()\r\n\r\n        spectra.create_spectrum_from(line_cov, tests)\r\n        metrics.create_scores_from(spectra)\r\n        result_builder.set_path_to_root(project_path).set_line_scores(metrics.get_scores()).produce_results()\r\n\r\n        with open(\"results.json\", \"w\") as output:\r\n            output.write(result_builder.toJSON())\r\n\r\n    if (args[\"CallGraph\"] == True):\r\n        call_graph = cg.StaticalCallGraph()\r\n        call_graph.createHTML()\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    main()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/main.py	(date 1663066217422)
+@@ -5,6 +5,7 @@
+ from faultloc.Spectra import Spectra
+ from faultloc.Metrics import Metrics
+ from utils.Result_Builder import Result_Builder
++from utils.AST_Facade import AST_Facade
+ 
+ 
+ # import call_graphs.statical_call_graph as cg
+@@ -44,16 +45,31 @@
+         metrics = Metrics()
+         result_builder = Result_Builder()
+ 
++        line_cov.make_coverage_with_context()
++
+         spectra.create_spectrum_from(line_cov, tests)
++        print("spectrum", spectra.get_spectrum())
+         metrics.create_scores_from(spectra)
+         result_builder.set_path_to_root(project_path).set_line_scores(metrics.get_scores()).produce_results()
++        print("boi", line_cov.get_coverage_with_context())
+ 
+         with open("results.json", "w") as output:
+             output.write(result_builder.toJSON())
+ 
+     if (args["CallGraph"] == True):
+-        call_graph = cg.StaticalCallGraph()
+-        call_graph.createHTML()
++        #call_graph = cg.StaticalCallGraph()
++        #call_graph.createHTML()
++        ast_facade = AST_Facade()
++        filename = "C:\\Users\\user\\Documents\\charmfl\\pyfl\\src\\main\\python\\cov\\Method_Coverage.py"
++        #ast_facade.get_method_info_for("C:\\Users\\user\\Documents\\bottle\\bottle.py")
++        #print("############# ------------------------------------------------------------------------------------------- ###############")
++        #ast_facade.get_class_info_for("C:\\Users\\user\\Documents\\bottle\\bottle.py")
++
++        ast_facade.get_method_info_for(filename)
++        print(
++            "############# ------------------------------------------------------------------------------------------- ###############")
++        ast_facade.get_class_info_for(filename)
++
+ 
+ 
+ if __name__ == "__main__":
+Index: faultloc/Ranking.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from scipy.stats import rankdata\r\nimport json\r\nimport pandas as pd\r\n\r\n\r\nclass Ranking:\r\n    def __init__(self, path_to_json):\r\n        self.path_to_json = path_to_json\r\n\r\n    def scores_ranking(self, rank_type):\r\n        print(\"-------------------------------------------------------------------------\")\r\n        class_scores_tarantula = []\r\n        with open(self.path_to_json, 'r+') as json_file:\r\n            data = json.load(json_file)\r\n            for file in data[\"files\"]:\r\n\r\n                for _class in file[\"classes\"]:\r\n\r\n                    if \"tar\" in _class.keys():\r\n                        class_scores_tarantula.append(_class[\"tar\"])\r\n                    method_scores_tarantula = []\r\n\r\n                    for method in _class[\"methods\"]:\r\n                        st_scores_tarantula = []\r\n                        if \"tar\" in method.keys():\r\n                            method_scores_tarantula.append(method[\"tar\"])\r\n                        for statement in method[\"statements\"]:\r\n                            st_scores_tarantula.append(statement[\"tar\"])\r\n                        df = pd.DataFrame(data=st_scores_tarantula)\r\n\r\n                        ranks = df.rank(method=rank_type, na_option=\"bottom\", ascending=False)\r\n                        ranks = ranks[0].tolist()\r\n                        for idx, statement in enumerate(method[\"statements\"]):\r\n                            statement[\"tar_rank\"] = ranks[idx]\r\n                    df = pd.DataFrame(data=method_scores_tarantula)\r\n\r\n                    ranks = df.rank(method=rank_type, na_option=\"bottom\", ascending=False)\r\n                    ranks = ranks[0].tolist()\r\n                    for idx, _class in enumerate(_class[\"methods\"]):\r\n                        _class[\"tar_rank\"] = ranks[idx]\r\n\r\n            json_object = json.dumps(data, indent=4)\r\n            print(json_object)\r\n            with open(\"results.json\", \"w\") as outfile:\r\n                json.dump(data, outfile)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/faultloc/Ranking.py b/faultloc/Ranking.py
+--- a/faultloc/Ranking.py	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/faultloc/Ranking.py	(date 1662977746617)
+@@ -3,6 +3,11 @@
+ import pandas as pd
+ 
+ 
++def yolo():
++    def mymy():
++        pass
++    pass
++
+ class Ranking:
+     def __init__(self, path_to_json):
+         self.path_to_json = path_to_json
+Index: ../../../.idea/jarRepositories.xml
+===================================================================
+diff --git a/../../../.idea/jarRepositories.xml b/../../../.idea/jarRepositories.xml
+deleted file mode 100644
+--- a/../../../.idea/jarRepositories.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,20 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="RemoteRepositoriesConfiguration">
+-    <remote-repository>
+-      <option name="id" value="central" />
+-      <option name="name" value="Maven Central repository" />
+-      <option name="url" value="https://repo1.maven.org/maven2" />
+-    </remote-repository>
+-    <remote-repository>
+-      <option name="id" value="jboss.community" />
+-      <option name="name" value="JBoss Community repository" />
+-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+-    </remote-repository>
+-    <remote-repository>
+-      <option name="id" value="MavenRepo" />
+-      <option name="name" value="MavenRepo" />
+-      <option name="url" value="https://repo.maven.apache.org/maven2/" />
+-    </remote-repository>
+-  </component>
+-</project>
+\ No newline at end of file
+Index: ../../../.idea/runConfigurations/run.xml
+===================================================================
+diff --git a/../../../.idea/runConfigurations/run.xml b/../../../.idea/runConfigurations/run.xml
+deleted file mode 100644
+--- a/../../../.idea/runConfigurations/run.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,21 +0,0 @@
+-<component name="ProjectRunConfigurationManager">
+-  <configuration default="false" name="run" type="GradleRunConfiguration" factoryName="Gradle">
+-    <ExternalSystemSettings>
+-      <option name="executionName" />
+-      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+-      <option name="externalSystemIdString" value="GRADLE" />
+-      <option name="scriptParameters" value="runIde" />
+-      <option name="taskDescriptions">
+-        <list />
+-      </option>
+-      <option name="taskNames">
+-        <list />
+-      </option>
+-      <option name="vmOptions" />
+-    </ExternalSystemSettings>
+-    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+-    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+-    <DebugAllEnabled>false</DebugAllEnabled>
+-    <method v="2" />
+-  </configuration>
+-</component>
+\ No newline at end of file
+Index: ../../../.idea/other.xml
+===================================================================
+diff --git a/../../../.idea/other.xml b/../../../.idea/other.xml
+deleted file mode 100644
+--- a/../../../.idea/other.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,7 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="PySciProjectComponent">
+-    <option name="PY_SCI_VIEW" value="true" />
+-    <option name="PY_SCI_VIEW_SUGGESTED" value="true" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: ../../../.idea/codeStyles/codeStyleConfig.xml
+===================================================================
+diff --git a/../../../.idea/codeStyles/codeStyleConfig.xml b/../../../.idea/codeStyles/codeStyleConfig.xml
+deleted file mode 100644
+--- a/../../../.idea/codeStyles/codeStyleConfig.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,5 +0,0 @@
+-<component name="ProjectCodeStyleConfiguration">
+-  <state>
+-    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
+-  </state>
+-</component>
+\ No newline at end of file
+Index: ../../../.idea/modules/CharmFL.iml
+===================================================================
+diff --git a/../../../.idea/modules/CharmFL.iml b/../../../.idea/modules/CharmFL.iml
+deleted file mode 100644
+--- a/../../../.idea/modules/CharmFL.iml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module version="4">
+-  <component name="FacetManager">
+-    <facet type="Python" name="Python">
+-      <configuration sdkName="" />
+-    </facet>
+-  </component>
+-</module>
+\ No newline at end of file
+Index: ../../../.idea/runConfigurations/build.xml
+===================================================================
+diff --git a/../../../.idea/runConfigurations/build.xml b/../../../.idea/runConfigurations/build.xml
+deleted file mode 100644
+--- a/../../../.idea/runConfigurations/build.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,21 +0,0 @@
+-<component name="ProjectRunConfigurationManager">
+-  <configuration default="false" name="build" type="GradleRunConfiguration" factoryName="Gradle">
+-    <ExternalSystemSettings>
+-      <option name="executionName" />
+-      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+-      <option name="externalSystemIdString" value="GRADLE" />
+-      <option name="scriptParameters" value="clean buildPlugin" />
+-      <option name="taskDescriptions">
+-        <list />
+-      </option>
+-      <option name="taskNames">
+-        <list />
+-      </option>
+-      <option name="vmOptions" />
+-    </ExternalSystemSettings>
+-    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+-    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+-    <DebugAllEnabled>false</DebugAllEnabled>
+-    <method v="2" />
+-  </configuration>
+-</component>
+\ No newline at end of file
+Index: ../../../.idea/inspectionProfiles/profiles_settings.xml
+===================================================================
+diff --git a/../../../.idea/inspectionProfiles/profiles_settings.xml b/../../../.idea/inspectionProfiles/profiles_settings.xml
+deleted file mode 100644
+--- a/../../../.idea/inspectionProfiles/profiles_settings.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,6 +0,0 @@
+-<component name="InspectionProjectProfileManager">
+-  <settings>
+-    <option name="USE_PROJECT_PROFILE" value="false" />
+-    <version value="1.0" />
+-  </settings>
+-</component>
+\ No newline at end of file
+Index: ../../../.idea/modules/CharmFL.main.iml
+===================================================================
+diff --git a/../../../.idea/modules/CharmFL.main.iml b/../../../.idea/modules/CharmFL.main.iml
+deleted file mode 100644
+--- a/../../../.idea/modules/CharmFL.main.iml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,11 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module version="4">
+-  <component name="FacetManager">
+-    <facet type="Python" name="Python">
+-      <configuration sdkName="" />
+-    </facet>
+-  </component>
+-  <component name="PyDocumentationSettings">
+-    <option name="renderExternalDocumentation" value="true" />
+-  </component>
+-</module>
+\ No newline at end of file
+Index: ../../../.idea/misc.xml
+===================================================================
+diff --git a/../../../.idea/misc.xml b/../../../.idea/misc.xml
+deleted file mode 100644
+--- a/../../../.idea/misc.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="ExternalStorageConfigurationManager" enabled="true" />
+-  <component name="FrameworkDetectionExcludesConfiguration">
+-    <file type="web" url="file://$PROJECT_DIR$" />
+-  </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="11" project-jdk-type="JavaSDK" />
+-</project>
+\ No newline at end of file
+Index: ../../../.idea/compiler.xml
+===================================================================
+diff --git a/../../../.idea/compiler.xml b/../../../.idea/compiler.xml
+deleted file mode 100644
+--- a/../../../.idea/compiler.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,6 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="17" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: ../../../.idea/codeStyles/Project.xml
+===================================================================
+diff --git a/../../../.idea/codeStyles/Project.xml b/../../../.idea/codeStyles/Project.xml
+deleted file mode 100644
+--- a/../../../.idea/codeStyles/Project.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ /dev/null	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
+@@ -1,10 +0,0 @@
+-<component name="ProjectCodeStyleConfiguration">
+-  <code_scheme name="Project" version="173">
+-    <JetCodeStyleSettings>
+-      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+-    </JetCodeStyleSettings>
+-    <codeStyleSettings language="kotlin">
+-      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+-    </codeStyleSettings>
+-  </code_scheme>
+-</component>
+\ No newline at end of file
+Index: ../../../build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import org.jetbrains.changelog.markdownToHTML\r\nimport org.jetbrains.kotlin.gradle.tasks.KotlinCompile\r\n\r\nfun properties(key: String) = project.findProperty(key).toString()\r\n\r\nplugins {\r\n    // Java support\r\n    id(\"java\")\r\n    // Kotlin support\r\n    id(\"org.jetbrains.kotlin.jvm\") version \"1.6.0\"\r\n    // Gradle IntelliJ Plugin\r\n    id(\"org.jetbrains.intellij\") version \"1.3.0\"\r\n    // Gradle Changelog Plugin\r\n    id(\"org.jetbrains.changelog\") version \"1.3.1\"\r\n    // Gradle Qodana Plugin\r\n    id(\"org.jetbrains.qodana\") version \"0.1.13\"\r\n}\r\n\r\ngroup = properties(\"pluginGroup\")\r\nversion = properties(\"pluginVersion\")\r\n\r\n// Configure project's dependencies\r\nrepositories {\r\n    mavenCentral()\r\n}\r\n\r\ndependencies {\r\n    implementation(\"org.junit.jupiter:junit-jupiter:5.7.0\")\r\n    implementation(\"org.testng:testng:7.1.0\")\r\n    // https://mvnrepository.com/artifact/org.json/json\r\n    implementation(\"org.json:json:20210307\")\r\n    testImplementation(\"org.junit.jupiter:junit-jupiter-api:5.3.1\")\r\n    testRuntimeOnly(\"org.junit.jupiter:junit-jupiter-engine:5.3.1\")\r\n}\r\n\r\n// Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin\r\nintellij {\r\n    pluginName.set(properties(\"pluginName\"))\r\n    version.set(properties(\"platformVersion\"))\r\n    type.set(properties(\"platformType\"))\r\n    downloadSources.set(properties(\"platformDownloadSources\").toBoolean())\r\n    updateSinceUntilBuild.set(true)\r\n\r\n    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.\r\n    plugins.set(properties(\"platformPlugins\").split(',').map(String::trim).filter(String::isNotEmpty))\r\n}\r\n\r\n\r\n\r\ntasks {\r\n    // Set the JVM compatibility versions\r\n    properties(\"javaVersion\").let {\r\n        withType<JavaCompile> {\r\n            sourceCompatibility = it\r\n            targetCompatibility = it\r\n        }\r\n        withType<KotlinCompile> {\r\n            kotlinOptions.jvmTarget = it\r\n        }\r\n    }\r\n\r\n    wrapper {\r\n        gradleVersion = properties(\"gradleVersion\")\r\n    }\r\n\r\n    patchPluginXml {\r\n        version.set(properties(\"pluginVersion\"))\r\n        sinceBuild.set(properties(\"pluginSinceBuild\"))\r\n        untilBuild.set(properties(\"pluginUntilBuild\"))\r\n\r\n    }\r\n\r\n    runPluginVerifier {\r\n        ideVersions.set(properties(\"pluginVerifierIdeVersions\").split(',').map(String::trim).filter(String::isNotEmpty))\r\n    }\r\n\r\n    // Configure UI tests plugin\r\n    // Read more: https://github.com/JetBrains/intellij-ui-test-robot\r\n    runIdeForUiTests {\r\n        systemProperty(\"robot-server.port\", \"8082\")\r\n        systemProperty(\"ide.mac.message.dialogs.as.sheets\", \"false\")\r\n        systemProperty(\"jb.privacy.policy.text\", \"<!--999.999-->\")\r\n        systemProperty(\"jb.consents.confirmation.enabled\", \"false\")\r\n    }\r\n\r\n    signPlugin {\r\n        certificateChain.set(System.getenv(\"CERTIFICATE_CHAIN\"))\r\n        privateKey.set(System.getenv(\"PRIVATE_KEY\"))\r\n        password.set(System.getenv(\"PRIVATE_KEY_PASSWORD\"))\r\n    }\r\n\r\n    publishPlugin {\r\n        dependsOn(\"patchChangelog\")\r\n        token.set(System.getenv(\"PUBLISH_TOKEN\"))\r\n        // pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3\r\n        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:\r\n        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel\r\n        channels.set(listOf(properties(\"pluginVersion\").split('-').getOrElse(1) { \"default\" }.split('.').first()))\r\n    }\r\n\r\n    prepareSandbox {\r\n        doLast {\r\n            file(\"$projectDir/src/main/python/\").copyRecursively(file(\"$buildDir/idea-sandbox/plugins/${properties(\"pluginName\")}\"), overwrite = true)\r\n        }\r\n    }\r\n\r\n    test {\r\n        filter {\r\n            includeTestsMatching(\"TestColorService\")\r\n            includeTestsMatching(\"TestFlServiceImpl\")\r\n            includeTestsMatching(\"TestPluginModule\")\r\n        }\r\n        useJUnitPlatform()\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../build.gradle.kts b/../../../build.gradle.kts
+--- a/../../../build.gradle.kts	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../../../build.gradle.kts	(date 1662379805281)
+@@ -45,6 +45,11 @@
+     plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+ }
+ 
++// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
++changelog {
++    version.set(properties("pluginVersion"))
++    groups.set(emptyList())
++}
+ 
+ 
+ tasks {
+@@ -67,7 +72,6 @@
+         version.set(properties("pluginVersion"))
+         sinceBuild.set(properties("pluginSinceBuild"))
+         untilBuild.set(properties("pluginUntilBuild"))
+-
+     }
+ 
+     runPluginVerifier {
+@@ -91,6 +95,7 @@
+ 
+     publishPlugin {
+         dependsOn("patchChangelog")
++
+         token.set(System.getenv("PUBLISH_TOKEN"))
+         // pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
+         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
+@@ -100,7 +105,10 @@
+ 
+     prepareSandbox {
+         doLast {
+-            file("$projectDir/src/main/python/").copyRecursively(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"), overwrite = true)
++            file("$projectDir/src/main/python/").copyRecursively(
++                file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"),
++                overwrite = true
++            )
+         }
+     }
+ 
+Index: ../../../README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>![Build ](https://github.com/SzatmariA/pyfl/actions/workflows/main.yml/badge.svg)\r\n\r\n# CharmFL\r\nCharmFL: A Fault Localization tool for Python integrated in the latest PyCharm IDE version. \r\n\r\n# Steps to set up \r\n\r\n First, download the compressed ZIP. \r\n Then: \r\n\r\n- Drag and drop into your PyCharm IDE\r\n- **Or** Go to TODO\r\n\r\n# Main features\r\n- Run the Fault Localization\r\n- Clear the results from the memory\r\n- Turn the highlighting on/off\r\n- Advanced options\r\n\r\n  - Change metrics\r\n  - Change granularity\r\n  - Change the ranking\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../README.md b/../../../README.md
+--- a/../../../README.md	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../../../README.md	(date 1662367908153)
+@@ -3,6 +3,18 @@
+ # CharmFL
+ CharmFL: A Fault Localization tool for Python integrated in the latest PyCharm IDE version. 
+ 
++## Requirements
++
++* PyCharm 2021 or later
++* Python 3.7 or later
++
++## Fault Localization in Python
++
++Debugging in any software is a tedious task, which may slow down the development of the program. 
++The more difficult part of debugging is finding the root cause of the bug/fault. 
++Fault Localization techniques offer a way to automate that part of debugging, hence making it easier for the development team.
++Spectrum-based Fault Localization (abbr. SBFL), uses *coverage-based* spectrum, i.e. test results 
++
+ # Steps to set up 
+ 
+  First, download the compressed ZIP. 
+Index: requirements.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>pytest\r\npytest-excel\r\ncoverage\r\nnumpy\r\nscipy\r\npandas\r\nopenpyxl\r\nconfigparser\r\npyan\r\npytest-cov>=2.10.1\r\nnetworkx
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/requirements.txt b/requirements.txt
+--- a/requirements.txt	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/requirements.txt	(date 1663054722165)
+@@ -8,4 +8,5 @@
+ configparser
+ pyan
+ pytest-cov>=2.10.1
+-networkx
+\ No newline at end of file
++networkx
++ast
+\ No newline at end of file
+Index: ../../../gradle.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># IntelliJ Platform Artifacts Repositories\r\n# -> https://plugins.jetbrains.com/docs/intellij/intellij-artifacts.html\r\n\r\npluginGroup = hu.szte.sed.charmfl\r\npluginName = CharmFL\r\n# SemVer format -> https://semver.org\r\npluginVersion = 2.0\r\n\r\n# See https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html\r\n# for insight into build numbers and IntelliJ Platform versions.\r\npluginSinceBuild = 201.*\r\npluginUntilBuild = 212.*\r\n\r\n# Plugin Verifier integration -> https://github.com/JetBrains/gradle-intellij-plugin#plugin-verifier-dsl\r\n# See https://jb.gg/intellij-platform-builds-list for available build versions.\r\n#pluginVerifierIdeVersions = 2021.2.3\r\n\r\n# IntelliJ Platform Properties -> https://github.com/JetBrains/gradle-intellij-plugin#intellij-platform-properties\r\nplatformType = PC\r\nplatformVersion = 2021.2.3\r\n#platformDownloadSources = true\r\n\r\n# Plugin Dependencies -> https://plugins.jetbrains.com/docs/intellij/plugin-dependencies.html\r\n# Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22\r\nplatformPlugins =\r\n\r\n# Java language level used to compile sources and to generate the files for - Java 11 is required since 2020.3\r\njavaVersion = 11\r\n\r\ngradleVersion = 7.3\r\n\r\n# Opt-out flag for bundling Kotlin standard library.\r\n# See https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library for details.\r\n# suppress inspection \"UnusedProperty\"\r\nkotlin.stdlib.default.dependency = false
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/../../../gradle.properties b/../../../gradle.properties
+--- a/../../../gradle.properties	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../../../gradle.properties	(date 1662380192503)
+@@ -4,7 +4,7 @@
+ pluginGroup = hu.szte.sed.charmfl
+ pluginName = CharmFL
+ # SemVer format -> https://semver.org
+-pluginVersion = 2.0
++pluginVersion = 1.1.0
+ 
+ # See https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html
+ # for insight into build numbers and IntelliJ Platform versions.
+@@ -13,7 +13,7 @@
+ 
+ # Plugin Verifier integration -> https://github.com/JetBrains/gradle-intellij-plugin#plugin-verifier-dsl
+ # See https://jb.gg/intellij-platform-builds-list for available build versions.
+-#pluginVerifierIdeVersions = 2021.2.3
++pluginVerifierIdeVersions = 2021.2.3
+ 
+ # IntelliJ Platform Properties -> https://github.com/JetBrains/gradle-intellij-plugin#intellij-platform-properties
+ platformType = PC
+Index: ../../../test_project/products/directory/example2.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># This is a simple example script for FL\r\n# It should represent a webshop, or at least part of it\r\n\r\ncart = {}\r\n\r\n\r\ndef addToCart(product):\r\n    if(product not in cart.keys()):\r\n        cart[str(product)] = 1\r\n    else:\r\n        cart[str(product)] = cart[(str(product))] + 2 # bug -> should be 1\r\n\r\n\r\ndef removeFromCart(product):\r\n    if(product in cart.keys()):\r\n        if(cart[str(product)] > 1):\r\n            cart[str(product)] = cart[str(product)] - 1\r\n        elif(cart[str(product)] == 1):\r\n            del cart[str(product)]\r\n    else:\r\n        print(\"Something's fishy\")\r\n\r\n\r\ndef printProductsInCart():\r\n    print(\"Your cart: \")\r\n\r\n    getProductCount()\r\n    for product_name in cart.keys():\r\n        product_count = cart[str(product_name)]\r\n        #print(\"* \" + str(product_name) + \": \" + str(product_count))\r\n\r\n\r\ndef getProductCount(product):\r\n    addToCart(\"apple\")\r\n    if(product not in cart.keys()):\r\n        return 0\r\n    else:\r\n        return cart[str(product)]\r\n\"\"\"\r\n# We need\r\n#        4 apples\r\n#        1 orange juice\r\n#        cheeser mum\r\n#        U\r\n\r\nfor i in range(1,4):\r\n    addToCart(\"apple\")\r\n\r\nremoveFromCart(\"apple\")\r\naddToCart(\"OJ\")\r\naddToCart(\"cheese\")\r\naddToCart(\"Ur mum\")\r\n\r\nprintProductsInCart()\r\n\"\"\"\r\n\r\nif __name__ == \"__main__\":\r\n    printProductsInCart()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../test_project/products/directory/example2.py b/../../../test_project/products/directory/example2.py
+--- a/../../../test_project/products/directory/example2.py	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../../../test_project/products/directory/example2.py	(date 1662025143093)
+@@ -36,23 +36,3 @@
+         return 0
+     else:
+         return cart[str(product)]
+-"""
+-# We need
+-#        4 apples
+-#        1 orange juice
+-#        cheeser mum
+-#        U
+-
+-for i in range(1,4):
+-    addToCart("apple")
+-
+-removeFromCart("apple")
+-addToCart("OJ")
+-addToCart("cheese")
+-addToCart("Ur mum")
+-
+-printProductsInCart()
+-"""
+-
+-if __name__ == "__main__":
+-    printProductsInCart()
+\ No newline at end of file
+Index: ../../../test_project/products/example.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># This is a simple example script for FL\r\n# It should represent a webshop, or at least part of it\r\n\r\ncart = {}\r\n\r\n\r\ndef addToCart(product):\r\n    if(product not in cart.keys()):\r\n        cart[str(product)] = 1\r\n    else:\r\n        cart[str(product)] = cart[(str(product))] + 2 # bug -> should be 1\r\n\r\n\r\ndef removeFromCart(product):\r\n    if(product in cart.keys()):\r\n        if(cart[str(product)] > 1):\r\n            cart[str(product)] = cart[str(product)] - 1\r\n        elif(cart[str(product)] == 1):\r\n            del cart[str(product)]\r\n    else:\r\n        print(\"Something's fishy\")\r\n\r\n\r\ndef printProductsInCart():\r\n    print(\"Your cart: \")\r\n\r\n    getProductCount()\r\n    for product_name in cart.keys():\r\n        product_count = cart[str(product_name)]\r\n        #print(\"* \" + str(product_name) + \": \" + str(product_count))\r\n\r\n\r\ndef getProductCount(product):\r\n    addToCart(\"apple\")\r\n    if(product not in cart.keys()):\r\n        return 0\r\n    else:\r\n        return cart[str(product)]\r\n\"\"\"\r\n# We need\r\n#        4 apples\r\n#        1 orange juice\r\n#        cheeser mum\r\n#        U\r\n\r\nfor i in range(1,4):\r\n    addToCart(\"apple\")\r\n\r\nremoveFromCart(\"apple\")\r\naddToCart(\"OJ\")\r\naddToCart(\"cheese\")\r\naddToCart(\"Ur mum\")\r\n\r\nprintProductsInCart()\r\n\"\"\"\r\n\r\nif __name__ == \"__main__\":\r\n    printProductsInCart()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../test_project/products/example.py b/../../../test_project/products/example.py
+--- a/../../../test_project/products/example.py	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../../../test_project/products/example.py	(date 1662025570296)
+@@ -1,6 +1,9 @@
+ # This is a simple example script for FL
+ # It should represent a webshop, or at least part of it
+ 
++from directory import example2
++
++
+ cart = {}
+ 
+ 
+@@ -23,11 +26,11 @@
+ 
+ def printProductsInCart():
+     print("Your cart: ")
+-
++    example2.printProductsInCart()
+     getProductCount()
+     for product_name in cart.keys():
+         product_count = cart[str(product_name)]
+-        #print("* " + str(product_name) + ": " + str(product_count))
++        print("* " + str(product_name) + ": " + str(product_count))
+ 
+ 
+ def getProductCount(product):
+@@ -36,23 +39,6 @@
+         return 0
+     else:
+         return cart[str(product)]
+-"""
+-# We need
+-#        4 apples
+-#        1 orange juice
+-#        cheeser mum
+-#        U
+-
+-for i in range(1,4):
+-    addToCart("apple")
+-
+-removeFromCart("apple")
+-addToCart("OJ")
+-addToCart("cheese")
+-addToCart("Ur mum")
+-
+-printProductsInCart()
+-"""
+ 
+ if __name__ == "__main__":
+     printProductsInCart()
+\ No newline at end of file
+Index: ../../../.idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"VcsDirectoryMappings\">\r\n    <mapping directory=\"\" vcs=\"Git\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../../../.idea/vcs.xml b/../../../.idea/vcs.xml
+--- a/../../../.idea/vcs.xml	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../../../.idea/vcs.xml	(date 1663329986935)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="VcsDirectoryMappings">
+-    <mapping directory="" vcs="Git" />
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: ../java/services/runnables/RunTestRunnable.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package services.runnables;\r\n\r\nimport java.io.File;\r\nimport java.util.ArrayList;\r\n\r\nimport com.intellij.openapi.application.ApplicationManager;\r\nimport com.intellij.openapi.editor.Editor;\r\nimport com.intellij.openapi.progress.ProgressIndicator;\r\nimport com.intellij.openapi.progress.Task;\r\nimport com.intellij.openapi.project.Project;\r\nimport com.intellij.openapi.roots.ProjectRootManager;\r\nimport com.intellij.openapi.ui.Messages;\r\n\r\nimport models.bean.ProcessResultData;\r\nimport modules.PluginModule;\r\nimport modules.ProjectModule;\r\nimport org.jetbrains.annotations.NotNull;\r\nimport services.FlServiceImpl;\r\nimport services.Resources;\r\n\r\npublic class RunTestRunnable extends Task.Backgroundable implements Progress {\r\n    static final int OK_CODE = 0;\r\n    static final int NOT_FOUND_TEST_ERROR_CODE = 2;\r\n    static final int NOT_FOUND_RESULTS_DICTIONARY_ERROR_CODE = 3;\r\n    static final int NOT_FOUND_COVERAGE_MATRIX_ERROR_CODE = 4;\r\n    static final int NOT_FOUND_STATISTICS_MATRIX_ERROR_CODE = 5;\r\n    static final int EXCEL_REPORT_FILE_NOT_FOUND = 7;\r\n    static final int FAILED_COPY_COVERAGE_RC_FILE = 6;\r\n    private Editor editor;\r\n    private Project project;\r\n\r\n    public RunTestRunnable(Project project, String title, Editor editor) {\r\n        super(project, title, false);\r\n        this.project = project;\r\n        this.editor = editor;\r\n    }\r\n\r\n    @Override\r\n    public void run(@NotNull ProgressIndicator progressIndicator) {\r\n        FlServiceImpl flService = initialization(progressIndicator);\r\n\r\n        if (!isProjectOpened(progressIndicator)) {\r\n            return;\r\n        }\r\n\r\n        if (!isProjectPathAvailable(progressIndicator)) {\r\n            return;\r\n        }\r\n\r\n        if (!isPluginIdAvailable(progressIndicator)) {\r\n            return;\r\n        }\r\n\r\n        progressIndicator.setFraction(0.40);\r\n        progressIndicator.setText(Resources.get(\"states\", \"selected_sdk\"));\r\n\r\n        ProjectModule.setProjectSdk(ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk());\r\n        if (ProjectModule.getProjectSdk() == null) {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        ProjectModule.getProject(),\r\n                        Resources.get(\"errors\", \"no_sdk_selected_error\"),\r\n                        Resources.get(\"titles\", \"project_sdk_not_found_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            flService.setTestDataCollecting(false);\r\n            return;\r\n        }\r\n\r\n        progressIndicator.setFraction(0.50);\r\n        progressIndicator.setText(Resources.get(\"states\", \"selected_binary\"));\r\n\r\n        File sdkBin = new File(ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk().getHomePath());\r\n        if (!sdkBin.exists() || sdkBin.isDirectory()) {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        ProjectModule.getProject(),\r\n                        Resources.get(\"errors\", \"sdk_not_found\"),\r\n                        Resources.get(\"titles\", \"project_sdk_not_found_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            flService.setTestDataCollecting(false);\r\n            return;\r\n        }\r\n\r\n        String pythonBinPath = ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk().getHomePath();\r\n        PluginModule.setPythonBinPath(pythonBinPath);\r\n\r\n        ProcessResultData processResultData = checkRequirements(flService, progressIndicator);\r\n\r\n        if (!areRequirementsInstalled(flService, processResultData, progressIndicator)) {\r\n            return;\r\n        }\r\n\r\n        processResultData = executeTests(flService, progressIndicator);\r\n\r\n        if (!isExecutionOk(flService, processResultData)) {\r\n            return;\r\n        }\r\n\r\n        parseResults(flService, progressIndicator);\r\n\r\n        if (flService.getTestData() == null) {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        ProjectModule.getProject(),\r\n                        Resources.get(\"errors\", \"parsing_error\"),\r\n                        Resources.get(\"titles\", \"plugin_error_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            flService.setTestDataCollecting(false);\r\n            return;\r\n        }\r\n        flService.setTestDataCollected(true);\r\n\r\n        ApplicationManager.getApplication().invokeLater(new EditorColorRunnable(editor));\r\n\r\n        finish(progressIndicator);\r\n    }\r\n\r\n    @Override\r\n    public FlServiceImpl initialization(ProgressIndicator progressIndicator) {\r\n        progressIndicator.setIndeterminate(false);\r\n        progressIndicator.setFraction(0.0);\r\n        progressIndicator.setText(Resources.get(\"states\", \"init\"));\r\n\r\n        FlServiceImpl flService = new FlServiceImpl();\r\n        flService.setTestDataCollecting(true);\r\n        return flService;\r\n    }\r\n\r\n    @Override\r\n    public boolean isProjectOpened(ProgressIndicator progressIndicator) {\r\n        PluginModule.refreshPluginId();\r\n        PluginModule.refreshPluginPath();\r\n        PluginModule.refreshPluginPythonBinPath();\r\n\r\n        progressIndicator.setFraction(0.10);\r\n        progressIndicator.setText(Resources.get(\"states\", \"project_opened\"));\r\n\r\n        ProjectModule.setProject(project);\r\n        if (ProjectModule.getProject() == null) {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        Resources.get(\"errors\", \"open_project_error\"),\r\n                        Resources.get(\"titles\", \"project_not_found_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            return false;\r\n        }\r\n        return true;\r\n    }\r\n\r\n    @Override\r\n    public boolean isProjectPathAvailable(ProgressIndicator progressIndicator) {\r\n        progressIndicator.setFraction(0.20);\r\n        progressIndicator.setText(Resources.get(\"states\", \"project_path\"));\r\n\r\n        ProjectModule.setProjectPath(ProjectModule.getProject().getBasePath());\r\n        if (ProjectModule.getProjectPath().equals(\"\")) {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        ProjectModule.getProject(),\r\n                        Resources.get(\"errors\", \"project_path_not_found_error\"),\r\n                        Resources.get(\"titles\", \"project_path_not_found_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            return false;\r\n        }\r\n        return true;\r\n    }\r\n\r\n    @Override\r\n    public boolean isPluginIdAvailable(ProgressIndicator progressIndicator) {\r\n        progressIndicator.setFraction(0.30);\r\n        progressIndicator.setText(Resources.get(\"states\", \"plugin_id\"));\r\n\r\n        if (PluginModule.getPluginId() == null) {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        ProjectModule.getProject(),\r\n                        Resources.get(\"errors\", \"plugin_not_found_error\"),\r\n                        Resources.get(\"titles\", \"plugin_error_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            return false;\r\n        }\r\n        return true;\r\n    }\r\n\r\n    @Override\r\n    public ProcessResultData checkRequirements(FlServiceImpl flService, ProgressIndicator progressIndicator) {\r\n        String pythonBinPath = ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk().getHomePath();\r\n        PluginModule.setPythonBinPath(pythonBinPath);\r\n\r\n        progressIndicator.setFraction(0.60);\r\n        progressIndicator.setText(Resources.get(\"states\", \"check_requirements\"));\r\n\r\n        ProcessResultData processResultData = flService.executeGetPipBinPath(\r\n                PluginModule.getPythonBinPath(),\r\n                PluginModule.getCheckPipBinPath());\r\n        return processResultData;\r\n    }\r\n\r\n    @Override\r\n    public boolean areRequirementsInstalled(FlServiceImpl flService, ProcessResultData processResultData, ProgressIndicator progressIndicator) {\r\n        if (processResultData.getExitCode() == OK_CODE) {\r\n            PluginModule.setPipBinPath(processResultData.getOutput().get(0));\r\n            processResultData = flService.executeRequirementsInstall(\r\n                    PluginModule.getPythonBinPath(),\r\n                    PluginModule.getPipBinPath(),\r\n                    PluginModule.getRequirementsFilePath(),\r\n                    ProjectModule.getProjectPath());\r\n            if (processResultData.getExitCode() == OK_CODE) {\r\n                return true;\r\n            } else {\r\n                ApplicationManager.getApplication().invokeLater(() -> {\r\n                    Messages.showMessageDialog(\r\n                            ProjectModule.getProject(),\r\n                            Resources.get(\"errors\", \"requirements_installation_error\"),\r\n                            Resources.get(\"titles\", \"plugin_error_title\"),\r\n                            Messages.getErrorIcon());\r\n                });\r\n                flService.setTestDataCollecting(false);\r\n                return false;\r\n            }\r\n        } else {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        ProjectModule.getProject(),\r\n                        Resources.get(\"errors\", \"sdk_pip_not_found_error\"),\r\n                        Resources.get(\"titles\", \"package_not_found_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            flService.setTestDataCollecting(false);\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * This method is not supported. Please use executeTests.\r\n     *\r\n     * @param flService\r\n     * @param progressIndicator\r\n     */\r\n    @Override\r\n    public void execute(FlServiceImpl flService, ProgressIndicator progressIndicator) {\r\n        throw new UnsupportedOperationException(\"No implementation.\");\r\n    }\r\n\r\n    public ProcessResultData executeTests(FlServiceImpl flService, ProgressIndicator progressIndicator) {\r\n        progressIndicator.setFraction(0.70);\r\n        progressIndicator.setText(Resources.get(\"states\", \"running_tests\"));\r\n\r\n        return flService.executeTest(\r\n                PluginModule.getPythonBinPath(),\r\n                PluginModule.getPyflBinPath(),\r\n                ProjectModule.getProjectPath());\r\n    }\r\n\r\n    public boolean isExecutionOk(FlServiceImpl flService, ProcessResultData processResultData) {\r\n        switch (processResultData.getExitCode()) {\r\n            case NOT_FOUND_TEST_ERROR_CODE:\r\n                ApplicationManager.getApplication().invokeLater(() -> {\r\n                    Messages.showMessageDialog(\r\n                            ProjectModule.getProject(),\r\n                            Resources.get(\"errors\", \"no_tests_found_error\"),\r\n                            Resources.get(\"titles\", \"plugin_error_title\"),\r\n                            Messages.getErrorIcon());\r\n                });\r\n                flService.setTestDataCollecting(false);\r\n                return false;\r\n            case NOT_FOUND_RESULTS_DICTIONARY_ERROR_CODE:\r\n                ApplicationManager.getApplication().invokeLater(() -> {\r\n                    Messages.showMessageDialog(\r\n                            ProjectModule.getProject(),\r\n                            Resources.get(\"errors\", \"empty_results_directory_error\"),\r\n                            Resources.get(\"titles\", \"dictionary_empty_title\"),\r\n                            Messages.getErrorIcon());\r\n                });\r\n                flService.setTestDataCollecting(false);\r\n                return false;\r\n            case NOT_FOUND_COVERAGE_MATRIX_ERROR_CODE:\r\n                ApplicationManager.getApplication().invokeLater(() -> {\r\n                    Messages.showMessageDialog(\r\n                            ProjectModule.getProject(),\r\n                            Resources.get(\"errors\", \"no_coverage_matrix_error\"),\r\n                            Resources.get(\"titles\", \"plugin_error_title\"),\r\n                            Messages.getErrorIcon());\r\n                });\r\n                flService.setTestDataCollecting(false);\r\n                return false;\r\n            case NOT_FOUND_STATISTICS_MATRIX_ERROR_CODE:\r\n                ApplicationManager.getApplication().invokeLater(() -> {\r\n                    Messages.showMessageDialog(\r\n                            ProjectModule.getProject(),\r\n                            Resources.get(\"errors\", \"no_statistics_matrix_error\"),\r\n                            Resources.get(\"titles\", \"plugin_error_title\"),\r\n                            Messages.getErrorIcon());\r\n                });\r\n                flService.setTestDataCollecting(false);\r\n                return false;\r\n            case FAILED_COPY_COVERAGE_RC_FILE:\r\n                ApplicationManager.getApplication().invokeLater(() -> {\r\n                    Messages.showMessageDialog(\r\n                            ProjectModule.getProject(),\r\n                            Resources.get(\"errors\", \"bad_results_error\"),\r\n                            Resources.get(\"titles\", \"plugin_error_title\"),\r\n                            Messages.getErrorIcon());\r\n                });\r\n                flService.setTestDataCollecting(false);\r\n                return false;\r\n            case EXCEL_REPORT_FILE_NOT_FOUND:\r\n                ApplicationManager.getApplication().invokeLater(() -> {\r\n                    Messages.showMessageDialog(\r\n                            ProjectModule.getProject(),\r\n                            Resources.get(\"errors\", \"report_not_created_error\"),\r\n                            Resources.get(\"titles\", \"plugin_error_title\"),\r\n                            Messages.getErrorIcon());\r\n                });\r\n                flService.setTestDataCollecting(false);\r\n                return false;\r\n            default:\r\n                return true;\r\n        }\r\n    }\r\n\r\n    public void parseResults(FlServiceImpl flService, ProgressIndicator progressIndicator) {\r\n        progressIndicator.setFraction(0.80);\r\n        progressIndicator.setText(Resources.get(\"states\", \"parse_results\"));\r\n\r\n        ArrayList<String> lines = flService.readTextFile(\r\n                ProjectModule.getProjectPath() + File.separator + PluginModule.getResultsJsonFileName());\r\n        if (lines.size() == 0) {\r\n            ApplicationManager.getApplication().invokeLater(() -> {\r\n                Messages.showMessageDialog(\r\n                        ProjectModule.getProject(),\r\n                        Resources.get(\"errors\", \"pytest_parsing_error\"),\r\n                        Resources.get(\"titles\", \"plugin_error_title\"),\r\n                        Messages.getErrorIcon());\r\n            });\r\n            flService.setTestDataCollecting(false);\r\n            return;\r\n        }\r\n        flService.clearTestData();\r\n        flService.setTestData(flService.parseTestDataJSON(lines));\r\n    }\r\n\r\n    @Override\r\n    public void finish(ProgressIndicator progressIndicator) {\r\n        progressIndicator.setFraction(1.00);\r\n        progressIndicator.setText(Resources.get(\"states\", \"finished\"));\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../java/services/runnables/RunTestRunnable.java b/../java/services/runnables/RunTestRunnable.java
+--- a/../java/services/runnables/RunTestRunnable.java	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../java/services/runnables/RunTestRunnable.java	(date 1662122529124)
+@@ -51,7 +51,7 @@
+             return;
+         }
+ 
+-        progressIndicator.setFraction(0.40);
++        //progressIndicator.setFraction(0.40);
+         progressIndicator.setText(Resources.get("states", "selected_sdk"));
+ 
+         ProjectModule.setProjectSdk(ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk());
+@@ -67,7 +67,7 @@
+             return;
+         }
+ 
+-        progressIndicator.setFraction(0.50);
++        progressIndicator.setFraction(0.40);
+         progressIndicator.setText(Resources.get("states", "selected_binary"));
+ 
+         File sdkBin = new File(ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk().getHomePath());
+@@ -193,7 +193,7 @@
+         String pythonBinPath = ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk().getHomePath();
+         PluginModule.setPythonBinPath(pythonBinPath);
+ 
+-        progressIndicator.setFraction(0.60);
++        progressIndicator.setFraction(0.50);
+         progressIndicator.setText(Resources.get("states", "check_requirements"));
+ 
+         ProcessResultData processResultData = flService.executeGetPipBinPath(
+Index: ../java/services/FlServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package services;\r\n\r\nimport java.io.*;\r\nimport java.util.ArrayList;\r\n\r\nimport com.intellij.openapi.editor.Editor;\r\nimport com.intellij.openapi.fileEditor.FileEditorManagerEvent;\r\nimport com.intellij.openapi.fileEditor.FileEditorManagerListener;\r\nimport com.intellij.openapi.project.Project;\r\nimport com.intellij.util.messages.MessageBus;\r\nimport models.bean.*;\r\nimport org.jetbrains.annotations.NotNull;\r\n\r\nimport org.apache.commons.lang3.SystemUtils;\r\nimport org.json.JSONArray;\r\nimport org.json.JSONObject;\r\n\r\nimport modules.ProjectModule;\r\n\r\nimport static services.ProcessService.executeCommand;\r\n\r\npublic class FlServiceImpl {\r\n    private static TestData testData = null;\r\n    private static boolean testDataCollected = false;\r\n    private static boolean fileEditorColoringEnabled = false;\r\n    private static boolean viewResultTableDialogOpened = false;\r\n    private static boolean testDataCollecting = false;\r\n\r\n    public ProcessResultData executeCallGraph(String callGraphScriptName, String projectPath, Object mainFileName, String pythonBinPath) {\r\n        String command = \"\";\r\n        if (SystemUtils.IS_OS_WINDOWS) {\r\n            command = \"\\\"\" + pythonBinPath + \"\\\" \" + \"\\\"\" + callGraphScriptName + \"\\\" \" + \"\\\"\" + projectPath + \"\\\" \" + \"\\\"\" + mainFileName + \"\\\" \" + \" -cg\";\r\n        }\r\n\r\n        return executeCommand(command);\r\n    }\r\n\r\n    public ProcessResultData executeAddHighlightToCallGraph(String callGraphScriptName, String projectPath, Object methodName, String pythonBinPath) {\r\n        String command = \"\";\r\n        if (SystemUtils.IS_OS_WINDOWS) {\r\n            command = \"\\\"\" + pythonBinPath + \"\\\" \" + \"\\\"\" + callGraphScriptName + \"\\\" \" + \"\\\"\" + projectPath + \"\\\" \" + methodName + \" -cg\";\r\n        }\r\n\r\n        return executeCommand(command);\r\n    }\r\n\r\n    public ProcessResultData executeTest(String pythonBinPath, String pyflPath, String projectPath) {\r\n        String command = \"\";\r\n        if (SystemUtils.IS_OS_WINDOWS) {\r\n            command = \"\\\"\" + pythonBinPath + \"\\\" \" +\r\n                    \"\\\"\" + pyflPath + \"\\\" -d \" +\r\n                    \"\\\"\" + projectPath + \"\\\"\" +\r\n                    \" -fl\";\r\n        } else if (SystemUtils.IS_OS_LINUX) {\r\n            command = pythonBinPath.replaceAll(\" \", \"\\\\ \") + \" \" +\r\n                    pyflPath.replaceAll(\" \", \"\\\\ \") + \" -d \" +\r\n                    projectPath.replaceAll(\" \", \"\\\\ \") + \" -fl\";\r\n        }\r\n        return executeCommand(command);\r\n    }\r\n\r\n    public ProcessResultData executeRequirementsInstall(String pythonBinPath, String pipBinPath, String requirementsPath, String projectPath) {\r\n        String command = \"\";\r\n        if (SystemUtils.IS_OS_WINDOWS) {\r\n            command = \"\\\"\" + pythonBinPath + \"\\\" \" +\r\n                    \"\\\"\" + pipBinPath + \"\\\" \" +\r\n                    \"install -r \" +\r\n                    \"\\\"\" + requirementsPath + \"\\\"\";\r\n        } else if (SystemUtils.IS_OS_LINUX) {\r\n            command = pythonBinPath.replaceAll(\" \", \"\\\\ \") + \" \" +\r\n                    pipBinPath.replaceAll(\" \", \"\\\\ \") + \" \" +\r\n                    \"install -r \" +\r\n                    requirementsPath.replaceAll(\" \", \"\\\\ \");\r\n        }\r\n        return executeCommand(command);\r\n    }\r\n\r\n    public ProcessResultData executeGetPipBinPath(String pythonBinPath, String checkPipBinPath) {\r\n        String command = \"\";\r\n        if (SystemUtils.IS_OS_WINDOWS) {\r\n            command = \"\\\"\" + pythonBinPath + \"\\\" \" +\r\n                    \"\\\"\" + checkPipBinPath + \"\\\"\";\r\n        } else if (SystemUtils.IS_OS_LINUX) {\r\n            command = pythonBinPath.replaceAll(\" \", \"\\\\ \") + \" \" +\r\n                    checkPipBinPath.replaceAll(\" \", \"\\\\ \");\r\n        }\r\n        return executeCommand(command);\r\n    }\r\n\r\n    public ArrayList<String> readTextFile(String fileName) {\r\n        ArrayList<String> lines = new ArrayList<>();\r\n\r\n        File file = new File(fileName);\r\n        try {\r\n            if (file.exists()) {\r\n                BufferedReader br = new BufferedReader(new FileReader(file));\r\n                String line;\r\n\r\n                while ((line = br.readLine()) != null) {\r\n                    lines.add(line);\r\n                }\r\n            }\r\n        } catch (IOException e) {\r\n            e.printStackTrace();\r\n        }\r\n        return lines;\r\n    }\r\n\r\n    //TODO: composite design pattern\r\n    //külön osztályba szervezzük ki\r\n    public TestData parseTestDataJSON(ArrayList<String> lines) {\r\n        TestData testData = new TestData();\r\n        String json = String.join(\" \", lines);\r\n        JSONObject jsonObject = new JSONObject(json);\r\n\r\n        JSONObject fileObject, classObject, methodObject, statementObject;\r\n        String name;\r\n        int line;\r\n        double tarantula, ochiai, wong2;\r\n        int rank;\r\n        boolean faulty;\r\n        String relativePath;\r\n        ClassTestData classTestData;\r\n        MethodTestData methodTestData;\r\n        StatementTestData statementTestData;\r\n        JSONArray filesArray, classesArray, methodsArray, statementsArray;\r\n\r\n        filesArray = jsonObject.getJSONArray(\"files\");\r\n        for (int i = 0; i < filesArray.length(); i++) {\r\n            fileObject = filesArray.getJSONObject(i);\r\n            classesArray = fileObject.getJSONArray(\"classes\");\r\n            relativePath = fileObject.getString(\"relativePath\");\r\n\r\n            for (int j = 0; j < classesArray.length(); j++) {\r\n                classObject = classesArray.getJSONObject(j);\r\n                name = classObject.getString(\"name\");\r\n                if (name.equals(\"\")) {\r\n                    name = \"<not_class>\";\r\n                }\r\n                line = classObject.getInt(\"line\");\r\n                if (classObject.has(\"tar\")) {\r\n                    tarantula = classObject.getDouble(\"tar\");\r\n                } else {\r\n                    tarantula = 0;\r\n                }\r\n                if (classObject.has(\"och\")) {\r\n                    ochiai = classObject.getDouble(\"och\");\r\n                } else {\r\n                    ochiai = 0;\r\n                    ;\r\n                }\r\n                if (classObject.has(\"wong2\")) {\r\n                    wong2 = classObject.getDouble(\"wong2\");\r\n                } else {\r\n                    wong2 = 0;\r\n                }\r\n                if (classObject.has(\"rank\")) {\r\n                    rank = classObject.getInt(\"rank\");\r\n                } else {\r\n                    rank = 0;\r\n                }\r\n                if (classObject.has(\"faulty\")) {\r\n                    faulty = classObject.getBoolean(\"faulty\");\r\n                } else {\r\n                    faulty = false;\r\n                }\r\n\r\n                classTestData = new ClassTestData();\r\n                classTestData.setName(name);\r\n                classTestData.setLine(line);\r\n                classTestData.setTarantula(tarantula);\r\n                classTestData.setOchiai(ochiai);\r\n                classTestData.setWong2(wong2);\r\n                classTestData.setRank(rank);\r\n                classTestData.setFaulty(faulty);\r\n                classTestData.setRelativePath(relativePath);\r\n\r\n                methodsArray = classObject.getJSONArray(\"methods\");\r\n                for (int k = 0; k < methodsArray.length(); k++) {\r\n                    methodObject = methodsArray.getJSONObject(k);\r\n                    name = methodObject.getString(\"name\");\r\n                    if (name.equals(\"\")) {\r\n                        name = \"<not_method>\";\r\n                    }\r\n                    line = methodObject.getInt(\"line\");\r\n                    if (methodObject.has(\"tar\")) {\r\n                        tarantula = methodObject.getDouble(\"tar\");\r\n                    } else {\r\n                        tarantula = 0;\r\n                    }\r\n                    if (methodObject.has(\"och\")) {\r\n                        ochiai = methodObject.getDouble(\"och\");\r\n                    } else {\r\n                        ochiai = 0;\r\n                        ;\r\n                    }\r\n                    if (methodObject.has(\"wong2\")) {\r\n                        wong2 = methodObject.getDouble(\"wong2\");\r\n                    } else {\r\n                        wong2 = 0;\r\n                    }\r\n                    if (methodObject.has(\"rank\")) {\r\n                        rank = methodObject.getInt(\"rank\");\r\n                    } else {\r\n                        rank = 0;\r\n                    }\r\n                    if (methodObject.has(\"faulty\")) {\r\n                        faulty = methodObject.getBoolean(\"faulty\");\r\n                    } else {\r\n                        faulty = false;\r\n                    }\r\n\r\n                    methodTestData = new MethodTestData();\r\n                    methodTestData.setName(name);\r\n                    methodTestData.setLine(line);\r\n                    methodTestData.setTarantula(tarantula);\r\n                    methodTestData.setOchiai(ochiai);\r\n                    methodTestData.setWong2(wong2);\r\n                    methodTestData.setRank(rank);\r\n                    methodTestData.setFaulty(faulty);\r\n\r\n                    statementsArray = methodObject.getJSONArray(\"statements\");\r\n                    for (int l = 0; l < statementsArray.length(); l++) {\r\n                        statementObject = statementsArray.getJSONObject(l);\r\n                        line = statementObject.getInt(\"line\");\r\n                        tarantula = statementObject.getDouble(\"tar\");\r\n                        ochiai = statementObject.getDouble(\"och\");\r\n                        wong2 = statementObject.getDouble(\"wong2\");\r\n                        if (statementObject.has(\"rank\")) {\r\n                            rank = statementObject.getInt(\"rank\");\r\n                        } else {\r\n                            rank = 0;\r\n                        }\r\n                        faulty = statementObject.getBoolean(\"faulty\");\r\n\r\n                        statementTestData = new StatementTestData();\r\n                        statementTestData.setClassName(classTestData.getName());\r\n                        statementTestData.setMethodName(methodTestData.getName());\r\n                        statementTestData.setLine(line);\r\n                        statementTestData.setTarantula(tarantula);\r\n                        statementTestData.setOchiai(ochiai);\r\n                        statementTestData.setWong2(wong2);\r\n                        statementTestData.setRank(rank);\r\n                        statementTestData.setFaulty(faulty);\r\n\r\n                        methodTestData.getStatements().add(statementTestData);\r\n                    }\r\n\r\n                    classTestData.getMethods().add(methodTestData);\r\n                }\r\n\r\n                testData.getClasses().add(classTestData);\r\n            }\r\n        }\r\n\r\n        return testData;\r\n    }\r\n\r\n    public TestData getTestData() {\r\n        return FlServiceImpl.testData;\r\n    }\r\n\r\n    public void setTestData(TestData testData) {\r\n        FlServiceImpl.testData = testData;\r\n    }\r\n\r\n    public void clearTestData() {\r\n        if (FlServiceImpl.testData != null) {\r\n            FlServiceImpl.testData.getClasses().clear();\r\n        }\r\n    }\r\n\r\n    public void startFileEditorManagerListener(Project project) {\r\n        MessageBus messageBus = project.getMessageBus();\r\n        messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {\r\n\r\n            @Override\r\n            public void selectionChanged(@NotNull FileEditorManagerEvent e) {\r\n                if (e.getManager() != null) {\r\n                    Editor editor = e.getManager().getSelectedTextEditor();\r\n                    if (editor != null) {\r\n                        ColorService colorService = new ColorService();\r\n                        colorService.setEditor(editor);\r\n                        colorService.removeColorsByEditor();\r\n                        if (testDataCollected) {\r\n                            String relativeFilePath = parseRelativeFilePath(e.getNewFile().getPath(), ProjectModule.getProjectPath());\r\n                            colorService.setColorsByEditor(testData, relativeFilePath);\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n    public String parseRelativeFilePath(String currentFilePath, String projectPath) {\r\n        String relativeFilePath = currentFilePath.substring(projectPath.length() + 1);\r\n        relativeFilePath = relativeFilePath.replace(\"\\\\\", File.separator);\r\n        relativeFilePath = relativeFilePath.replace(\"/\", File.separator);\r\n        return relativeFilePath;\r\n    }\r\n\r\n    public boolean isTestDataCollected() {\r\n        return testDataCollected;\r\n    }\r\n\r\n    public boolean isFileEditorColoringEnabled() {\r\n        return fileEditorColoringEnabled;\r\n    }\r\n\r\n    public void setTestDataCollected(boolean status) {\r\n        testDataCollected = status;\r\n    }\r\n\r\n    public void setFileEditorColoringEnabled(boolean status) {\r\n        fileEditorColoringEnabled = status;\r\n    }\r\n\r\n    public boolean isViewResultTableDialogOpened() {\r\n        return viewResultTableDialogOpened;\r\n    }\r\n\r\n    public void setViewResultTableDialogOpened(boolean viewResultTableDialogOpened) {\r\n        FlServiceImpl.viewResultTableDialogOpened = viewResultTableDialogOpened;\r\n    }\r\n\r\n    public boolean isTestDataCollecting() {\r\n        return testDataCollecting;\r\n    }\r\n\r\n    public void setTestDataCollecting(boolean testDataCollecting) {\r\n        FlServiceImpl.testDataCollecting = testDataCollecting;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../java/services/FlServiceImpl.java b/../java/services/FlServiceImpl.java
+--- a/../java/services/FlServiceImpl.java	(revision 30256c4d565b3981697526f5a222aa6c24d20bb6)
++++ b/../java/services/FlServiceImpl.java	(date 1662122529140)
+@@ -107,7 +107,6 @@
+     }
+ 
+     //TODO: composite design pattern
+-    //külön osztályba szervezzük ki
+     public TestData parseTestDataJSON(ArrayList<String> lines) {
+         TestData testData = new TestData();
+         String json = String.join(" ", lines);

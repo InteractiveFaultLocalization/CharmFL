@@ -1,5 +1,5 @@
 import pytest
-import example
+from directory import example2 as example
 
 def test_AddProduct_Once():
     example.cart.clear()

@@ -8,16 +8,21 @@ import com.intellij.openapi.extensions.PluginId;
 public class PluginModule {
     private static final String PLUGIN_NAME = "CharmFL";
     private static final String PLUGIN_ID = "hu.szte.sed.charmfl";
-    private static final String pyflBin = "main.py";
-    private static final String checkPipBin = "check_pip.py";
-    private static final String pipBin = "pip";
-    private static final String requirementsFileName = "requirements.txt";
-    private static final String resultsJSONFileName = "results.json";
+    private static final String PYFL_BIN = "main.py";
+    private static final String CHECK_PIP_BIN = "check_pip.py";
+    private static final String PIP_BIN = "pip";
+    private static final String REQUIREMENTS_FILE_NAME = "requirements.txt";
+    private static final String RESULTS_JSON_FILE_NAME = "results.json";
     private static PluginId pluginId = null;
     private static String pluginPath = "";
     private static String pyflBinPath = "";
     private static String checkPipBinPath = "";
-    private static final String pythonScriptsFolderName = "Scripts";
+    private static final String PYTHON_SCRIPTS_FOLDER_NAME = "Scripts";
+
+    private static final String CALL_GRAPH_SCRIPT_NAME = "call_graph_maker.py";
+    private static final String CALL_ADD_HIGHLIGHT_TO_GRAPH_SCRIPT_NAME = "call_graph_highlight.py";
+
+    private static final String CALL_GRAPH_EDGES = "call_graphs/call_graph_edges.py";
     private static String pythonBinPath;
     private static String pipBinPath;
 
@@ -30,79 +35,121 @@ public class PluginModule {
     private static boolean minimumSelected = false;
     private static boolean averageSelected = false;
 
+    /**
+     * Sets this object's plugin id to the built-in plugin id.
+     */
     public static void refreshPluginId() {
         pluginId = PluginId.getId(PLUGIN_ID);
     }
 
+    /**
+     * Sets the path of the installed charmfl plugin
+     */
     public static void refreshPluginPath() {
         pluginPath = PluginManagerCore.getPlugin(pluginId).getPluginPath().toString();
     }
 
+    /**
+     * Sets the path of the installed charmfl's plugin main.py (backend) and check_pip.py (checking requirements)
+     */
     public static void refreshPluginPythonBinPath() {
-        pyflBinPath = pluginPath + File.separator + pyflBin;
-        checkPipBinPath = pluginPath + File.separator + checkPipBin;
+        pyflBinPath = pluginPath + File.separator + PYFL_BIN;
+        checkPipBinPath = pluginPath + File.separator + CHECK_PIP_BIN;
     }
 
+    /**
+     * Gets the installed charmfl's plugin name
+     * @return the plugin name
+     */
     public static String getPluginName() {
         return PLUGIN_NAME;
     }
 
+    /**
+     * Gets the installed charmfl's plugin id
+     * @return the plugin id
+     */
     public static String getPluginId() {
         return PLUGIN_ID;
     }
 
-    public static String getPyflBin() {
-        return pyflBin;
+    /**
+     * Gets the call graph generator scripts path
+     * @return pathToInstalledCharmFL/call_graphs/call_graph_maker.py
+     */
+    public static String getCallGraphScriptName() {
+        return pluginPath + File.separator + CALL_GRAPH_SCRIPT_NAME;
     }
 
-    public static String getCheckPipBin() {
-        return checkPipBin;
+    /**
+     * Gets the call graph edge retriever scripts path
+     * @return pathToInstalledCharmFL/call_graphs/call_graph_edges.py
+     */
+    public static String getCallGraphEdges() {
+        return pluginPath + File.separator + CALL_GRAPH_EDGES;
     }
 
-    public static String getPipBin() {
-        return pipBin;
+    /**
+     * Gets the call graph highlighter scripts path
+     * @return pathToInstalledCharmFL/call_graphs/call_graph_highlight.py
+     */
+    public static String callAddHighlightToGraphScriptName() {
+        return pluginPath + File.separator + CALL_ADD_HIGHLIGHT_TO_GRAPH_SCRIPT_NAME;
     }
 
-    public static String getPluginPath() {
-        return pluginPath;
-    }
-
+    /**
+     * Gets the path of the installed charmfl's plugin main.py (backend)
+     * @return the path to main.py
+     */
     public static String getPyflBinPath() {
         return pyflBinPath;
     }
 
+    /**
+     * Gets the path of the installed charmfl's plugin check_pip.py (checking requirements)
+     * @return the path to main.py
+     */
     public static String getCheckPipBinPath() {
         return checkPipBinPath;
     }
+
 
     public static String getPythonBinPath() {
         return pythonBinPath;
     }
 
+    /**
+     * Returns the path of pip script
+     * @return path
+     */
     public static String getPipBinPath() {
         return pipBinPath;
     }
 
-    public static String getRequirementsFileName() {
-        return requirementsFileName;
-    }
-
+    /**
+     * Returns the requirements.txt
+     * @return path and filename
+     */
     public static String getRequirementsFilePath() {
-        return pluginPath + File.separator + requirementsFileName;
+        return pluginPath + File.separator + REQUIREMENTS_FILE_NAME;
     }
 
-    public static final String getResultsJSONFileName() {
-        return resultsJSONFileName;
-    }
-
-    public static String getPythonScriptsFolderName() {
-        return pythonScriptsFolderName;
+    /**
+     * Returns the results json's name
+     * @return name
+     */
+    public static final String getResultsJsonFileName() {
+        return RESULTS_JSON_FILE_NAME;
     }
 
     public static void setPythonBinPath(String pythonBinPath) {
         PluginModule.pythonBinPath = pythonBinPath;
     }
 
+    /**
+     * Returns whether Tarantula score calculation is the selected approach
+     * @return true if tarantula is selected
+     */
     public static boolean isTarantulaSelected() {
         return tarantulaSelected;
     }
@@ -111,6 +158,10 @@ public class PluginModule {
         PluginModule.tarantulaSelected = tarantulaSelected;
     }
 
+    /**
+     * Returns whether Ochiai score calculation is the selected approach
+     * @return true if ochiai is selected
+     */
     public static boolean isOchiaiSelected() {
         return ochiaiSelected;
     }
@@ -119,6 +170,10 @@ public class PluginModule {
         PluginModule.ochiaiSelected = ochiaiSelected;
     }
 
+    /**
+     * Returns whether Dstar score calculation is the selected approach
+     * @return true if dstar is selected
+     */
     public static boolean isDStarSelected() {
         return dStarSelected;
     }
@@ -127,6 +182,10 @@ public class PluginModule {
         PluginModule.dStarSelected = dStarSelected;
     }
 
+    /**
+     * Returns whether Wong2 score calculation is the selected approach
+     * @return true if tarantula is selected
+     */
     public static boolean isWongIISelected() {
         return wongIISelected;
     }
@@ -135,6 +194,10 @@ public class PluginModule {
         PluginModule.wongIISelected = wongIISelected;
     }
 
+    /**
+     * Ranking approach
+     * @return true if maximum ranking is selected
+     */
     public static boolean isMaximumSelected() {
         return maximumSelected;
     }
@@ -143,6 +206,10 @@ public class PluginModule {
         PluginModule.maximumSelected = maximumSelected;
     }
 
+    /**
+     * Ranking approach
+     * @return true if minimum ranking is selected
+     */
     public static boolean isMinimumSelected() {
         return minimumSelected;
     }
@@ -151,6 +218,10 @@ public class PluginModule {
         PluginModule.minimumSelected = minimumSelected;
     }
 
+    /**
+     * Ranking approach
+     * @return true if average ranking is selected
+     */
     public static boolean isAverageSelected() {
         return averageSelected;
     }

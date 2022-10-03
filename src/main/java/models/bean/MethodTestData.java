@@ -1,9 +1,8 @@
 package models.bean;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MethodTestData implements Serializable {
+public class MethodTestData {
     private String name;
     private int line;
     private double tarantula;
@@ -12,7 +11,6 @@ public class MethodTestData implements Serializable {
     private int rank;
     private boolean faulty;
     private ArrayList<StatementTestData> statements;
-    private static final long serialVersionUID = -4345480318727973268L;
 
     public MethodTestData() {
         name = "";
@@ -25,6 +23,10 @@ public class MethodTestData implements Serializable {
         statements = new ArrayList<>();
     }
 
+    /**
+     * This represents the name of the method in the python file.
+     * @return a string that contains the name of the method.
+     */
     public String getName() {
         return name;
     }
@@ -33,37 +35,70 @@ public class MethodTestData implements Serializable {
         this.name = name;
     }
 
+    /**
+     * This represents the starting line number of the method in the python file.
+     * @return the starting line number of the method (i.e. integer)
+     */
     public int getLine() {
         return line;
     }
 
+    /**
+     * This sets the starting line number of the method in the python file
+     * @param line, an integer that represents the starting statement.
+     */
     public void setLine(int line) {
         this.line = line;
     }
 
+    /**
+     * This provides the tarantula score of the class.
+     * @return the score
+     */
     public double getTarantula() {
         return tarantula;
     }
 
+    /**
+     * This method sets the tarantula score for the class object.
+     * @param tarantula score, a double type number
+     */
     public void setTarantula(double tarantula) {
         this.tarantula = tarantula;
     }
 
+    /**
+     * This provides the ochiai score of the class.
+     * @return the score
+     */
     public double getOchiai() {
         return ochiai;
     }
 
+    /**
+     * This method sets the ochicai score for the class object.
+     * @param ochiai score, a double type number
+     */
     public void setOchiai(double ochiai) {
         this.ochiai = ochiai;
     }
 
+    /**
+     * This provides the wong2 score of the class.
+     * @return the score
+     */
     public double getWong2() {
         return wong2;
     }
 
+    /**
+     * This method sets the wong2 score for the class object.
+     * @param wong2 score, a double type number
+     */
     public void setWong2(double wong2) {
         this.wong2 = wong2;
     }
+
 
     public int getRank() {
         return rank;
@@ -73,19 +108,27 @@ public class MethodTestData implements Serializable {
         this.rank = rank;
     }
 
+    /**
+     * Returns a boolean saying whether the class is faulty.
+     * @return true if the class is faulty
+     */
     public boolean isFaulty() {
         return faulty;
     }
 
+    /**
+     * Sets the faulty parameter of the class object.
+     * @param faulty
+     */
     public void setFaulty(boolean faulty) {
         this.faulty = faulty;
     }
 
+    /**
+     * This provides the statemets that belong to this method.
+     * @return a list of statements
+     */
     public ArrayList<StatementTestData> getStatements() {
         return statements;
-    }
-
-    public void setStatements(ArrayList<StatementTestData> statements) {
-        this.statements = statements;
     }
 }

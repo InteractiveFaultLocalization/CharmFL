@@ -45,19 +45,7 @@ intellij {
     plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
 }
 
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
-changelog {
-    version.set(properties("pluginVersion"))
-    groups.set(emptyList())
-}
 
-// Configure Gradle Qodana Plugin - read more: https://github.com/JetBrains/gradle-qodana-plugin
-qodana {
-    cachePath.set(projectDir.resolve(".qodana").canonicalPath)
-    reportPath.set(projectDir.resolve("build/reports/inspections").canonicalPath)
-    saveReport.set(true)
-    showReport.set(System.getenv("QODANA_SHOW_REPORT").toBoolean())
-}
 
 tasks {
     // Set the JVM compatibility versions
@@ -80,25 +68,6 @@ tasks {
         sinceBuild.set(properties("pluginSinceBuild"))
         untilBuild.set(properties("pluginUntilBuild"))
 
-        // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        pluginDescription.set(
-            projectDir.resolve("README.md").readText().lines().run {
-                val start = "<!-- Plugin description -->"
-                val end = "<!-- Plugin description end -->"
-
-                if (!containsAll(listOf(start, end))) {
-                    throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
-                }
-                subList(indexOf(start) + 1, indexOf(end))
-            }.joinToString("\n").run { markdownToHTML(this) }
-        )
-
-        // Get the latest available change notes from the changelog file
-        changeNotes.set(provider {
-            changelog.run {
-                getOrNull(properties("pluginVersion")) ?: getLatest()
-            }.toHTML()
-        })
     }
 
     runPluginVerifier {
@@ -131,70 +100,7 @@ tasks {
 
     prepareSandbox {
         doLast {
-            copy {
-                from(file("$projectDir/src/main/python/constans.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/coverage_matrix.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/error_codes.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/metrics.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/ranking.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/make_coverage.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/sorting.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/statistics.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/test_utils.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/main.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/check_pip.py"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/requirements.txt"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
-
-            copy {
-                from(file("$projectDir/src/main/python/.coveragerc"))
-                into(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"))
-            }
+            file("$projectDir/src/main/python/").copyRecursively(file("$buildDir/idea-sandbox/plugins/${properties("pluginName")}"), overwrite = true)
         }
     }
 

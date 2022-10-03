@@ -7,24 +7,17 @@ import com.intellij.openapi.project.DumbAwareAction;
 import org.jetbrains.annotations.NotNull;
 
 import modules.PluginModule;
-import services.FlService;
-import services.FlServiceImpl;
-import services.RunTestRunnable;
+import services.runnables.RunTestRunnable;
 
 public class PluginTestRun extends DumbAwareAction {
+    /**
+     * This calls the fault localization process.
+     * @param e
+     */
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        ProgressManager.getInstance().run(new RunTestRunnable(e.getProject(), PluginModule.getPluginName(), FileEditorManager.getInstance(e.getProject()).getSelectedTextEditor()));
+        ProgressManager.getInstance().run(new RunTestRunnable(e.getProject(), PluginModule.getPluginName(),
+                FileEditorManager.getInstance(e.getProject()).getSelectedTextEditor()));
     }
 
-    @Override
-    public void update(@NotNull AnActionEvent e) {
-        FlService flService = new FlServiceImpl();
-        if(flService.isViewResultTableDialogOpened() || flService.isTestDataCollecting()) {
-            e.getPresentation().setEnabled(false);
-        }
-        else if(!flService.isViewResultTableDialogOpened() && !flService.isTestDataCollecting()){
-            e.getPresentation().setEnabled(true);
-        }
-    }
 }

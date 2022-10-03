@@ -3,11 +3,15 @@ package ui;
 import com.intellij.openapi.ui.DialogWrapper;
 import modules.PluginModule;
 import org.jetbrains.annotations.Nullable;
+import services.Resources;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * This class represents the Options window.
+ */
 public class AdvancedOptions extends DialogWrapper {
     private JRadioButton tarantulaRadioButton;
     private JRadioButton ochiaiRadioButton;
@@ -18,12 +22,19 @@ public class AdvancedOptions extends DialogWrapper {
     private JRadioButton maximumRadioButton;
     private JRadioButton averageRadioButton;
 
+    /**
+     * When you make an advanced options object, it sets the title and opens the window.
+     */
     public AdvancedOptions() {
         super(true);
-        setTitle("Advanced Options");
+        setTitle(Resources.get("titles", "advanced_options"));
         init();
     }
 
+    /**
+     * Creates the elements in the window, and groups them.
+     * @return the panel object
+     */
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
@@ -31,12 +42,12 @@ public class AdvancedOptions extends DialogWrapper {
         dialogPanel.setPreferredSize(new Dimension(150, 200));
         dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
 
-        JLabel spectraMetricsLabel = new JLabel("Spectra metrics:");
-        spectraMetricsLabel.setBorder(new EmptyBorder(0,0,5,0));
-        tarantulaRadioButton = new JRadioButton("Tarantula");
-        ochiaiRadioButton = new JRadioButton("Ochiai");
-        dStarRadioButton = new JRadioButton("DStar");
-        wong2RadioButton = new JRadioButton("Wong II");
+        JLabel spectraMetricsLabel = new JLabel(Resources.get("titles", "spectra_metrics_label"));
+        spectraMetricsLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
+        tarantulaRadioButton = new JRadioButton(Resources.get("titles", "tarantula_button"));
+        ochiaiRadioButton = new JRadioButton(Resources.get("titles", "ochiai_button"));
+        dStarRadioButton = new JRadioButton(Resources.get("titles", "dstar_button"));
+        wong2RadioButton = new JRadioButton(Resources.get("titles", "wong_button"));
 
         ButtonGroup spectraMetricsButtonGroup = new ButtonGroup();
         spectraMetricsButtonGroup.add(tarantulaRadioButton);
@@ -50,11 +61,11 @@ public class AdvancedOptions extends DialogWrapper {
         dialogPanel.add(dStarRadioButton);
         dialogPanel.add(wong2RadioButton);
 
-        JLabel ranksLabel = new JLabel("Tie Ranks:");
-        ranksLabel.setBorder(new EmptyBorder(10,0,5,0));
-        minimumRadioButton = new JRadioButton("Minimum");
-        maximumRadioButton = new JRadioButton("Maximum");
-        averageRadioButton = new JRadioButton("Average");
+        JLabel ranksLabel = new JLabel(Resources.get("titles", "ranks_label"));
+        ranksLabel.setBorder(new EmptyBorder(10, 0, 5, 0));
+        minimumRadioButton = new JRadioButton(Resources.get("titles", "minimum_button"));
+        maximumRadioButton = new JRadioButton(Resources.get("titles", "maximum_button"));
+        averageRadioButton = new JRadioButton(Resources.get("titles", "average_button"));
 
         ButtonGroup ranksButtonGroup = new ButtonGroup();
         ranksButtonGroup.add(minimumRadioButton);
@@ -78,31 +89,59 @@ public class AdvancedOptions extends DialogWrapper {
         return dialogPanel;
     }
 
-    public boolean isTarantulaRadioButton() {
+    /**
+     * Tells you whether the button was selected
+     * @return true if it is
+     */
+    public boolean isTarantulaRadioButtonSelected() {
         return tarantulaRadioButton.isSelected();
     }
 
-    public boolean isOchiaiRadioButton() {
+    /**
+     * Tells you whether the button was selected
+     * @return true if it is
+     */
+    public boolean isOchiaiRadioButtonSelected() {
         return ochiaiRadioButton.isSelected();
     }
 
-    public boolean isDStarRadioButton() {
+    /**
+     * Tells you whether the button was selected
+     * @return true if it is
+     */
+    public boolean isDStarRadioButtonSelected() {
         return dStarRadioButton.isSelected();
     }
 
-    public boolean getWong2RadioButton() {
+    /**
+     * Tells you whether the button was selected
+     * @return true if it is
+     */
+    public boolean getWong2RadioButtonSelected() {
         return wong2RadioButton.isSelected();
     }
 
-    public boolean isMinimumRadioButton() {
+    /**
+     * Tells you whether the button was selected
+     * @return true if it is
+     */
+    public boolean isMinimumRadioButtonSelected() {
         return minimumRadioButton.isSelected();
     }
 
-    public boolean isMaximumRadioButton() {
+    /**
+     * Tells you whether the button was selected
+     * @return true if it is
+     */
+    public boolean isMaximumRadioButtonSelected() {
         return maximumRadioButton.isSelected();
     }
 
-    public boolean isAverageRadioButton() {
+    /**
+     * Tells you whether the button was selected
+     * @return true if it is
+     */
+    public boolean isAverageRadioButtonSelected() {
         return averageRadioButton.isSelected();
     }
 }

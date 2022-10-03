@@ -2,37 +2,48 @@ package actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
+import com.intellij.openapi.ui.Messages;
 import modules.PluginModule;
 import org.jetbrains.annotations.NotNull;
 
-import services.FlService;
 import services.FlServiceImpl;
+import services.Resources;
 import ui.AdvancedOptions;
+import ui.ViewResult;
 
+/**
+ *  This class represents the CharmFL menu's Option button.
+ */
 public class PluginAdvancedOptions extends DumbAwareAction {
+    /**
+     * This method is called when you click on the menu item. I.e. opening the options window.
+     * @param e An event
+     */
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         AdvancedOptions dialog = new AdvancedOptions();
-        if(dialog.showAndGet()) {
-            PluginModule.setTarantulaSelected(dialog.isTarantulaRadioButton());
-            PluginModule.setOchiaiSelected(dialog.isOchiaiRadioButton());
-            PluginModule.setDStarSelected(dialog.isDStarRadioButton());
-            PluginModule.setWongIISelected(dialog.getWong2RadioButton());
+        FlServiceImpl flService = new FlServiceImpl();
 
-            PluginModule.setMaximumSelected(dialog.isMaximumRadioButton());
-            PluginModule.setMinimumSelected(dialog.isMinimumRadioButton());
-            PluginModule.setAverageSelected(dialog.isAverageRadioButton());
-        }
-    }
+        if (dialog.showAndGet()) {
+            PluginModule.setTarantulaSelected(dialog.isTarantulaRadioButtonSelected());
+            PluginModule.setOchiaiSelected(dialog.isOchiaiRadioButtonSelected());
+            PluginModule.setDStarSelected(dialog.isDStarRadioButtonSelected());
+            PluginModule.setWongIISelected(dialog.getWong2RadioButtonSelected());
 
-    @Override
-    public void update(@NotNull AnActionEvent e) {
-        FlService flService = new FlServiceImpl();
-        if(flService.isViewResultTableDialogOpened() || flService.isTestDataCollecting()) {
-            e.getPresentation().setEnabled(false);
-        }
-        else if(!flService.isViewResultTableDialogOpened() && !flService.isTestDataCollecting()){
-            e.getPresentation().setEnabled(true);
+            PluginModule.setMaximumSelected(dialog.isMaximumRadioButtonSelected());
+            PluginModule.setMinimumSelected(dialog.isMinimumRadioButtonSelected());
+            PluginModule.setAverageSelected(dialog.isAverageRadioButtonSelected());
+
+            if (flService.isTestDataCollected()) {
+                flService.setViewResultTableDialogOpened(true);
+                new ViewResult().show();
+            } else {
+                Messages.showMessageDialog(
+                        e.getProject(),
+                        Resources.get("errors", "applied_but_run_tests_error"),
+                        Resources.get("titles", "data_not_collected_title"),
+                        Messages.getErrorIcon());
+            }
         }
     }
 }

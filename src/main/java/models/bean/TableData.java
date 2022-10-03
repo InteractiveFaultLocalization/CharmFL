@@ -1,36 +1,43 @@
 package models.bean;
 
 import javax.swing.*;
-import java.io.Serializable;
 
-public class TableData implements Serializable {
+/**
+ * This class represents the data that is in the table view.
+ */
+public class TableData {
+    public static final int CLASS_LEVEL = 1;
+    public static final int METHOD_LEVEL = 2;
+    public static final int STATEMENT_LEVEL = 3;
+
     private String name;
     private String path;
     private int line;
-    private double tarantula;
-    private double ochiai;
-    private double wong2;
-    private int rank;
+    private double tarantulaScore;
+    private double ochiaiScore;
+    private double wong2Score;
+    private double minRank;
+    private double maxRank;
+    private double avgRank;
     private ImageIcon icon;
     private boolean faulty;
     private int level;
     private boolean hide;
-    private boolean opened;
-    private static final long serialVersionUID = 4945049915710010913L;
 
     public TableData() {
         name = "";
         path = "";
         line = 0;
-        tarantula = 0;
-        ochiai = 0;
-        wong2 = 0;
-        rank = 0;
+        tarantulaScore = 0;
+        ochiaiScore = 0;
+        wong2Score = 0;
+        minRank = 0;
+        maxRank = 0;
+        avgRank = 0;
         faulty = false;
         icon = null;
         level = 0;
         hide = false;
-        opened = false;
     }
 
     public String getName() {
@@ -57,36 +64,52 @@ public class TableData implements Serializable {
         this.line = line;
     }
 
-    public double getTarantula() {
-        return tarantula;
+    public double getTarantulaScore() {
+        return tarantulaScore;
     }
 
-    public void setTarantula(double tarantula) {
-        this.tarantula = tarantula;
+    public void setTarantulaScore(double tarantula) {
+        this.tarantulaScore = tarantula;
     }
 
-    public double getOchiai() {
-        return ochiai;
+    public double getOchiaiScore() {
+        return ochiaiScore;
     }
 
-    public void setOchiai(double ochiai) {
-        this.ochiai = ochiai;
+    public void setOchiaiScore(double ochiai) {
+        this.ochiaiScore = ochiai;
     }
 
-    public double getWong2() {
-        return wong2;
+    public double getWong2Score() {
+        return wong2Score;
     }
 
-    public void setWong2(double wong2) {
-        this.wong2 = wong2;
+    public void setWong2Score(double wong2Score) {
+        this.wong2Score = wong2Score;
     }
 
-    public int getRank() {
-        return rank;
+    public double getMinRank() {
+        return minRank;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setMinRank(double minRank) {
+        this.minRank = minRank;
+    }
+
+    public double getMaxRank() {
+        return maxRank;
+    }
+
+    public void setMaxRank(double maxRank) {
+        this.maxRank = maxRank;
+    }
+
+    public double getAvgRank() {
+        return avgRank;
+    }
+
+    public void setAvgRank(double avgRank) {
+        this.avgRank = avgRank;
     }
 
     public ImageIcon getIcon() {
@@ -113,19 +136,19 @@ public class TableData implements Serializable {
         this.level = level;
     }
 
+    /**
+     * Tells you whether the row is hidden or not
+     * @return true if the row is hidden
+     */
     public boolean isHide() {
         return hide;
     }
 
+    /**
+     * Hids the row
+     * @param hide true if you want the row to be hidden, false if you want it to be shown
+     */
     public void setHide(boolean hide) {
         this.hide = hide;
-    }
-
-    public boolean isOpened() {
-        return opened;
-    }
-
-    public void setOpened(boolean opened) {
-        this.opened = opened;
     }
 }

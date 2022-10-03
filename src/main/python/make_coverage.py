@@ -68,7 +68,7 @@ def do_ur_magic(filename):
 
 
 def make_method_cov(path):
-    with open(path + os.path.sep + "coverage.json", 'r') as cov_json:
+    with open(path + os.path.sep + "cov.json", 'r') as cov_json:
         with open(path + os.path.sep +"method_cov.json", "w") as output:
             data = json.load(cov_json)
             for file in data["files"]:
@@ -102,7 +102,7 @@ def make_method_cov(path):
 
 
 def make_class_cov(path):
-    with open(path + os.path.sep + "coverage.json", 'r') as cov_json:
+    with open(path + os.path.sep + "cov.json", 'r') as cov_json:
         with open(path + os.path.sep + "class_cov.json", "w") as output:
             data = json.load(cov_json)
             for file in data["files"]:
