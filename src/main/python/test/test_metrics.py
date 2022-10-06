@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+path = Path(__file__).parent.resolve()
+sys.path.append(str(path.parent.absolute()))
+
 import unittest
 from faultloc.Metrics import Metrics
 from faultloc.Spectra import Spectra
