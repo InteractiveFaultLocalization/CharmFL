@@ -53,4 +53,5 @@ jobs:
       - name: Run CharmFL backend tests
         run: |
            cd src/main/python
+           pip install -r requirements.txt
            pytest -v test
