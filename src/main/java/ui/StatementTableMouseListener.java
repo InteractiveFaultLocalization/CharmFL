@@ -14,15 +14,12 @@ import java.util.ArrayList;
 
 public class StatementTableMouseListener extends MouseInputAdapter {
     private final JTable resultTable;
+    private final TestData testData;
     private ArrayList<StatementTestData> statements = new ArrayList<>();
 
     public StatementTableMouseListener(JTable resultTable, TestData testData) {
         this.resultTable = resultTable;
-        for(ClassTestData classTestData : testData.getClasses()){
-            for (MethodTestData methodTestData : classTestData.getMethods()){
-                this.statements.addAll(methodTestData.getStatements());
-            }
-        }
+        this.testData = testData;
     }
 
     /**
@@ -44,7 +41,7 @@ public class StatementTableMouseListener extends MouseInputAdapter {
                     lineList.add((Integer) resultTable.getValueAt(i, StatementTableModel.LINE_COLUMN_INDEX));
                     rankList.add((Double) resultTable.getValueAt(i, StatementTableModel.RANK_COLUMN_INDEX));
                 }
-                StatementOptions dialog = new StatementOptions(nameList, lineList, rankList, statements, selectedRow);
+                StatementOptions dialog = new StatementOptions(nameList, lineList, rankList, testData, selectedRow);
                 dialog.showAndGet();
             }
         }

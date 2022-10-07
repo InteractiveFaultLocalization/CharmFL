@@ -8,7 +8,10 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.JBUI;
+import models.bean.ClassTestData;
+import models.bean.MethodTestData;
 import models.bean.StatementTestData;
+import models.bean.TestData;
 import modules.ProjectModule;
 import org.jetbrains.annotations.Nullable;
 import services.CallGraphEdgeData;
@@ -23,7 +26,7 @@ public class StatementOptions extends DialogWrapper {
     private ArrayList<String> nameList;
     private ArrayList<Integer> lineList;
     private ArrayList<Double> rankList;
-    private ArrayList<StatementTestData> statements;
+    private TestData testData;
     private int currentRow;
 
     JRadioButton buggyRadioButton = new JRadioButton(Resources.get("titles", "buggy_radio_button"));
@@ -37,12 +40,12 @@ public class StatementOptions extends DialogWrapper {
     JButton prevButton = new JButton(Resources.get("titles", "prev_button"));
     JButton nextButton = new JButton(Resources.get("titles", "next_button"));
 
-    public StatementOptions(ArrayList<String> nameList, ArrayList<Integer> lineList, ArrayList<Double> rankList, ArrayList<StatementTestData> statements, int currentRow) {
+    public StatementOptions(ArrayList<String> nameList, ArrayList<Integer> lineList, ArrayList<Double> rankList, TestData testData, int currentRow) {
         super(true);
         this.nameList = nameList;
         this.lineList = lineList;
         this.rankList = rankList;
-        this.statements = statements;
+        this.testData = testData;
         this.currentRow = currentRow;
         setTitle(Resources.get("titles", "statement_options"));
         init();
@@ -53,6 +56,7 @@ public class StatementOptions extends DialogWrapper {
      * If we click on the prev button then the previous element will be shown in the table
      * If we click on the next button the next element will be shown in the table
      * And if we click on the view far-context button, then the caller and called methods will be highlighted in the generated call graph.
+     *
      * @return
      */
     @Override
@@ -97,33 +101,21 @@ public class StatementOptions extends DialogWrapper {
             }
         });
         viewFarContextButton.addActionListener(e -> {
-            CallGraphEdgeData callGraphEdgeData = new CallGraphEdgeData(this.nameList.get(currentRow));
-            //testing
-            if(callGraphEdgeData.getEdgeList().isEmpty()){
-                System.out.println("Array was not generated.");
-            }
-            for (int i=0; i<callGraphEdgeData.getEdgeList().size(); i++) {
-                String callerMethod = callGraphEdgeData.getCallerMethod(i);
-                String calledMethod = callGraphEdgeData.getCalledMethod(i);
-                System.out.println(callerMethod + " -> " + calledMethod);
-            }
-            //testing
-            for (StatementTestData statement : this.statements) {
-                if (this.lineList.get(currentRow) == statement.getLine()) {
-                    for (int i=0; i<callGraphEdgeData.getEdgeList().size(); i++) {
-                        String callerMethod = callGraphEdgeData.getCallerMethod(i);
-                        String calledMethod = callGraphEdgeData.getCalledMethod(i);
-                        if (callerMethod.equals(statement.getMethodName())) {
-                            System.out.println(callerMethod + " -> " + calledMethod);
-                        }
-                        if (calledMethod.equals(statement.getMethodName())) {
-                            System.out.println(calledMethod + " <- " + callerMethod);
+            for (ClassTestData classTestData : testData.getClasses()) {
+                for (MethodTestData methodTestData : classTestData.getMethods()) {
+                    for (StatementTestData statement : methodTestData.getStatements()) {
+                        if (this.nameList.get(currentRow).equals(classTestData.getRelativePath()) &&
+                                this.lineList.get(currentRow) == statement.getLine()) {
+                            String relativePath = classTestData.getRelativePath();
+                            String methodName = statement.getMethodName();
+                            CallGraphEdgeData.createHighlightedCallGraph(relativePath, methodName);
                         }
                     }
                 }
             }
-            new CallGraphView().show();
+            new CallGraphHighlightedView().show();
         });
+
 
         initPanel(dialogPanel);
 
