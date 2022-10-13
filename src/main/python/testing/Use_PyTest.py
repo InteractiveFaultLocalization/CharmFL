@@ -1,7 +1,6 @@
 import os
 import sys
 import pytest
-import openpyxl
 import json
 
 from constans import EXCEL_REPORT_FILE_NAME, JSON_REPORT_FILE_NAME
@@ -27,11 +26,9 @@ class Use_Pytest(Test_Utils):
         for file in test_files:
             pytest_args.append(self.project_path + os.path.sep + test_folder + os.path.sep + file)
 
-        # pytest_args.append("--excelreport=" + self.project_path + os.path.sep + EXCEL_REPORT_FILE_NAME) ### Deprecated, we wont use this hopefully. Should be deleted when the json is tested thoroughly.
 
         pytest.main(pytest_args)
         self.__get_test_results_from_json(self.results_dict)
-        # self.__make_excel_report(self.results_dict) ### Deprecated, we wont use this hopefully. Should be deleted when the json is tested thoroughly.
 
     def get_tests_results(self):
 
@@ -40,30 +37,6 @@ class Use_Pytest(Test_Utils):
         else:
             sys.exit(RESULT_DICT_EMPTY)
 
-    ### Deprecated, we wont use this hopefully. Should be deleted when the json is tested thoroughly.
-    def __make_excel_report(self, results_dict):
-        report_file = self.project_path + os.path.sep + EXCEL_REPORT_FILE_NAME
-
-        if not os.path.exists(report_file):
-            sys.exit(EXCEL_REPORT_FILE_NOT_FOUND)
-
-        wb_obj = openpyxl.load_workbook(EXCEL_REPORT_FILE_NAME)
-        sheet_obj = wb_obj.active
-
-        for i in range(sheet_obj.max_row - 1):
-            suite_name = sheet_obj.cell(row=i + 2, column=1).value
-            test_name = sheet_obj.cell(row=i + 2, column=2).value
-            test_result = sheet_obj.cell(row=i + 2, column=4).value
-            test_file_name = sheet_obj.cell(row=i + 2, column=8).value
-            test_file_name = test_file_name.replace("\\","/")
-            coverage_test_name = test_file_name + "::" + test_name+ "|run"
-
-            if test_result == "PASSED":
-                self.number_of_passed_tests = self.number_of_passed_tests + 1
-            if test_result == "FAILED":
-                self.number_of_failed_tests = self.number_of_failed_tests + 1
-            if test_result == "PASSED" or test_result == "FAILED":
-                results_dict[coverage_test_name] = test_result
 
     def __get_test_results_from_json(self, results_dict):
         report_file_path = self.project_path + os.path.sep + JSON_REPORT_FILE_NAME

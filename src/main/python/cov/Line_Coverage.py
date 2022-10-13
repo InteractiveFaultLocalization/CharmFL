@@ -21,8 +21,8 @@ class Line_Coverage():
 
     def __clean(self, line_coverage_with_context):
         cleaned_line_coverage_with_context = {}
-        temp_coverage_data = {}
         for file_name, coverage_data in line_coverage_with_context.items():
+            temp_coverage_data = {}
             if "test" + os.path.sep in file_name or "tests" + os.path.sep in file_name:
                 # TODO: it excludes too many things, e.g. if the absolute path has two test folders then the whole program will be ignored
                 # I leave it as is, and report it in a bug ticket
