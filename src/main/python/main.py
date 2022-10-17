@@ -10,7 +10,7 @@ from faultloc.Metrics import Metrics
 from utils.Result_Builder import Result_Builder
 
 
-# import call_graphs.statical_call_graph as cg
+import call_graphs.statical_call_graph as cg
 
 from constans import COVERAGE_RC_FILE_NAME
 from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVERAGE_RC_FILE
@@ -23,7 +23,7 @@ from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVER
 
 def main():
     parser = argparse.ArgumentParser(add_help=False)
-    parser.version = '1.5'
+    parser.version = 'CharmFL 1.4.0'
     parser.add_argument("-d", "--directory", action="store", metavar="PROJECT_DIRECTORY",
                         help="Project directory absolute path.", required=True)
     parser.add_argument("-fl", "--FaultLoc", help="To start the Fault Localization process", action="store_true")
