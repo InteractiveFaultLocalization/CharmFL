@@ -1,19 +1,18 @@
 package ui;
 
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-import static com.intellij.openapi.util.NlsContexts.*;
+/**
+ * Factory class for the floating window
+ */
 
-public class ScoresFloatingWindow implements ToolWindowFactory {
-    @Override
+public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
     public boolean isApplicable(@NotNull Project project) {
         return ToolWindowFactory.super.isApplicable(project);
     }
