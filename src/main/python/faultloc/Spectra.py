@@ -11,8 +11,10 @@ class Spectra:
     def create_spectrum_from(self, coverage_object, test_object):
         test_result = test_object.get_tests_results()
         coverage_result = coverage_object.get_coverage_with_context()
+
         number_of_fails = test_object.get_number_of_failed_test_cases()
         number_of_pass = test_object.get_number_of_passed_test_cases()
+
 
 
         for file, cov_elements in coverage_result.items():
@@ -25,6 +27,7 @@ class Spectra:
                 nf = number_of_fails - ef
                 np = number_of_pass - ep
                 self.spectrum[str(file)+self.SEPARATOR_CHARACTER+str(code_element)] = {"ef": ef, "ep":ep, "nf":nf,"np":np}
+
 
     def get_spectrum(self):
         return self.spectrum

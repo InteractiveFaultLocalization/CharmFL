@@ -34,6 +34,7 @@ class Result_Builder():
     def produce_results(self):
         LINE_NUMBER_INDEX = 1
         for key, line_scores in self.line_scores.items():
+            print(key,line_scores)
             file_name = str(key).split(self.SEPARATOR_CHARACTER)[self.FILE_NAME_INDEX]
             absolute_path_to_root, relative_path = self.__separate_absolute_and_relative_path(file_name)
             line_num = str(key).split(self.SEPARATOR_CHARACTER)[LINE_NUMBER_INDEX]
