@@ -58,10 +58,13 @@ def main():
         line_metrics.create_scores_from(line_spectra)
         method_cov.set_base_coverage(line_cov) \
             .make_coverage_with_context()
+        print(method_cov.get_coverage_with_context())
         class_cov.set_base_coverage(line_cov) \
             .make_coverage_with_context()
         method_spectra.create_spectrum_from(method_cov, tests)
+
         method_metrics.create_scores_from(method_spectra)
+
         class_spectra.create_spectrum_from(class_cov, tests)
         class_metrics.create_scores_from(class_spectra)
         result_builder.set_path_to_root(project_path)\
