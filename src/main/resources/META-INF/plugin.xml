@@ -10,7 +10,7 @@
     <actions>
         <group id="CharmFl.MainMenu" text="CharmFL" description="CharmFL Menu">
             <add-to-group group-id="MainMenu" anchor="last" />
-            <action id="CharmFl.Run" class="actions.PluginTestRun" text="Run" description="Run test" icon="menu-icons/run.png" />
+            <action id="CharmFl.Run" class="actions.PluginTestRun" text="Run" description="Run test" icon="resources/menu-icons/run.png" />
             <action id="CharmFl.Clear" class="actions.PluginTestClear" text="Clear" description="Clear test" icon="menu-icons/clear.png" />
             <action id="CharmFl.View" class="actions.PluginTableView" text="View Table" description="View results" icon="menu-icons/view.png" />
             <action id="CharmFl.CallGraph" class="actions.PluginCallGraph" text="Start Call Graph" description="Start Call Graph" icon="menu-icons/graph.png" />
@@ -18,4 +18,7 @@
             <action id="CharmFl.AdvancedOptions" class="actions.PluginAdvancedOptions" text="Options" description="Advanced options" icon="menu-icons/options.png" />
         </group>
     </actions>
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Scores" factoryClass="ui.ScoresFloatingWindow" anchor="right" secondary="false"/>
+    </extensions>
 </idea-plugin>
