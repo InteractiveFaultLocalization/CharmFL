@@ -1,7 +1,7 @@
 ![Build ](https://github.com/SzatmariA/CharmFL-dev/actions/workflows/main.yml/badge.svg)
 
 
-![](src/main/resources/CharmFL_logo_with_both_texts_shadsie_little_1_270x300.png)
+![](src/main/resources/CharmFL_logo_bare_little.png)
 
 # CharmFL
 A Fault Localization tool for Python, which can be integrated in to the latest PyCharm IDE. 
