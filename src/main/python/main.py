@@ -10,7 +10,7 @@ from faultloc.Metrics import Metrics
 from utils.Result_Builder import Result_Builder
 
 
-import call_graphs.statical_call_graph as cg
+#import call_graphs.statical_call_graph as cg
 
 from constans import COVERAGE_RC_FILE_NAME
 from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVERAGE_RC_FILE
@@ -61,7 +61,9 @@ def main():
         class_cov.set_base_coverage(line_cov) \
             .make_coverage_with_context()
         method_spectra.create_spectrum_from(method_cov, tests)
+
         method_metrics.create_scores_from(method_spectra)
+
         class_spectra.create_spectrum_from(class_cov, tests)
         class_metrics.create_scores_from(class_spectra)
         result_builder.set_path_to_root(project_path)\

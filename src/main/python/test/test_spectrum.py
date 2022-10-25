@@ -183,7 +183,10 @@ class TestSpectrumForProducts(unittest.TestCase):
             'C:\\Users\\user\\Documents\\charmfl\\pyfl\\test_project\\products\\example.py::12': {'ef': 4, 'ep': 0,
                                                                                                   'nf': 4, 'np': 4}}
 
-        self.assertEqual(expected_spectrum, spectra.get_spectrum())
+        #print(spectra.get_spectrum())
+        #print(expected_spectrum)
+        print(",,,,,,,,,,",spectra.get_spectrum())
+        self.assertDictEqual(expected_spectrum, spectra.get_spectrum())
 
     def test_get_spectrum_for_method_cov(self):
         coverage_result = Method_Coverage()
@@ -241,7 +244,8 @@ class TestSpectrumForProducts(unittest.TestCase):
             'C:\\Users\\user\\Documents\\charmfl\\pyfl\\test_project\\products\\example.py::removeFromCart::15::23': {
                 'ef': 4, 'ep': 0, 'nf': 4, 'np': 4}}
 
-        self.assertEqual(expected_spectrum, spectra.get_spectrum())
+
+        self.assertDictEqual(expected_spectrum, spectra.get_spectrum())
 
     def test_get_spectrum_for_empty_class_cov(self):
         coverage_result = Class_Coverage()
@@ -253,7 +257,7 @@ class TestSpectrumForProducts(unittest.TestCase):
         spectra.create_spectrum_from(coverage_result, self.test_object)
         expected_spectrum = {}
 
-        self.assertEqual(expected_spectrum, spectra.get_spectrum())
+        self.assertDictEqual(expected_spectrum, spectra.get_spectrum())
 
 
 if __name__ == '__main__':

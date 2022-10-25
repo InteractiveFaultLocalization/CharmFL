@@ -29,6 +29,7 @@ class Line_Coverage():
                 continue
             for code_element, covered_test_list in coverage_data.items():
                 covered_test_list = self.__clean_empty_context_from(covered_test_list)
+
                 if len(covered_test_list) != 0:
                     temp_coverage_data[code_element] = covered_test_list
                     cleaned_line_coverage_with_context[file_name] = temp_coverage_data

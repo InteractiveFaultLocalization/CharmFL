@@ -2,6 +2,8 @@ package ui;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
@@ -61,8 +63,9 @@ public final class TreeViewTableMouseListener extends MouseInputAdapter {
                 FileEditorManager.getInstance(project).openFile(selectedFile, true);
                 Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
                 int line = (int) resultTable.getValueAt(resultTable.getSelectedRow(), LINE_COLUMN_INDEX) - 1;
-                editor.getCaretModel().moveToLogicalPosition(new LogicalPosition(line, 0));
 
+                editor.getScrollingModel().scrollTo(new LogicalPosition(line, 0), ScrollType.CENTER);
+                editor.getCaretModel().moveToLogicalPosition(new LogicalPosition(line, 0));
             }
 
         }
