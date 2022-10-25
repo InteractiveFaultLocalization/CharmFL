@@ -1,12 +1,7 @@
 pytest
-pytest-excel
 coverage
-numpy
-scipy
-pandas
-openpyxl
 configparser
-pyan
+pyan3
 pytest-cov>=2.10.1
-networkx
 pytest-json-report
+IPython

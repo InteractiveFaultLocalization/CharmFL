@@ -13,12 +13,14 @@ public class TreeTableModel implements TableModel {
     private static final ImageIcon TABLE_ARROW_DOWN_ICON = new ImageIcon(TreeTableModel.class.getClassLoader().getResource("table-icons/arrow-down.png"));
     private static final ImageIcon TABLE_OPEN_EDITOR_ICON = new ImageIcon(TreeTableModel.class.getClassLoader().getResource("table-icons/open-editor.png"));
     private static final String[] columnNames = {"Name", "Line", "Action"};
+    private ArrayList<String> files = new ArrayList<>();
 
     public static final int NAME_COLUMN_INDEX = 0;
     public static final int LINE_COLUMN_INDEX = 1;
     public static final int ACTION_COLUMN_INDEX = 2;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
+
 
     public static final String TABLE_ROW_IDENT_PREFIX = "    ";
 
@@ -43,58 +45,69 @@ public class TreeTableModel implements TableModel {
             fileTableData.setName(fileRelativePath);
             fileTableData.setIcon(TABLE_ARROW_DOWN_ICON);
 
-            this.tableDataList.add(fileTableData);
+            if(!isFileInTheHierarchicalView(fileRelativePath)) {
+                this.tableDataList.add(fileTableData);
 
-            for (ClassTestData classData : data.getClasses()) {
-                String relativePath = classData.getRelativePath();
+                for (ClassTestData classData : data.getClasses()) {
+                    String relativePath = classData.getRelativePath();
 
-                TableData classTableData = new TableData();
-                classTableData.setName(TABLE_ROW_IDENT_PREFIX + classData.getName());
-                classTableData.setPath(relativePath);
-                classTableData.setLine(classData.getLine());
-                classTableData.setTarantulaScore(classData.getTarantula());
-                classTableData.setOchiaiScore(classData.getOchiai());
-                classTableData.setWong2Score(classData.getWong2());
-                classTableData.setFaulty(classData.isFaulty());
-                classTableData.setIcon(TABLE_ARROW_DOWN_ICON);
-                classTableData.setLevel(TableData.CLASS_LEVEL);
-                classTableData.setMinRank(classData.getRank());
+                    TableData classTableData = new TableData();
+                    classTableData.setName(TABLE_ROW_IDENT_PREFIX + classData.getName());
+                    classTableData.setPath(relativePath);
+                    classTableData.setLine(classData.getLine());
+                    classTableData.setTarantulaScore(classData.getTarantula());
+                    classTableData.setOchiaiScore(classData.getOchiai());
+                    classTableData.setWong2Score(classData.getWong2());
+                    classTableData.setFaulty(classData.isFaulty());
+                    classTableData.setIcon(TABLE_ARROW_DOWN_ICON);
+                    classTableData.setLevel(TableData.CLASS_LEVEL);
+                    classTableData.setMinRank(classData.getRank());
 
-                if (!relativePath.equalsIgnoreCase(fileRelativePath))
-                    continue;
-                this.tableDataList.add(classTableData);
+                    if (!relativePath.equalsIgnoreCase(fileRelativePath))
+                        continue;
+                    this.tableDataList.add(classTableData);
 
-                for (MethodTestData methodData : classData.getMethods()) {
-                    TableData methodTableData = new TableData();
-                    methodTableData.setName(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + methodData.getName());
-                    methodTableData.setPath(relativePath);
-                    methodTableData.setLine(methodData.getLine());
-                    methodTableData.setTarantulaScore(methodData.getTarantula());
-                    methodTableData.setOchiaiScore(methodData.getOchiai());
-                    methodTableData.setWong2Score(methodData.getWong2());
-                    methodTableData.setFaulty(methodData.isFaulty());
-                    methodTableData.setIcon(TABLE_ARROW_DOWN_ICON);
-                    methodTableData.setLevel(TableData.METHOD_LEVEL);
+                    for (MethodTestData methodData : classData.getMethods()) {
+                        TableData methodTableData = new TableData();
+                        methodTableData.setName(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + methodData.getName());
+                        methodTableData.setPath(relativePath);
+                        methodTableData.setLine(methodData.getLine());
+                        methodTableData.setTarantulaScore(methodData.getTarantula());
+                        methodTableData.setOchiaiScore(methodData.getOchiai());
+                        methodTableData.setWong2Score(methodData.getWong2());
+                        methodTableData.setFaulty(methodData.isFaulty());
+                        methodTableData.setIcon(TABLE_ARROW_DOWN_ICON);
+                        methodTableData.setLevel(TableData.METHOD_LEVEL);
+                        this.tableDataList.add(methodTableData);
 
-                    this.tableDataList.add(methodTableData);
+                        for (StatementTestData statementData : methodData.getStatements()) {
+                            TableData thirdData = new TableData();
+                            thirdData.setName("");
+                            thirdData.setPath(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + relativePath);
+                            thirdData.setLine(statementData.getLine());
+                            thirdData.setTarantulaScore(statementData.getTarantula());
+                            thirdData.setOchiaiScore(statementData.getOchiai());
+                            thirdData.setWong2Score(statementData.getWong2());
+                            thirdData.setFaulty(statementData.isFaulty());
+                            thirdData.setIcon(TABLE_OPEN_EDITOR_ICON);
+                            thirdData.setLevel(TableData.STATEMENT_LEVEL);
 
-                    for (StatementTestData statementData : methodData.getStatements()) {
-                        TableData thirdData = new TableData();
-                        thirdData.setName("");
-                        thirdData.setPath(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + relativePath);
-                        thirdData.setLine(statementData.getLine());
-                        thirdData.setTarantulaScore(statementData.getTarantula());
-                        thirdData.setOchiaiScore(statementData.getOchiai());
-                        thirdData.setWong2Score(statementData.getWong2());
-                        thirdData.setFaulty(statementData.isFaulty());
-                        thirdData.setIcon(TABLE_OPEN_EDITOR_ICON);
-                        thirdData.setLevel(TableData.STATEMENT_LEVEL);
-
-                        this.tableDataList.add(thirdData);
+                            this.tableDataList.add(thirdData);
+                        }
                     }
                 }
             }
 
+        }
+    }
+
+    private boolean isFileInTheHierarchicalView(String relativePath){
+        if (this.files.contains(relativePath)){
+            return true;
+        }
+        else {
+            this.files.add(relativePath);
+            return false;
         }
     }
 
