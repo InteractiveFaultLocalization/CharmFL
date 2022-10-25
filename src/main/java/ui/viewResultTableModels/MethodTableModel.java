@@ -1,5 +1,6 @@
 package ui.viewResultTableModels;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.event.*;
@@ -39,7 +40,7 @@ public class MethodTableModel implements TableModel {
 
             for (MethodTestData methodData : classData.getMethods()) {
                 TableData methodTableData = new TableData();
-                methodTableData.setName(methodData.getName());
+                methodTableData.setName(relativePath + File.separator + methodData.getName());
                 methodTableData.setPath(relativePath);
                 methodTableData.setLine(methodData.getLine());
                 methodTableData.setTarantulaScore(methodData.getTarantula());

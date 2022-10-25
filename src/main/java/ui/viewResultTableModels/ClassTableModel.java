@@ -1,5 +1,6 @@
 package ui.viewResultTableModels;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.event.*;
@@ -42,7 +43,7 @@ public class ClassTableModel implements TableModel {
                 String relativePath = classData.getRelativePath();
 
                 TableData classTableData = new TableData();
-                classTableData.setName(classData.getName());
+                classTableData.setName(relativePath + File.separator + classData.getName());
                 classTableData.setPath(relativePath);
                 classTableData.setLine(classData.getLine());
                 classTableData.setTarantulaScore(classData.getTarantula());
