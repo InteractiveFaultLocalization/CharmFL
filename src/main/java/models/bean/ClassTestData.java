@@ -1,8 +1,10 @@
 package models.bean;
 
 import java.util.ArrayList;
+import java.util.List;
+import models.bean.context.CloseContext;
 
-public class ClassTestData {
+public class ClassTestData  implements ITestData{
     private String name;
     private int line;
     private double tarantula;
@@ -12,6 +14,7 @@ public class ClassTestData {
     private boolean faulty;
     private String relativePath;
     private ArrayList<MethodTestData> methods;
+    private CloseContext closeContext;
 
     public ClassTestData() {
         name = "";
@@ -23,6 +26,7 @@ public class ClassTestData {
         faulty = false;
         relativePath = "";
         methods = new ArrayList<>();
+        closeContext = new CloseContext(this);
     }
 
     /**
@@ -140,6 +144,10 @@ public class ClassTestData {
      */
     public void setRelativePath(String path) {
         this.relativePath = path;
+    }
+
+    public List<ClassTestData> getCloseContext(){
+        return (List<ClassTestData>) closeContext.getCloseContext();
     }
 
     /**

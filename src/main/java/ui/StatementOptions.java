@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class StatementOptions extends DialogWrapper {
+
     private ArrayList<String> nameList;
     private ArrayList<Integer> lineList;
     private ArrayList<Double> rankList;
@@ -52,12 +53,8 @@ public class StatementOptions extends DialogWrapper {
     }
 
     /**
-     * If we click on the close-context button it will open the file in the editor and put the cursor on the stament number
-     * If we click on the prev button then the previous element will be shown in the table
-     * If we click on the next button the next element will be shown in the table
-     * And if we click on the view far-context button, then the caller and called methods will be highlighted in the generated call graph.
-     *
-     * @return
+     * If we click on the close-context button it will open the file in the editor and put the cursor on the stament number If we click on the prev button then the previous element will be shown in the table If we click on the next button
+     * the next element will be shown in the table And if we click on the view far-context button, then the caller and called methods will be highlighted in the generated call graph.
      */
     @Override
     protected @Nullable JComponent createCenterPanel() {
@@ -66,10 +63,14 @@ public class StatementOptions extends DialogWrapper {
         dialogPanel.setLayout(new BorderLayout());
 
         viewCloseContextButton.addActionListener(e -> {
+
             String fileName = nameList.get(currentRow);
 
             String fileNamePath = ProjectModule.getProjectPath() + File.separator + fileName;
-
+            StatementTestData statement = getStatement(lineList.get(currentRow));
+            for (var statementcontext : statement.getCloseContext()){
+                System.out.println(statementcontext.getLine());
+            }
             VirtualFile selectedFile = LocalFileSystem.getInstance().findFileByPath(fileNamePath);
             // TODO: Close context should put the cursor to the method start line
             if (selectedFile != null && ProjectModule.getProject() != null) {
@@ -113,14 +114,28 @@ public class StatementOptions extends DialogWrapper {
                     }
                 }
             }
+
             new CallGraphHighlightedView().show();
         });
-
 
         initPanel(dialogPanel);
 
         return dialogPanel;
     }
+
+    private StatementTestData getStatement(int line) {
+        for (var classInstance : testData.getClasses()) {
+            for (var methodInstance : classInstance.getMethods()) {
+                for (var statementInstance : methodInstance.getStatements()) {
+                    if (statementInstance.getLine() == line) {
+                        return statementInstance;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Creates the window view
