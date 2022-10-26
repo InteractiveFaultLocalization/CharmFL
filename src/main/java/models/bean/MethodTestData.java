@@ -128,8 +128,8 @@ public class MethodTestData implements ITestData{
         this.faulty = faulty;
     }
 
-    public List<MethodTestData> getCloseContext(){
-        return (List<MethodTestData>) closeContext.getCloseContext();
+    public List<ITestData> getCloseContext(){
+        return (List<ITestData>) closeContext.getCloseContext();
     }
 
     /**

@@ -1,5 +1,7 @@
 package models.bean;
 
+import java.util.List;
+
 public interface ITestData {
 
     String getName();
@@ -29,6 +31,6 @@ public interface ITestData {
     boolean isFaulty();
 
     void setFaulty(boolean faulty);
-
+    List<ITestData> getCloseContext();
 
 }

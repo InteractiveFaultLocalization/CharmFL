@@ -158,8 +158,8 @@ public class StatementTestData implements ITestData{
     public boolean isFaulty() {
         return faulty;
     }
-    public List<StatementTestData> getCloseContext(){
-        return (List<StatementTestData>) closeContext.getCloseContext();
+    public List<ITestData> getCloseContext(){
+        return (List<ITestData>) closeContext.getCloseContext();
     }
 
     public void setFaulty(boolean faulty) {

@@ -146,8 +146,8 @@ public class ClassTestData  implements ITestData{
         this.relativePath = path;
     }
 
-    public List<ClassTestData> getCloseContext(){
-        return (List<ClassTestData>) closeContext.getCloseContext();
+    public List<ITestData> getCloseContext(){
+        return (List<ITestData>) closeContext.getCloseContext();
     }
 
     /**
