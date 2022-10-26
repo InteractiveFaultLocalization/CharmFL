@@ -13,7 +13,7 @@ import services.RankingService;
 import services.Resources;
 
 public class StatementTableModel implements TableModel {
-    private static final String[] columnNames = {"Name", "Line", "Score", "Rank"};
+    private static final String[] columnNames = {"File name", "Line", "Score", "Rank"};
 
     public static final int NAME_COLUMN_INDEX = 0;
     public static final int LINE_COLUMN_INDEX = 1;
@@ -55,7 +55,9 @@ public class StatementTableModel implements TableModel {
         }
     }
 
-    private void setRanks(){
+
+
+    public void setRanks(){
         ArrayList<Double> scoreList = new ArrayList<>();
         for(var tableData : this.tableDataList){
             if (PluginModule.isTarantulaSelected()) {
@@ -67,11 +69,13 @@ public class StatementTableModel implements TableModel {
             }
         }
 
+
         RankingService rankingService = new RankingService(scoreList);
+
         ArrayList<Double> minRankList = rankingService.minRanking();
         ArrayList<Double> maxRankList = rankingService.maxRanking();
         ArrayList<Double> avgRankList = rankingService.averageRanking();
-        for (int i=0; i<this.tableDataList.size(); i++){
+        for (int i=0; i<this.tableDataList.size(); i++) {
             this.tableDataList.get(i).setAvgRank(avgRankList.get(i));
             this.tableDataList.get(i).setMinRank(minRankList.get(i));
             this.tableDataList.get(i).setMaxRank(maxRankList.get(i));

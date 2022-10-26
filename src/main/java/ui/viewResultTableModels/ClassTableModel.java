@@ -13,11 +13,12 @@ import services.RankingService;
 import services.Resources;
 
 public class ClassTableModel implements TableModel {
-    private static final String[] columnNames = {"Name", "Score", "Rank"};
+    private static final String[] columnNames = {"File name", "Class name", "Score", "Rank"};
 
-    public static final int NAME_COLUMN_INDEX = 0;
-    public static final int SCORE_COLUMN_INDEX = 1;
-    public static final int RANK_COLUMN_INDEX = 2;
+    public static final int FILE_NAME_COLUMN_INDEX = 0;
+    public static final int NAME_COLUMN_INDEX = 1;
+    public static final int SCORE_COLUMN_INDEX = 2;
+    public static final int RANK_COLUMN_INDEX = 3;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
 
@@ -107,6 +108,7 @@ public class ClassTableModel implements TableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
+            case FILE_NAME_COLUMN_INDEX:
             case NAME_COLUMN_INDEX:
                 return String.class;
             case SCORE_COLUMN_INDEX:
@@ -132,6 +134,8 @@ public class ClassTableModel implements TableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         TableData tableDataAtRowIndex = tableDataList.get(rowIndex);
         switch (columnIndex) {
+            case FILE_NAME_COLUMN_INDEX:
+                return tableDataAtRowIndex.getPath();
             case NAME_COLUMN_INDEX:
                 if (tableDataList.get(rowIndex).getLevel() == TableData.STATEMENT_LEVEL) {
                     return tableDataAtRowIndex.getPath();

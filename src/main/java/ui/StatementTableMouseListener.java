@@ -31,7 +31,7 @@ public class StatementTableMouseListener extends MouseInputAdapter {
         int selectedRow = resultTable.getSelectedRow();
         int selectedColumn = resultTable.getSelectedColumn();
 
-        if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
+        if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
             if (selectedColumn == StatementTableModel.NAME_COLUMN_INDEX) {
                 ArrayList<String> nameList = new ArrayList<>();
                 ArrayList<Integer> lineList = new ArrayList<>();
