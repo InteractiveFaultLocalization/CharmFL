@@ -4,6 +4,8 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SearchTextField;
 import com.intellij.ui.components.JBScrollPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,21 +36,27 @@ import modules.PluginModule;
  * This class represents the view table.
  */
 public class ViewResult extends DialogWrapper {
+
     private final FlServiceImpl flService;
     private final TestData testData;
-    private final TreeTableModel treeViewTableModel;
-    private final ClassTableModel classTableModel;
-    private final MethodTableModel methodTableModel;
-    private final StatementTableModel statementTableModel;
+    private TreeTableModel treeViewTableModel;
+    private ClassTableModel classTableModel;
+    private MethodTableModel methodTableModel;
+    private StatementTableModel statementTableModel;
+    private JTable treeViewTable;
+    private JTable classViewTable;
+    private JTable methodViewTable;
+    private JTable statementViewTable;
+
     public ViewResult() {
         super(true);
 
         String rankType = "";
-        if(PluginModule.isAverageSelected()){
+        if (PluginModule.isAverageSelected()) {
             rankType = Resources.get("titles", "average_button");
-        }else if (PluginModule.isMinimumSelected()){
+        } else if (PluginModule.isMinimumSelected()) {
             rankType = Resources.get("titles", "minimum_button");
-        }else if(PluginModule.isMaximumSelected()){
+        } else if (PluginModule.isMaximumSelected()) {
             rankType = Resources.get("titles", "maximum_button");
         }
 
@@ -66,7 +74,7 @@ public class ViewResult extends DialogWrapper {
         setTitle(title);
 
         flService = new FlServiceImpl();
-        testData = flService.getTestData();
+        testData = TestData.getInstance();
         treeViewTableModel = new TreeTableModel(testData);
         classTableModel = new ClassTableModel(testData, spectraMetrics, rankType);
         methodTableModel = new MethodTableModel(testData, spectraMetrics, rankType);
@@ -81,7 +89,8 @@ public class ViewResult extends DialogWrapper {
         init();
     }
 
-    private static class SearchField{
+    private static class SearchField {
+
         SearchTextField searchTextField;
         String placeholderText;
 
@@ -91,7 +100,7 @@ public class ViewResult extends DialogWrapper {
             setPlaceholder();
         }
 
-        private void setPlaceholder(){
+        private void setPlaceholder() {
             this.searchTextField.setText(this.placeholderText);
             this.searchTextField.getTextEditor().setForeground(JBColor.GRAY);
 
@@ -103,6 +112,7 @@ public class ViewResult extends DialogWrapper {
                         searchTextField.getTextEditor().setForeground(JBColor.BLACK);
                     }
                 }
+
                 @Override
                 public void focusLost(FocusEvent e) {
                     if (searchTextField.getText().isEmpty()) {
@@ -112,7 +122,8 @@ public class ViewResult extends DialogWrapper {
                 }
             });
         }
-        private void setSorter(TableRowSorter<TableModel> sorter){
+
+        private void setSorter(TableRowSorter<TableModel> sorter) {
             this.searchTextField.addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
@@ -123,6 +134,7 @@ public class ViewResult extends DialogWrapper {
                         sorter.setRowFilter(RowFilter.regexFilter(text));
                     }
                 }
+
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     String text = searchTextField.getText();
@@ -132,6 +144,7 @@ public class ViewResult extends DialogWrapper {
                         sorter.setRowFilter(RowFilter.regexFilter(text));
                     }
                 }
+
                 @Override
                 public void changedUpdate(DocumentEvent e) {
 
@@ -140,10 +153,17 @@ public class ViewResult extends DialogWrapper {
         }
     }
 
+    public void refresh() {
+        classTableModel = new ClassTableModel(testData, " (Tarantula)", "Minimum");
+        methodTableModel = new MethodTableModel(testData, " (Tarantula)", "Minimum");
+        statementTableModel = new StatementTableModel(testData, " (Tarantula)", "Minimum");
+
+    }
+
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        JBTable treeViewTable = new JBTable(treeViewTableModel);
+        this.treeViewTable = new JBTable(treeViewTableModel);
         treeViewTable.addMouseListener(new TreeViewTableMouseListener(treeViewTable, treeViewTableModel));
         treeViewTable.setSelectionMode(SINGLE_SELECTION);
         treeViewTable.setAutoCreateRowSorter(true);
@@ -151,19 +171,22 @@ public class ViewResult extends DialogWrapper {
         treeViewTable.getColumnModel().getColumn(TreeTableModel.LINE_COLUMN_INDEX).setPreferredWidth(5);
         treeViewTable.getColumnModel().getColumn(TreeTableModel.ACTION_COLUMN_INDEX).setPreferredWidth(5);
 
-        JBTable classViewTable = createSubViewTable(
+        this.classViewTable = createSubViewTable(
                 classTableModel,
+                ClassTableModel.FILE_NAME_COLUMN_INDEX,
                 ClassTableModel.NAME_COLUMN_INDEX,
                 ClassTableModel.SCORE_COLUMN_INDEX,
                 ClassTableModel.RANK_COLUMN_INDEX);
-        JBTable methodViewTable = createSubViewTable(
+        this.methodViewTable = createSubViewTable(
                 methodTableModel,
+                methodTableModel.FILE_NAME_COLUMN_INDEX,
                 MethodTableModel.NAME_COLUMN_INDEX,
                 MethodTableModel.SCORE_COLUMN_INDEX,
                 MethodTableModel.RANK_COLUMN_INDEX);
-        JBTable statementViewTable = createSubViewTable(
+        this.statementViewTable = createSubViewTable(
                 statementTableModel,
-                StatementTableModel.NAME_COLUMN_INDEX,
+                statementTableModel.NAME_COLUMN_INDEX,
+                StatementTableModel.LINE_COLUMN_INDEX,
                 StatementTableModel.SCORE_COLUMN_INDEX,
                 StatementTableModel.RANK_COLUMN_INDEX);
 
@@ -180,22 +203,19 @@ public class ViewResult extends DialogWrapper {
         return tabsPane;
     }
 
-    private JBTable createSubViewTable(TableModel tableModel, int nameColumnIndex, int scoreColumnIndex, int rankColumnIndex) {
+    private JBTable createSubViewTable(TableModel tableModel, int fileNameIndex, int nameColumnIndex, int scoreColumnIndex, int rankColumnIndex) {
         JBTable table = new JBTable(tableModel);
         table.setAutoCreateRowSorter(true);
 
-        table.getColumnModel().getColumn(nameColumnIndex).setPreferredWidth(280);
-
-        if (tableModel.getClass().equals(StatementTableModel.class)) {
-            table.getColumnModel().getColumn(StatementTableModel.LINE_COLUMN_INDEX).setPreferredWidth(5);
-        }
+        table.getColumnModel().getColumn(nameColumnIndex).setPreferredWidth(120);
+        table.getColumnModel().getColumn(fileNameIndex).setPreferredWidth(120);
         table.getColumnModel().getColumn(scoreColumnIndex).setPreferredWidth(5);
         table.getColumnModel().getColumn(rankColumnIndex).setPreferredWidth(5);
 
         return table;
     }
 
-    private JBScrollPane createTableScrollPane(JBTable table) {
+    private JBScrollPane createTableScrollPane(JTable table) {
         JPanel mainPanel = createSearchField(table);
 
         JBScrollPane scrollPane = new JBScrollPane(mainPanel);
@@ -204,23 +224,26 @@ public class ViewResult extends DialogWrapper {
         return scrollPane;
     }
 
-    private JPanel createSearchField(JBTable table){
+    private JPanel createSearchField(JTable table) {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        if(!(table.getModel().getClass().toString()).equals(TreeTableModel.class.toString())){
+        if (!(table.getModel().getClass().toString()).equals(TreeTableModel.class.toString())) {
             final TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
             table.setRowSorter(sorter);
+            table.getRowSorter().toggleSortOrder(2);
+            table.getRowSorter().toggleSortOrder(2);
+
 
             JPanel headerPanel = new JPanel();
             headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 
             String placeholderText = "";
 
-            if((table.getModel().getClass().toString()).equals(ClassTableModel.class.toString())){
+            if ((table.getModel().getClass().toString()).equals(ClassTableModel.class.toString())) {
                 placeholderText = Resources.get("titles", "class_placeholder");
-            }else if((table.getModel().getClass().toString()).equals(MethodTableModel.class.toString())){
+            } else if ((table.getModel().getClass().toString()).equals(MethodTableModel.class.toString())) {
                 placeholderText = Resources.get("titles", "method_placeholder");
-            }else if((table.getModel().getClass().toString()).equals(StatementTableModel.class.toString())){
+            } else if ((table.getModel().getClass().toString()).equals(StatementTableModel.class.toString())) {
                 placeholderText = Resources.get("titles", "statement_placeholder");
             }
             String finalPlaceholderText = placeholderText;
@@ -231,8 +254,7 @@ public class ViewResult extends DialogWrapper {
             headerPanel.add(searchField.searchTextField);
             headerPanel.add(table.getTableHeader());
             mainPanel.add(headerPanel, BorderLayout.PAGE_START);
-        }
-        else {
+        } else {
             mainPanel.add(table.getTableHeader(), BorderLayout.PAGE_START);
         }
 
@@ -241,6 +263,7 @@ public class ViewResult extends DialogWrapper {
     }
 
     private void closeWindow() {
+        refresh();
         flService.setViewResultTableDialogOpened(false);
         close(0);
     }
@@ -255,6 +278,6 @@ public class ViewResult extends DialogWrapper {
         };
 
         close.putValue(Action.NAME, "Close");
-        return new Action[]{close};
+        return new Action[] {close};
     }
 }

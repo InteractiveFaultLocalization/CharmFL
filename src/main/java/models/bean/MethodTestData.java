@@ -1,8 +1,10 @@
 package models.bean;
 
 import java.util.ArrayList;
+import java.util.List;
+import models.bean.context.CloseContext;
 
-public class MethodTestData {
+public class MethodTestData implements ITestData{
     private String name;
     private int line;
     private double tarantula;
@@ -11,6 +13,7 @@ public class MethodTestData {
     private int rank;
     private boolean faulty;
     private ArrayList<StatementTestData> statements;
+    private CloseContext closeContext;
 
     public MethodTestData() {
         name = "";
@@ -21,6 +24,7 @@ public class MethodTestData {
         rank = 0;
         faulty = false;
         statements = new ArrayList<>();
+        closeContext = new CloseContext(this);
     }
 
     /**
@@ -122,6 +126,10 @@ public class MethodTestData {
      */
     public void setFaulty(boolean faulty) {
         this.faulty = faulty;
+    }
+
+    public List<ITestData> getCloseContext(){
+        return (List<ITestData>) closeContext.getCloseContext();
     }
 
     /**

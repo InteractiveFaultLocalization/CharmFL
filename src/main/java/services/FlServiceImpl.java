@@ -156,7 +156,7 @@ public class FlServiceImpl {
      * @return
      */
     public TestData parseTestDataJSON(ArrayList<String> lines) {
-        TestData testData = new TestData();
+        TestData testData = TestData.getInstance();
         String json = String.join(" ", lines);
         JSONObject jsonObject = new JSONObject(json);
 
