@@ -24,6 +24,7 @@ public class TreeTableModel implements TableModel {
 
     public static final String TABLE_ROW_IDENT_PREFIX = "    ";
 
+
     public TreeTableModel(TestData testData) {
         parseData(testData);
     }

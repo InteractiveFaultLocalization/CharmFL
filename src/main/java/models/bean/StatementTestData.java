@@ -1,6 +1,9 @@
 package models.bean;
 
-public class StatementTestData {
+import java.util.List;
+import models.bean.context.CloseContext;
+
+public class StatementTestData implements ITestData{
     private String className;
     private String methodName;
     private int line;
@@ -9,6 +12,7 @@ public class StatementTestData {
     private double wong2;
     private int rank;
     private boolean faulty;
+    private CloseContext closeContext;
 
     public StatementTestData() {
         className = "";
@@ -19,6 +23,7 @@ public class StatementTestData {
         wong2 = 0;
         rank = 0;
         faulty = false;
+        closeContext = new CloseContext(this);
     }
 
     /**
@@ -55,6 +60,15 @@ public class StatementTestData {
      */
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public void setName(String name) {
     }
 
     /**
@@ -143,6 +157,9 @@ public class StatementTestData {
      */
     public boolean isFaulty() {
         return faulty;
+    }
+    public List<ITestData> getCloseContext(){
+        return (List<ITestData>) closeContext.getCloseContext();
     }
 
     public void setFaulty(boolean faulty) {
