@@ -186,7 +186,7 @@ public class ViewResult extends DialogWrapper {
         this.statementViewTable = createSubViewTable(
                 statementTableModel,
                 statementTableModel.NAME_COLUMN_INDEX,
-                StatementTableModel.NAME_COLUMN_INDEX,
+                StatementTableModel.LINE_COLUMN_INDEX,
                 StatementTableModel.SCORE_COLUMN_INDEX,
                 StatementTableModel.RANK_COLUMN_INDEX);
 
@@ -209,10 +209,6 @@ public class ViewResult extends DialogWrapper {
 
         table.getColumnModel().getColumn(nameColumnIndex).setPreferredWidth(120);
         table.getColumnModel().getColumn(fileNameIndex).setPreferredWidth(120);
-
-        if (tableModel.getClass().equals(StatementTableModel.class)) {
-            table.getColumnModel().getColumn(StatementTableModel.LINE_COLUMN_INDEX).setPreferredWidth(5);
-        }
         table.getColumnModel().getColumn(scoreColumnIndex).setPreferredWidth(5);
         table.getColumnModel().getColumn(rankColumnIndex).setPreferredWidth(5);
 

@@ -2,6 +2,7 @@ package models.bean.context;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 import models.bean.ITestData;
 import models.bean.TestData;
 
@@ -25,7 +26,7 @@ public class CloseContext {
                         return classInstance.getMethods();
                     } else {
                         for (var statementInstance : methodInstance.getStatements()) {
-                            if(statementInstance.getLine() == elementData.getLine()){
+                            if (statementInstance.getLine() == elementData.getLine()) {
                                 return methodInstance.getStatements();
                             }
                         }

@@ -32,18 +32,19 @@ public class StatementTableMouseListener extends MouseInputAdapter {
         int selectedColumn = resultTable.getSelectedColumn();
 
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-            if (selectedColumn == StatementTableModel.NAME_COLUMN_INDEX) {
                 ArrayList<String> nameList = new ArrayList<>();
                 ArrayList<Integer> lineList = new ArrayList<>();
                 ArrayList<Double> rankList = new ArrayList<>();
+                System.out.println(resultTable.getRowCount());
                 for (int i = 0; i < resultTable.getRowCount(); i++) {
                     nameList.add(resultTable.getValueAt(i, StatementTableModel.NAME_COLUMN_INDEX).toString());
                     lineList.add((Integer) resultTable.getValueAt(i, StatementTableModel.LINE_COLUMN_INDEX));
                     rankList.add((Double) resultTable.getValueAt(i, StatementTableModel.RANK_COLUMN_INDEX));
                 }
                 StatementOptions dialog = new StatementOptions(nameList, lineList, rankList, testData, selectedRow);
+
                 dialog.showAndGet();
             }
-        }
+
     }
 }

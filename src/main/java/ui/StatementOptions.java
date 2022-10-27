@@ -2,6 +2,7 @@ package ui;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -34,8 +35,10 @@ public class StatementOptions extends DialogWrapper {
     private TestData testData;
     private int currentRow;
     static final int FPS_MIN = 0;
-    static final int FPS_MAX = 30;
-    static final int FPS_INIT = 15;    //initial frames per second
+    static final int FPS_MAX = 100;
+    static final int CLOSE_CONTEXT_FACTOR = 50;
+    static final int FAR_CONTEXT_FACTOR = 20;
+
 
     JRadioButton buggyRadioButton = new JRadioButton(Resources.get("titles", "buggy_radio_button"));
     JLabel buggyContextLabel = new JLabel(Resources.get("titles", "buggy_context_label"));
@@ -47,10 +50,10 @@ public class StatementOptions extends DialogWrapper {
     JButton viewFarContextButton = new JButton(Resources.get("titles", "far_context_button"));
     JButton prevButton = new JButton(Resources.get("titles", "prev_button"));
     JButton nextButton = new JButton(Resources.get("titles", "next_button"));
-    JSlider statementSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, FPS_INIT);
-    JSlider closeContextSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, FPS_INIT);
-    JSlider farContextSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, FPS_INIT);
-    JSlider otherContextSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, FPS_INIT);
+    JSlider statementSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, FPS_MIN);
+    JSlider closeContextSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, CLOSE_CONTEXT_FACTOR);
+    JSlider farContextSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, FAR_CONTEXT_FACTOR);
+    JSlider otherContextSlider = new JSlider(JSlider.VERTICAL, FPS_MIN, FPS_MAX, FPS_MIN);
 
     public StatementOptions(ArrayList<String> nameList, ArrayList<Integer> lineList, ArrayList<Double> rankList, TestData testData, int currentRow) {
         super(true);
@@ -75,9 +78,18 @@ public class StatementOptions extends DialogWrapper {
         otherContextSlider.setMajorTickSpacing(10);
         otherContextSlider.setPaintTicks(true);
         otherContextSlider.setPaintLabels(true);
+        initializeSliders();
         setTitle(Resources.get("titles", "statement_options"));
         init();
 
+    }
+
+
+    private void initializeSliders(){
+        this.statementSlider.setValue(FPS_MIN);
+        this.closeContextSlider.setValue(CLOSE_CONTEXT_FACTOR);
+        this.farContextSlider.setValue(FAR_CONTEXT_FACTOR);
+        this.otherContextSlider.setValue(FPS_MIN);
     }
 
     /**
@@ -106,6 +118,8 @@ public class StatementOptions extends DialogWrapper {
                 FileEditorManager.getInstance(project).openFile(selectedFile, true);
                 Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
                 editor.getCaretModel().moveToLogicalPosition(new LogicalPosition(lineList.get(currentRow) - 1, 0));
+
+                editor.getScrollingModel().scrollTo(new LogicalPosition(lineList.get(currentRow) - 1, 0), ScrollType.CENTER);
             }
         });
 
@@ -113,6 +127,7 @@ public class StatementOptions extends DialogWrapper {
             if (currentRow != 0) {
                 currentRow -= 1;
                 dialogPanel.removeAll();
+                initializeSliders();
                 initPanel(dialogPanel);
                 dialogPanel.revalidate();
                 dialogPanel.repaint();
@@ -123,6 +138,7 @@ public class StatementOptions extends DialogWrapper {
             if (currentRow != nameList.size() - 1) {
                 currentRow += 1;
                 dialogPanel.removeAll();
+                initializeSliders();
                 initPanel(dialogPanel);
                 dialogPanel.revalidate();
                 dialogPanel.repaint();
@@ -161,12 +177,20 @@ public class StatementOptions extends DialogWrapper {
         StatementTestData statement = (StatementTestData) TestData.getInstance().getElement(relativePath, statementNumber);
         Interactivity statementInteractivity = new StatementInteractivity();
         for(var asd : statement.getCloseContext()){
+            System.out.println("-------------------------before-------------------------------");
             System.out.println(asd.getLine());
             System.out.println(asd.getTarantula());
         }
-        statementInteractivity.recalculateCloseContextScores(statement, 1.5, Formulas.TARANTULA);
+        Double recalculationFactorCloseContext = 1.0+(closeContextSlider.getValue()/100);
+        Double recalculationFactorFarContext = 1.0+(farContextSlider.getValue()/100);
+        Double recalculationFactorStatement = 1.0+(statementSlider.getValue()/100);
+
+        System.out.println(recalculationFactorCloseContext);
+        statementInteractivity.recalculateEntityScore(statement, recalculationFactorCloseContext, Formulas.TARANTULA);
+        statementInteractivity.recalculateCloseContextScores(statement, recalculationFactorCloseContext, Formulas.TARANTULA);
 
         for(var asd : statement.getCloseContext()){
+            System.out.println("-------------------------after-------------------------------");
             System.out.println(asd.getLine());
             System.out.println(asd.getTarantula());
         }
