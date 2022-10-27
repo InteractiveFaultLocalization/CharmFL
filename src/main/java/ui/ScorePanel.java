@@ -157,12 +157,12 @@ public class ScorePanel extends JPanel {
 
     /**
      * This function is necessary because JSlider cannot be used with floating point numbers.
-     * @param uLimit the upper limit wanted to display on the JSlider
+     * @param numOfSliders the number of JSliders to be displayed
      * @return A hashmap that maps the integer values to a desired set of values (practically JLabels)
      */
-    private Hashtable<Integer, JLabel> generateLabels(int uLimit){
+    private Hashtable<Integer, JLabel> generateLabels(int numOfSliders){
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-        for (int i = 1; i <= uLimit; i++) {
+        for (int i = 1; i <= numOfSliders; i++) {
             labelTable.put(i,createLabel(Double.toString(i/10.)));
         }
 

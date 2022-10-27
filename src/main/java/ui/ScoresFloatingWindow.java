@@ -36,7 +36,7 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
         indicators.put("Far",new ScorePanel("Far Context",1.));
         indicators.put("Other",new ScorePanel("Other",1.));
 
-        indicators.forEach((k,v)->mainPanel.add(v));
+        indicators.forEach((panelID,scorePanel)->mainPanel.add(scorePanel));
 
         toolWindow.getComponent().add(mainPanel);
     }
