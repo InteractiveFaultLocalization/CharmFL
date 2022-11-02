@@ -3,6 +3,7 @@ package models.bean;
 import java.util.ArrayList;
 import java.util.List;
 import models.bean.context.CloseContext;
+import models.bean.context.OtherContext;
 
 public class ClassTestData  implements ITestData{
     private String name;
@@ -15,6 +16,7 @@ public class ClassTestData  implements ITestData{
     private String relativePath;
     private ArrayList<MethodTestData> methods;
     private CloseContext closeContext;
+    private OtherContext otherContext;
 
     public ClassTestData() {
         name = "";
@@ -27,6 +29,7 @@ public class ClassTestData  implements ITestData{
         relativePath = "";
         methods = new ArrayList<>();
         closeContext = new CloseContext(this);
+        otherContext = new OtherContext(this);
     }
 
     /**
@@ -148,6 +151,11 @@ public class ClassTestData  implements ITestData{
 
     public List<ITestData> getCloseContext(){
         return (List<ITestData>) closeContext.getCloseContext();
+    }
+
+    @Override
+    public List<ITestData> getOtherContext() {
+        return (List<ITestData>) otherContext.getOtherContext();
     }
 
     /**
