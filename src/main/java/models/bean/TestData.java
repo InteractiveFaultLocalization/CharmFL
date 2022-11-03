@@ -1,6 +1,7 @@
 package models.bean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This represents the python module which contains python classes.
@@ -24,6 +25,24 @@ public class TestData {
 
     public ArrayList<ClassTestData> getClasses() {
         return classes;
+    }
+
+    public ArrayList<MethodTestData> getAllMethods(){
+        ArrayList<MethodTestData> methods = new ArrayList<MethodTestData>();
+        for (var classInstance : this.getClasses()) {
+            methods.addAll(classInstance.getMethods());
+        }
+        return methods;
+    }
+
+    public ArrayList<StatementTestData> getAllStatements(){
+        ArrayList<StatementTestData> statements = new ArrayList<StatementTestData>();
+        for (var classInstance : this.getClasses()) {
+            for (var methodInstance : classInstance.getMethods()) {
+                statements.addAll(methodInstance.getStatements());
+            }
+        }
+        return statements;
     }
 
     public ITestData getElement(String relativePath, int line){

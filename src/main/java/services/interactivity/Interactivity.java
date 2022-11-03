@@ -6,7 +6,12 @@ import models.bean.ITestData;
 import models.bean.context.FarContext;
 
 public interface Interactivity {
+
     void recalculateEntityScore(ITestData statement, Double recalculationFactor, Formulas formula);
-    public void recalculateCloseContextScores(ITestData codeElement, Double recalculationFactor, Formulas formula);
-    public void recalculateFarContextScores(int line, FarContext farContext, Double recalculationFactor);
+
+    void recalculateCloseContextScores(ITestData codeElement, Double recalculationFactor, Formulas formula);
+
+    void recalculateFarContextScores(int line, FarContext farContext, Double recalculationFactor);
+
+    void recalculateOtherElementScores(ITestData codeElement, Double recalculationFactor, Formulas formula);
 }
