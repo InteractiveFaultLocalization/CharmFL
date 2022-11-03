@@ -15,6 +15,7 @@ import models.bean.MethodTestData;
 import models.bean.StatementTestData;
 import models.bean.TableData;
 import models.bean.TestData;
+import models.bean.context.OtherContext;
 import modules.ProjectModule;
 import org.jetbrains.annotations.Nullable;
 import services.CallGraphEdgeData;
@@ -168,6 +169,7 @@ public class StatementOptions extends DialogWrapper {
     }
 
 
+    //TODO: Far context interactivity
     @Override
     protected void doOKAction(){
         String relativePath = nameList.get(currentRow);
@@ -176,24 +178,18 @@ public class StatementOptions extends DialogWrapper {
         System.out.println(lineList.get(currentRow));
         StatementTestData statement = (StatementTestData) TestData.getInstance().getElement(relativePath, statementNumber);
         Interactivity statementInteractivity = new StatementInteractivity();
-        for(var asd : statement.getCloseContext()){
-            System.out.println("-------------------------before-------------------------------");
-            System.out.println(asd.getLine());
-            System.out.println(asd.getTarantula());
-        }
+
         Double recalculationFactorCloseContext = 1.0+(closeContextSlider.getValue()/100);
         Double recalculationFactorFarContext = 1.0+(farContextSlider.getValue()/100);
         Double recalculationFactorStatement = 1.0+(statementSlider.getValue()/100);
+        Double recalculationFactorOtherStatements = 1.0+(otherContextSlider.getValue()/100);
 
-        System.out.println(recalculationFactorCloseContext);
-        statementInteractivity.recalculateEntityScore(statement, recalculationFactorCloseContext, Formulas.TARANTULA);
+
+        statementInteractivity.recalculateEntityScore(statement, recalculationFactorStatement, Formulas.TARANTULA);
         statementInteractivity.recalculateCloseContextScores(statement, recalculationFactorCloseContext, Formulas.TARANTULA);
+        statementInteractivity.recalculateOtherElementScores(statement, recalculationFactorOtherStatements, Formulas.TARANTULA);
 
-        for(var asd : statement.getCloseContext()){
-            System.out.println("-------------------------after-------------------------------");
-            System.out.println(asd.getLine());
-            System.out.println(asd.getTarantula());
-        }
+
         super.doOKAction();
     }
 

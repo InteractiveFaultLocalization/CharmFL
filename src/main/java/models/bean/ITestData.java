@@ -33,4 +33,6 @@ public interface ITestData {
     void setFaulty(boolean faulty);
     List<ITestData> getCloseContext();
 
+    List<ITestData> getOtherContext();
+
 }
