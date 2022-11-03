@@ -1,4 +1,6 @@
-package ui;
+package ui.panels;
+
+import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -45,12 +47,18 @@ public class ScorePanel extends JPanel {
         return score;
     }
 
+    public void setScore(double score) {
+        this.score = score;
+        slider.setValue(0);
+        initResponseArea();
+    }
+
     /**
      * To initialize the design of the panel
      */
     private void initComponents(){
         this.setLayout(new BorderLayout());
-        this.setBorder(new EmptyBorder(5, 5, 5, 5));
+        this.setBorder(JBUI.Borders.empty(5));
         this.add(slider, BorderLayout.EAST);
         this.add(label, BorderLayout.NORTH);
         this.add(scale, BorderLayout.CENTER);
@@ -60,19 +68,18 @@ public class ScorePanel extends JPanel {
      * @return a JSlider component that has a specific range
      */
     private JSlider createSlider(){
-        JSlider _slider = new JSlider(JSlider.VERTICAL, 1, 20, 10);
-        _slider.setPaintTicks(true);
-        _slider.setPaintLabels(true);
-        _slider.setMinorTickSpacing(1);
-        _slider.setMajorTickSpacing(10);
-        _slider.setLabelTable(generateLabels(20));
+        JSlider scoreSlider = new JSlider(JSlider.VERTICAL, -100, 100, 0);
+        scoreSlider.setPaintTicks(true);
+        scoreSlider.setPaintLabels(true);
+        scoreSlider.setMinorTickSpacing(25);
+        scoreSlider.setMajorTickSpacing(25);
 
-        _slider.addChangeListener(change -> {
-            if(!_slider.getValueIsAdjusting()){
+        scoreSlider.addChangeListener(change -> {
+            if(!scoreSlider.getValueIsAdjusting()){
                 initResponseArea();
             }
         });
-        return _slider;
+        return scoreSlider;
     }
 
     /**
@@ -101,9 +108,9 @@ public class ScorePanel extends JPanel {
     private JPanel createScalePanel(){
         JPanel scalePanel = new JPanel(new BorderLayout());
 
-        scalePanel.add(createButton("Faulty",(ac -> slider.setValue(20))),BorderLayout.NORTH);
+        scalePanel.add(createButton("Faulty",(ac -> slider.setValue(100))),BorderLayout.NORTH);
         scalePanel.add(createResponseArea(10),BorderLayout.CENTER);
-        scalePanel.add(createButton("Not Faulty", (ac -> slider.setValue(1))),BorderLayout.SOUTH);
+        scalePanel.add(createButton("Not Faulty", (ac -> slider.setValue(-100))),BorderLayout.SOUTH);
 
         return scalePanel;
     }
@@ -144,6 +151,7 @@ public class ScorePanel extends JPanel {
      */
     private void initResponseArea(){
         score = calculateSuspiciousness();
+        System.err.println(score);
         int limit = calculateLimit();
 
         for (int i = 0 ; i < indicators.size(); ++i) {
@@ -156,31 +164,21 @@ public class ScorePanel extends JPanel {
     }
 
     /**
-     * This function is necessary because JSlider cannot be used with floating point numbers.
-     * @param numOfSliders the number of JSliders to be displayed
-     * @return A hashmap that maps the integer values to a desired set of values (practically JLabels)
-     */
-    private Hashtable<Integer, JLabel> generateLabels(int numOfSliders){
-        Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-        for (int i = 1; i <= numOfSliders; i++) {
-            labelTable.put(i,createLabel(Double.toString(i/10.)));
-        }
-
-        return labelTable;
-    }
-
-    /**
      * @return the updated suspiciousness score of the element considering the actual value range
      */
     private double calculateSuspiciousness(){
-        return score * (slider.getValue() / 10.);
+        int sliderVal = slider.getValue();
+        double temp = Math.abs(sliderVal) / 100.;
+        if(sliderVal <= 0){
+            return score * (1. - temp);
+        }
+        return score + score * temp;
     }
 
     /**
      * @return the number that represents the rounded value of the indicators that need to be white
      */
     private int calculateLimit(){
-        int temp = (int)Math.round(score);
-        return 10 - (Math.min(temp, 10));
+        return 10 - (Math.min((int)Math.round(score), 10));
     }
 }
