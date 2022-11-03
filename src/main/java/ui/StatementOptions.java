@@ -104,14 +104,17 @@ public class StatementOptions extends DialogWrapper {
         dialogPanel.setLayout(new BorderLayout());
 
         viewCloseContextButton.addActionListener(e -> {
-
+            String message = "<html><ul>";
             String fileName = nameList.get(currentRow);
 
             String fileNamePath = ProjectModule.getProjectPath() + File.separator + fileName;
             StatementTestData statement = getStatement(lineList.get(currentRow));
             for (var statementcontext : statement.getCloseContext()){
+                String list = "<li>"+fileName+":"+String.valueOf(statementcontext.getLine())+"</li>";
                 System.out.println(statementcontext.getLine());
+                message += list;
             }
+            message += "</ul></html>";
             VirtualFile selectedFile = LocalFileSystem.getInstance().findFileByPath(fileNamePath);
             // TODO: Close context should put the cursor to the method start line
             if (selectedFile != null && ProjectModule.getProject() != null) {
@@ -121,6 +124,7 @@ public class StatementOptions extends DialogWrapper {
                 editor.getCaretModel().moveToLogicalPosition(new LogicalPosition(lineList.get(currentRow) - 1, 0));
 
                 editor.getScrollingModel().scrollTo(new LogicalPosition(lineList.get(currentRow) - 1, 0), ScrollType.CENTER);
+                JOptionPane.showMessageDialog(null, message, "Close context", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
