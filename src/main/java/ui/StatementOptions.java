@@ -16,6 +16,7 @@ import models.bean.StatementTestData;
 import models.bean.TestData;
 import modules.ProjectModule;
 import org.jetbrains.annotations.Nullable;
+import services.CallGraphEdgeData;
 import services.Resources;
 
 import javax.swing.*;
