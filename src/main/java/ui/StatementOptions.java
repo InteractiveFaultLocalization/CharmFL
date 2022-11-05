@@ -10,15 +10,12 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.JBUI;
 import models.bean.ClassTestData;
-import models.bean.Formulas;
+import models.bean.Formula;
 import models.bean.MethodTestData;
 import models.bean.StatementTestData;
-import models.bean.TableData;
 import models.bean.TestData;
-import models.bean.context.OtherContext;
 import modules.ProjectModule;
 import org.jetbrains.annotations.Nullable;
-import services.CallGraphEdgeData;
 import services.Resources;
 
 import javax.swing.*;
@@ -189,9 +186,9 @@ public class StatementOptions extends DialogWrapper {
         Double recalculationFactorOtherStatements = 1.0+(otherContextSlider.getValue()/100);
 
 
-        statementInteractivity.recalculateEntityScore(statement, recalculationFactorStatement, Formulas.TARANTULA);
-        statementInteractivity.recalculateCloseContextScores(statement, recalculationFactorCloseContext, Formulas.TARANTULA);
-        statementInteractivity.recalculateOtherElementScores(statement, recalculationFactorOtherStatements, Formulas.TARANTULA);
+        statementInteractivity.recalculateEntityScore(statement, recalculationFactorStatement, Formula.TARANTULA);
+        statementInteractivity.recalculateCloseContextScores(statement, recalculationFactorCloseContext, Formula.TARANTULA);
+        statementInteractivity.recalculateOtherElementScores(statement, recalculationFactorOtherStatements, Formula.TARANTULA);
 
 
         super.doOKAction();

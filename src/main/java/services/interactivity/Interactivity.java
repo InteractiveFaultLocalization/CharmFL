@@ -1,17 +1,16 @@
 package services.interactivity;
 
-import java.util.List;
-import models.bean.Formulas;
+import models.bean.Formula;
 import models.bean.ITestData;
 import models.bean.context.FarContext;
 
 public interface Interactivity {
 
-    void recalculateEntityScore(ITestData statement, Double recalculationFactor, Formulas formula);
+    void recalculateEntityScore(ITestData statement, Double recalculationFactor, Formula formula);
 
-    void recalculateCloseContextScores(ITestData codeElement, Double recalculationFactor, Formulas formula);
+    void recalculateCloseContextScores(ITestData codeElement, Double recalculationFactor, Formula formula);
 
     void recalculateFarContextScores(int line, FarContext farContext, Double recalculationFactor);
 
-    void recalculateOtherElementScores(ITestData codeElement, Double recalculationFactor, Formulas formula);
+    void recalculateOtherElementScores(ITestData codeElement, Double recalculationFactor, Formula formula);
 }

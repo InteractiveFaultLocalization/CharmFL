@@ -1,36 +1,37 @@
 package ui.panels;
 
 import com.intellij.util.ui.JBUI;
+import models.bean.Formula;
+import models.bean.ITestData;
+import models.bean.context.Context;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
  * This class represents an indicator panel in the floating window
- * TODO: Finalize the required input and output to work with real data, not with the dummy ones
  */
 public class ScorePanel extends JPanel {
     private JLabel label;
     private JSlider slider;
     private JPanel scale;
     private List<JPanel> indicators;
+    private Context context;
+    private ITestData element;
 
     private double score;
 
     /**
      * @param label the label of the panel
-     * @param score the double representation of the statements suspiciousness
      */
-    public ScorePanel(String label, double score) {
+    public ScorePanel(String label) {
         this.indicators = new ArrayList<>();
-        this.score = score;
+        this.score = .0;
         this.label = createLabel(label);
         this.slider = createSlider();
         this.scale = createScalePanel();
@@ -39,18 +40,63 @@ public class ScorePanel extends JPanel {
         initResponseArea();
     }
 
-
     /**
-     * @return the suspiciousness value of the represented code element
+     * This function calculates the suspiciousness score of an element, and it's context
+     * @param element the inspected element
+     * @param context defines the type of the element
+     * @param formula defines the currently selected formula
      */
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
+    public void calculateScore(ITestData element, Context context, Formula formula) {
+        //this check should be more civilized in the future
+        if(element == null){
+            System.out.println("NULL again");
+            return;
+        }
+        this.context = context;
+        this.element = element;
+        this.score = contextScore(element, context, formula);
         slider.setValue(0);
         initResponseArea();
+    }
+
+    /**
+     * This function calculates suspiciousness score based on the context
+     * If the context not the component itself, then the result will be the average
+     * of the elements in the context
+     * @param element the inspected element
+     * @param context defines the type of the element
+     * @param formula defines the currently selected formula
+     * @return the suspiciousness score of the given element
+     */
+    private double contextScore(ITestData element,Context context, Formula formula){
+        switch (context){
+            default:
+            case COMPONENT:
+                return formulaScore(element, formula);
+            case CLOSE_CONTEXT:
+                return element.getCloseContext().stream().mapToDouble(x -> formulaScore(x,formula)).average().orElse(.0);
+            case FAR_CONTEXT:
+                //TODO: implement far context!!!!
+                return .0;
+            case OTHER:
+                return element.getOtherContext().stream().mapToDouble(x -> formulaScore(x,formula)).average().orElse(.0);
+        }
+    }
+
+    /**
+     * This function select the suspiciousness score of the element
+     * @param element the inspected element
+     * @param formula defines the currently selected formula
+     * @return the suspiciousness score related to the selected formula
+     */
+    private double formulaScore(ITestData element, Formula formula){
+        switch (formula){
+            default:
+            case TARANTULA:
+                return element.getTarantula();
+            case OCHIAI:
+                return element.getOchiai();
+        }
     }
 
     /**
@@ -75,8 +121,22 @@ public class ScorePanel extends JPanel {
         scoreSlider.setMajorTickSpacing(25);
 
         scoreSlider.addChangeListener(change -> {
+            /**
+             * Here comes the updated multiplier
+             * TODO: finish implementation!
+             */
             if(!scoreSlider.getValueIsAdjusting()){
                 initResponseArea();
+                switch(context){
+                    default:
+                        break;
+                    case COMPONENT:
+                        break;
+                    case CLOSE_CONTEXT:
+                        break;
+                    case FAR_CONTEXT:
+                        break;
+                }
             }
         });
         return scoreSlider;
@@ -143,42 +203,38 @@ public class ScorePanel extends JPanel {
             return Color.YELLOW;
 
         return Color.RED;
-
     }
 
     /**
      * This function initializes the indicator area, also modifies the suspiciousness of the related code element
      */
     private void initResponseArea(){
-        score = calculateSuspiciousness();
-        System.err.println(score);
         int limit = calculateLimit();
-
         for (int i = 0 ; i < indicators.size(); ++i) {
             if(i < limit)
                 indicators.get(i).setBackground(Color.WHITE);
             else
                 indicators.get(i).setBackground(getColorByPosition(i));
-
         }
     }
 
     /**
+     * This function is to calculate the multiplier of the score
      * @return the updated suspiciousness score of the element considering the actual value range
      */
-    private double calculateSuspiciousness(){
+    private double calculateScoreMultiplier(){
         int sliderVal = slider.getValue();
         double temp = Math.abs(sliderVal) / 100.;
         if(sliderVal <= 0){
-            return score * (1. - temp);
+            return (1. - temp);
         }
-        return score + score * temp;
+        return 1 + temp;
     }
 
     /**
      * @return the number that represents the rounded value of the indicators that need to be white
      */
     private int calculateLimit(){
-        return 10 - (Math.min((int)Math.round(score), 10));
+        return 10 - (Math.min((int)Math.round(score * 10), 10));
     }
 }

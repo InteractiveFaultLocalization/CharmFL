@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.extensions.PluginId;
+import models.bean.Formula;
 
 public class PluginModule {
     private static final String PLUGIN_NAME = "CharmFL";
@@ -232,5 +233,16 @@ public class PluginModule {
 
     public static void setPipBinPath(String pipBinPath) {
         PluginModule.pipBinPath = pipBinPath;
+    }
+
+    /**
+     * This function returns the actually selected formula enum value, by default it's Tarantula.
+     * Please note that since we currently using only Ochiai and Tarantula
+     * thus this function must be updated if other formulas will be used!
+     * @return the actually chosen formula
+     */
+    public static Formula getSelectedFormula(){
+        if(isOchiaiSelected()) return Formula.OCHIAI;
+        return Formula.TARANTULA;
     }
 }

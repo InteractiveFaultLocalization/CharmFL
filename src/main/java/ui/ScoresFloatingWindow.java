@@ -11,10 +11,8 @@ import ui.panels.ScorePanel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -46,13 +44,12 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
         mainPanel.add("Cica",new CallGraphView().createCenterPanel());
 
         toolWindow.getComponent().add(mainPanel);
-
     }
 
     @Override
     public void init(@NotNull ToolWindow toolWindow) {
         ToolWindowFactory.super.init(toolWindow);
-        indicators = new HashMap<>();
+        indicators = new LinkedHashMap<>();
         panels = new ArrayList<>();
     }
 
@@ -66,16 +63,18 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
         indicatorPanel.setLayout(new GridLayout(1,4));
         indicatorPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         indicatorPanel.setPreferredSize(new Dimension(600,400));
-
-        indicators.put("Comp",new ScorePanel("Component",1.));
-        indicators.put("Close",new ScorePanel("Close Context",1.));
-        indicators.put("Far",new ScorePanel("Far Context",1.));
-        indicators.put("Other",new ScorePanel("Other",1.));
+        //todo
+        indicators.put("Comp",new ScorePanel("Component"));
+        indicators.put("Close",new ScorePanel("Close Context"));
+        indicators.put("Far",new ScorePanel("Far Context"));
+        indicators.put("Other",new ScorePanel("Other"));
         indicators.forEach((panelID,scorePanel)->indicatorPanel.add(scorePanel));
         panels.add(indicatorPanel);
 
         return indicatorPanel;
     }
 
-
+    public Map<String, ScorePanel> getIndicators() {
+        return indicators;
+    }
 }
