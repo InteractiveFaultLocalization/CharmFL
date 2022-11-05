@@ -1,8 +1,13 @@
+import io
+import subprocess
+import networkx as nx
+
+import pyan
 from IPython.display import HTML
 import os
 import sys
 from glob import glob
-import pyan
+
 from call_graph_highlight import Highlighted_Callgraph
 
 files = [fn for fn in glob(sys.argv[1], recursive=True)
@@ -28,3 +33,11 @@ call_graph_file.close()
 
 highlight_maker = Highlighted_Callgraph(project_path, node)
 highlight_maker.add_highlighted_callgraph()
+
+cmd = "python -m pyan " + ' '.join(files) + " --uses --no-defines  --annotated --yed"
+
+results = subprocess.check_output(cmd, shell=True, text=True)
+
+G = nx.read_graphml(io.BytesIO(results.encode("UTF-8")))
+
+print(G.edges)
