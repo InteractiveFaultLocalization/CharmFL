@@ -1,5 +1,5 @@
 package models.bean;
 
-public enum Formulas {
+public enum Formula {
     TARANTULA, OCHIAI, DSTAR, WONG2;
 }

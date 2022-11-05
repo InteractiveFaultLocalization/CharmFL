@@ -1,30 +1,18 @@
 package ui;
 
-import static ui.viewResultTableModels.TreeTableModel.LINE_COLUMN_INDEX;
-import static ui.viewResultTableModels.TreeTableModel.NAME_COLUMN_INDEX;
-
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import modules.ProjectModule;
+import com.intellij.ui.components.JBTabbedPane;
 import org.jetbrains.annotations.NotNull;
+import ui.panels.ScorePanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 
 /**
@@ -34,37 +22,35 @@ import java.util.Map;
 
 public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
     private Map<String, ScorePanel> indicators;
+    private List<JComponent> panels;
 
-
+    @Override
     public boolean isApplicable(@NotNull Project project) {
         return ToolWindowFactory.super.isApplicable(project);
     }
-    JLabel line = new JLabel();
-    Project project;
+
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
         this.init(toolWindow);
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(1,4));
-        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        mainPanel.setPreferredSize(new Dimension(600,400));
-
-        indicators.put("Comp",new ScorePanel("Component",1.));
-        indicators.put("Close",new ScorePanel("Close Context",1.));
-        indicators.put("Far",new ScorePanel("Far Context",1.));
-        indicators.put("Other",new ScorePanel("Other",1.));
-
-        indicators.forEach((panelID,scorePanel)->mainPanel.add(scorePanel));
+        JBTabbedPane mainPanel = new JBTabbedPane();
+        mainPanel.setBounds(50,50,200,200);
+        mainPanel.add("Scores",createIndicatorPanel());
+        //TODO: Here comes the one of the remaining two components
+        // TODO: Also do not forget to add it to the panels list
+        mainPanel.add("Byte my shiny metal ass",new JPanel());
+        //TODO: And here the other
+        //TODO: same todo here!
+        mainPanel.add("Cica",new CallGraphView().createCenterPanel());
 
         toolWindow.getComponent().add(mainPanel);
-
     }
 
     @Override
     public void init(@NotNull ToolWindow toolWindow) {
         ToolWindowFactory.super.init(toolWindow);
-        indicators = new HashMap<>();
+        indicators = new LinkedHashMap<>();
+        panels = new ArrayList<>();
     }
 
     @Override
@@ -72,5 +58,23 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
         return ToolWindowFactory.super.shouldBeAvailable(project);
     }
 
+    private JComponent createIndicatorPanel(){
+        JPanel indicatorPanel = new JPanel();
+        indicatorPanel.setLayout(new GridLayout(1,4));
+        indicatorPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        indicatorPanel.setPreferredSize(new Dimension(600,400));
+        //todo
+        indicators.put("Comp",new ScorePanel("Component"));
+        indicators.put("Close",new ScorePanel("Close Context"));
+        indicators.put("Far",new ScorePanel("Far Context"));
+        indicators.put("Other",new ScorePanel("Other"));
+        indicators.forEach((panelID,scorePanel)->indicatorPanel.add(scorePanel));
+        panels.add(indicatorPanel);
 
+        return indicatorPanel;
+    }
+
+    public Map<String, ScorePanel> getIndicators() {
+        return indicators;
+    }
 }

@@ -1,34 +1,37 @@
-package ui;
+package ui.panels;
+
+import com.intellij.util.ui.JBUI;
+import models.bean.Formula;
+import models.bean.ITestData;
+import models.bean.context.Context;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
  * This class represents an indicator panel in the floating window
- * TODO: Finalize the required input and output to work with real data, not with the dummy ones
  */
 public class ScorePanel extends JPanel {
     private JLabel label;
     private JSlider slider;
     private JPanel scale;
     private List<JPanel> indicators;
+    private Context context;
+    private ITestData element;
 
     private double score;
 
     /**
      * @param label the label of the panel
-     * @param score the double representation of the statements suspiciousness
      */
-    public ScorePanel(String label, double score) {
+    public ScorePanel(String label) {
         this.indicators = new ArrayList<>();
-        this.score = score;
+        this.score = .0;
         this.label = createLabel(label);
         this.slider = createSlider();
         this.scale = createScalePanel();
@@ -37,12 +40,63 @@ public class ScorePanel extends JPanel {
         initResponseArea();
     }
 
+    /**
+     * This function calculates the suspiciousness score of an element, and it's context
+     * @param element the inspected element
+     * @param context defines the type of the element
+     * @param formula defines the currently selected formula
+     */
+    public void calculateScore(ITestData element, Context context, Formula formula) {
+        //this check should be more civilized in the future
+        if(element == null){
+            System.out.println("NULL again");
+            return;
+        }
+        this.context = context;
+        this.element = element;
+        this.score = contextScore(element, context, formula);
+        slider.setValue(0);
+        initResponseArea();
+    }
 
     /**
-     * @return the suspiciousness value of the represented code element
+     * This function calculates suspiciousness score based on the context
+     * If the context not the component itself, then the result will be the average
+     * of the elements in the context
+     * @param element the inspected element
+     * @param context defines the type of the element
+     * @param formula defines the currently selected formula
+     * @return the suspiciousness score of the given element
      */
-    public double getScore() {
-        return score;
+    private double contextScore(ITestData element,Context context, Formula formula){
+        switch (context){
+            default:
+            case COMPONENT:
+                return formulaScore(element, formula);
+            case CLOSE_CONTEXT:
+                return element.getCloseContext().stream().mapToDouble(x -> formulaScore(x,formula)).average().orElse(.0);
+            case FAR_CONTEXT:
+                //TODO: implement far context!!!!
+                return .0;
+            case OTHER:
+                return element.getOtherContext().stream().mapToDouble(x -> formulaScore(x,formula)).average().orElse(.0);
+        }
+    }
+
+    /**
+     * This function select the suspiciousness score of the element
+     * @param element the inspected element
+     * @param formula defines the currently selected formula
+     * @return the suspiciousness score related to the selected formula
+     */
+    private double formulaScore(ITestData element, Formula formula){
+        switch (formula){
+            default:
+            case TARANTULA:
+                return element.getTarantula();
+            case OCHIAI:
+                return element.getOchiai();
+        }
     }
 
     /**
@@ -50,7 +104,7 @@ public class ScorePanel extends JPanel {
      */
     private void initComponents(){
         this.setLayout(new BorderLayout());
-        this.setBorder(new EmptyBorder(5, 5, 5, 5));
+        this.setBorder(JBUI.Borders.empty(5));
         this.add(slider, BorderLayout.EAST);
         this.add(label, BorderLayout.NORTH);
         this.add(scale, BorderLayout.CENTER);
@@ -60,19 +114,32 @@ public class ScorePanel extends JPanel {
      * @return a JSlider component that has a specific range
      */
     private JSlider createSlider(){
-        JSlider _slider = new JSlider(JSlider.VERTICAL, 1, 20, 10);
-        _slider.setPaintTicks(true);
-        _slider.setPaintLabels(true);
-        _slider.setMinorTickSpacing(1);
-        _slider.setMajorTickSpacing(10);
-        _slider.setLabelTable(generateLabels(20));
+        JSlider scoreSlider = new JSlider(JSlider.VERTICAL, -100, 100, 0);
+        scoreSlider.setPaintTicks(true);
+        scoreSlider.setPaintLabels(true);
+        scoreSlider.setMinorTickSpacing(25);
+        scoreSlider.setMajorTickSpacing(25);
 
-        _slider.addChangeListener(change -> {
-            if(!_slider.getValueIsAdjusting()){
+        scoreSlider.addChangeListener(change -> {
+            /**
+             * Here comes the updated multiplier
+             * TODO: finish implementation!
+             */
+            if(!scoreSlider.getValueIsAdjusting()){
                 initResponseArea();
+                switch(context){
+                    default:
+                        break;
+                    case COMPONENT:
+                        break;
+                    case CLOSE_CONTEXT:
+                        break;
+                    case FAR_CONTEXT:
+                        break;
+                }
             }
         });
-        return _slider;
+        return scoreSlider;
     }
 
     /**
@@ -101,9 +168,9 @@ public class ScorePanel extends JPanel {
     private JPanel createScalePanel(){
         JPanel scalePanel = new JPanel(new BorderLayout());
 
-        scalePanel.add(createButton("Faulty",(ac -> slider.setValue(20))),BorderLayout.NORTH);
+        scalePanel.add(createButton("Faulty",(ac -> slider.setValue(100))),BorderLayout.NORTH);
         scalePanel.add(createResponseArea(10),BorderLayout.CENTER);
-        scalePanel.add(createButton("Not Faulty", (ac -> slider.setValue(1))),BorderLayout.SOUTH);
+        scalePanel.add(createButton("Not Faulty", (ac -> slider.setValue(-100))),BorderLayout.SOUTH);
 
         return scalePanel;
     }
@@ -136,51 +203,38 @@ public class ScorePanel extends JPanel {
             return Color.YELLOW;
 
         return Color.RED;
-
     }
 
     /**
      * This function initializes the indicator area, also modifies the suspiciousness of the related code element
      */
     private void initResponseArea(){
-        score = calculateSuspiciousness();
         int limit = calculateLimit();
-
         for (int i = 0 ; i < indicators.size(); ++i) {
             if(i < limit)
                 indicators.get(i).setBackground(Color.WHITE);
             else
                 indicators.get(i).setBackground(getColorByPosition(i));
-
         }
     }
 
     /**
-     * This function is necessary because JSlider cannot be used with floating point numbers.
-     * @param numOfSliders the number of JSliders to be displayed
-     * @return A hashmap that maps the integer values to a desired set of values (practically JLabels)
-     */
-    private Hashtable<Integer, JLabel> generateLabels(int numOfSliders){
-        Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-        for (int i = 1; i <= numOfSliders; i++) {
-            labelTable.put(i,createLabel(Double.toString(i/10.)));
-        }
-
-        return labelTable;
-    }
-
-    /**
+     * This function is to calculate the multiplier of the score
      * @return the updated suspiciousness score of the element considering the actual value range
      */
-    private double calculateSuspiciousness(){
-        return score * (slider.getValue() / 10.);
+    private double calculateScoreMultiplier(){
+        int sliderVal = slider.getValue();
+        double temp = Math.abs(sliderVal) / 100.;
+        if(sliderVal <= 0){
+            return (1. - temp);
+        }
+        return 1 + temp;
     }
 
     /**
      * @return the number that represents the rounded value of the indicators that need to be white
      */
     private int calculateLimit(){
-        int temp = (int)Math.round(score);
-        return 10 - (Math.min(temp, 10));
+        return 10 - (Math.min((int)Math.round(score * 10), 10));
     }
 }
