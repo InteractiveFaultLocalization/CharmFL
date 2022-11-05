@@ -156,9 +156,10 @@ public class StatementOptions extends DialogWrapper {
                                 this.lineList.get(currentRow) == statement.getLine()) {
                             String relativePath = classTestData.getRelativePath();
                             String methodName = statement.getMethodName();
-                            CallGraphEdgeData callGraphEdges = new CallGraphEdgeData(relativePath, methodName);
+                            String className = statement.getClassName();
+                            CallGraphEdgeData callGraphEdges = new CallGraphEdgeData(relativePath,className, methodName);
                             for(int i=0; i<callGraphEdges.getEdgeList().size(); i++){
-                                System.out.println(callGraphEdges.getCalledMethod(i) + " -> " + callGraphEdges.getCalledMethod(i));
+                                System.out.println(callGraphEdges.getCallerMethod(i) + " -> " + callGraphEdges.getCalledMethod(i));
                             }
                         }
                     }

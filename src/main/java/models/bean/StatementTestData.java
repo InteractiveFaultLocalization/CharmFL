@@ -12,6 +12,7 @@ public class StatementTestData implements ITestData {
     private double tarantula;
     private double ochiai;
     private double wong2;
+    private double dstar;
     private int rank;
     private boolean faulty;
     private CloseContext closeContext;
@@ -24,6 +25,7 @@ public class StatementTestData implements ITestData {
         tarantula = 0;
         ochiai = 0;
         wong2 = 0;
+        dstar = 0;
         rank = 0;
         faulty = false;
         closeContext = new CloseContext(this);
@@ -142,6 +144,25 @@ public class StatementTestData implements ITestData {
     public void setWong2(double wong2) {
         this.wong2 = wong2;
     }
+
+    /**
+     * This provides the wong2 score of the class.
+     *
+     * @return the score
+     */
+    public double getDstar() {
+        return dstar;
+    }
+
+    /**
+     * This method sets the wong2 score for the class object.
+     *
+     * @param wong2 score, a double type number
+     */
+    public void setDstar(double dstar) {
+        this.dstar = dstar;
+    }
+
 
     public int getRank() {
         return rank;

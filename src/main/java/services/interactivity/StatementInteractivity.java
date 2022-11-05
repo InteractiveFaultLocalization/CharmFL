@@ -2,7 +2,7 @@ package services.interactivity;
 
 import models.bean.Formula;
 import models.bean.ITestData;
-import models.bean.context.FarContext;
+import models.bean.context.FarContextMethodLevel;
 
 public class StatementInteractivity implements Interactivity {
 

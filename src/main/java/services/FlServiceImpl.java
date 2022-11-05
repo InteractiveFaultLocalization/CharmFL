@@ -163,7 +163,7 @@ public class FlServiceImpl {
         JSONObject fileObject, classObject, methodObject, statementObject;
         String name;
         int line;
-        double tarantula, ochiai, wong2;
+        double tarantula, ochiai, wong2, dstar;
         int rank;
         boolean faulty;
         String relativePath;
@@ -197,8 +197,15 @@ public class FlServiceImpl {
                 }
                 if (classObject.has("wong2")) {
                     wong2 = classObject.getDouble("wong2");
-                } else {
+                }
+                else {
                     wong2 = 0;
+                }
+                if (classObject.has("dstar")) {
+                    dstar = classObject.getDouble("dstar");
+                }
+                else {
+                    dstar = 0;
                 }
                 if (classObject.has("rank")) {
                     rank = classObject.getInt("rank");
@@ -217,6 +224,7 @@ public class FlServiceImpl {
                 classTestData.setTarantula(tarantula);
                 classTestData.setOchiai(ochiai);
                 classTestData.setWong2(wong2);
+                classTestData.setDstar(dstar);
                 classTestData.setRank(rank);
                 classTestData.setFaulty(faulty);
                 classTestData.setRelativePath(relativePath);
@@ -244,6 +252,11 @@ public class FlServiceImpl {
                     } else {
                         wong2 = 0;
                     }
+                    if (methodObject.has("dstar")) {
+                        dstar = methodObject.getDouble("dstar");
+                    } else {
+                        dstar = 0;
+                    }
                     if (methodObject.has("rank")) {
                         rank = methodObject.getInt("rank");
                     } else {
@@ -261,6 +274,7 @@ public class FlServiceImpl {
                     methodTestData.setTarantula(tarantula);
                     methodTestData.setOchiai(ochiai);
                     methodTestData.setWong2(wong2);
+                    methodTestData.setDstar(dstar);
                     methodTestData.setRank(rank);
                     methodTestData.setFaulty(faulty);
 
@@ -271,6 +285,7 @@ public class FlServiceImpl {
                         tarantula = statementObject.getDouble("tar");
                         ochiai = statementObject.getDouble("och");
                         wong2 = statementObject.getDouble("wong2");
+                        dstar = statementObject.getDouble("dstar");
                         if (statementObject.has("rank")) {
                             rank = statementObject.getInt("rank");
                         } else {
@@ -285,6 +300,7 @@ public class FlServiceImpl {
                         statementTestData.setTarantula(tarantula);
                         statementTestData.setOchiai(ochiai);
                         statementTestData.setWong2(wong2);
+                        statementTestData.setDstar(dstar);
                         statementTestData.setRank(rank);
                         statementTestData.setFaulty(faulty);
 

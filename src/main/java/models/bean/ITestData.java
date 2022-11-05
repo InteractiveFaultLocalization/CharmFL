@@ -24,6 +24,10 @@ public interface ITestData {
 
     void setWong2(double wong2);
 
+    double getDstar();
+
+    void setDstar(double dstar);
+
     int getRank();
 
     void setRank(int rank);

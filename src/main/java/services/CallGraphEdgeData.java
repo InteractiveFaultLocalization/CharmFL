@@ -28,18 +28,28 @@ public class CallGraphEdgeData {
      * @param relativePath, methodName
      */
 
-    public CallGraphEdgeData(String relativePath, String methodName) {
+    public CallGraphEdgeData(String relativePath, String className, String methodName) {
         String pythonBinPath = ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk().getHomePath();
         PluginModule.setPythonBinPath(pythonBinPath);
 
         String relativePart = relativePath.substring(0, relativePath.indexOf(".py")).replace("\\", "__");
         String nodeName = relativePart + "__" + methodName;
+        if(className.equals("<not_class>"))
+            if (methodName.equals("<not_method>"))
+                this.filterName = relativePart;
+            else
+                this.filterName =relativePart + "__" + methodName;
+        else
+            this.filterName =relativePart + "__" + className + "__" + methodName;
 
-        this.filterName = relativePart;
+
+
+
 
         this.command = PluginModule.getPythonBinPath() + " " + PluginModule.getCallGraphEdges() +
                 " " + ProjectModule.getProjectPath() + File.separator + "**/*.py" +
-                " " + ProjectModule.getProjectPath() + " " + nodeName;
+                " " + ProjectModule.getProjectPath() + " " + nodeName + " " + PluginModule.getPythonBinPath();
+        System.out.println(this.command);
         getEdges();
     }
 
