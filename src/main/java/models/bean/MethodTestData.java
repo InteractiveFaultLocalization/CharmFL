@@ -3,8 +3,10 @@ package models.bean;
 import java.util.ArrayList;
 import java.util.List;
 import models.bean.context.CloseContext;
+import models.bean.context.OtherContext;
 
-public class MethodTestData implements ITestData{
+public class MethodTestData implements ITestData {
+
     private String name;
     private int line;
     private double tarantula;
@@ -14,6 +16,7 @@ public class MethodTestData implements ITestData{
     private boolean faulty;
     private ArrayList<StatementTestData> statements;
     private CloseContext closeContext;
+    private OtherContext otherContext;
 
     public MethodTestData() {
         name = "";
@@ -25,10 +28,12 @@ public class MethodTestData implements ITestData{
         faulty = false;
         statements = new ArrayList<>();
         closeContext = new CloseContext(this);
+        otherContext = new OtherContext(this);
     }
 
     /**
      * This represents the name of the method in the python file.
+     *
      * @return a string that contains the name of the method.
      */
     public String getName() {
@@ -41,6 +46,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This represents the starting line number of the method in the python file.
+     *
      * @return the starting line number of the method (i.e. integer)
      */
     public int getLine() {
@@ -49,6 +55,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This sets the starting line number of the method in the python file
+     *
      * @param line, an integer that represents the starting statement.
      */
     public void setLine(int line) {
@@ -57,6 +64,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This provides the tarantula score of the class.
+     *
      * @return the score
      */
     public double getTarantula() {
@@ -65,6 +73,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This method sets the tarantula score for the class object.
+     *
      * @param tarantula score, a double type number
      */
     public void setTarantula(double tarantula) {
@@ -73,6 +82,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This provides the ochiai score of the class.
+     *
      * @return the score
      */
     public double getOchiai() {
@@ -81,6 +91,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This method sets the ochicai score for the class object.
+     *
      * @param ochiai score, a double type number
      */
     public void setOchiai(double ochiai) {
@@ -89,6 +100,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This provides the wong2 score of the class.
+     *
      * @return the score
      */
     public double getWong2() {
@@ -97,6 +109,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * This method sets the wong2 score for the class object.
+     *
      * @param wong2 score, a double type number
      */
     public void setWong2(double wong2) {
@@ -114,6 +127,7 @@ public class MethodTestData implements ITestData{
 
     /**
      * Returns a boolean saying whether the class is faulty.
+     *
      * @return true if the class is faulty
      */
     public boolean isFaulty() {
@@ -122,18 +136,23 @@ public class MethodTestData implements ITestData{
 
     /**
      * Sets the faulty parameter of the class object.
-     * @param faulty
      */
     public void setFaulty(boolean faulty) {
         this.faulty = faulty;
     }
 
-    public List<ITestData> getCloseContext(){
+    public List<ITestData> getCloseContext() {
         return (List<ITestData>) closeContext.getCloseContext();
+    }
+
+    @Override
+    public List<ITestData> getOtherContext() {
+        return (List<ITestData>) otherContext.getOtherContext();
     }
 
     /**
      * This provides the statemets that belong to this method.
+     *
      * @return a list of statements
      */
     public ArrayList<StatementTestData> getStatements() {

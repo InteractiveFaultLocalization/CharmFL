@@ -19,15 +19,15 @@ public class CloseContext {
     public List<? extends ITestData> getCloseContext() {
         for (var classInstance : testData.getClasses()) {
             if (classInstance.getLine() == elementData.getLine()) {
-                return testData.getClasses();
+                return testData.getClasses().stream().filter(element -> element.getLine() != classInstance.getLine()).collect(Collectors.toList());
             } else {
                 for (var methodInstance : classInstance.getMethods()) {
                     if (methodInstance.getLine() == elementData.getLine()) {
-                        return classInstance.getMethods();
+                        return classInstance.getMethods().stream().filter(element -> element.getLine() != methodInstance.getLine()).collect(Collectors.toList());
                     } else {
                         for (var statementInstance : methodInstance.getStatements()) {
                             if (statementInstance.getLine() == elementData.getLine()) {
-                                return methodInstance.getStatements();
+                                return methodInstance.getStatements().stream().filter(element -> element.getLine() != statementInstance.getLine()).collect(Collectors.toList());
                             }
                         }
                     }

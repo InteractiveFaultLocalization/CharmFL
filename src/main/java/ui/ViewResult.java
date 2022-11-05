@@ -66,8 +66,10 @@ public class ViewResult extends DialogWrapper {
             spectraMetrics = " (Tarantula)";
         } else if (PluginModule.isOchiaiSelected()) {
             spectraMetrics = " (Ochiai)";
-        } else if (PluginModule.isDStarSelected() || PluginModule.isWongIISelected()) {
+        } else if (PluginModule.isWongIISelected()) {
             spectraMetrics = " (WongII)";
+        } else if (PluginModule.isDStarSelected()) {
+            spectraMetrics = " (DStar)";
         }
         title += spectraMetrics;
 
@@ -232,7 +234,6 @@ public class ViewResult extends DialogWrapper {
             table.setRowSorter(sorter);
             table.getRowSorter().toggleSortOrder(2);
             table.getRowSorter().toggleSortOrder(2);
-
 
             JPanel headerPanel = new JPanel();
             headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));

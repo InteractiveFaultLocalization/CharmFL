@@ -2,8 +2,10 @@ package models.bean;
 
 import java.util.List;
 import models.bean.context.CloseContext;
+import models.bean.context.OtherContext;
 
-public class StatementTestData implements ITestData{
+public class StatementTestData implements ITestData {
+
     private String className;
     private String methodName;
     private int line;
@@ -13,6 +15,7 @@ public class StatementTestData implements ITestData{
     private int rank;
     private boolean faulty;
     private CloseContext closeContext;
+    private OtherContext otherContext;
 
     public StatementTestData() {
         className = "";
@@ -24,6 +27,7 @@ public class StatementTestData implements ITestData{
         rank = 0;
         faulty = false;
         closeContext = new CloseContext(this);
+        otherContext = new OtherContext(this);
     }
 
     /**
@@ -37,8 +41,6 @@ public class StatementTestData implements ITestData{
 
     /**
      * Set the class name of the statement object
-     *
-     * @param className
      */
     public void setClassName(String className) {
         this.className = className;
@@ -55,8 +57,6 @@ public class StatementTestData implements ITestData{
 
     /**
      * Set the method name of the statement object
-     *
-     * @param methodName
      */
     public void setMethodName(String methodName) {
         this.methodName = methodName;
@@ -153,13 +153,20 @@ public class StatementTestData implements ITestData{
 
     /**
      * Gets the info whether the statement is faulty or not
+     *
      * @return true if statement is faulty
      */
     public boolean isFaulty() {
         return faulty;
     }
-    public List<ITestData> getCloseContext(){
+
+    public List<ITestData> getCloseContext() {
         return (List<ITestData>) closeContext.getCloseContext();
+    }
+
+    @Override
+    public List<ITestData> getOtherContext() {
+        return (List<ITestData>) otherContext.getOtherContext();
     }
 
     public void setFaulty(boolean faulty) {
