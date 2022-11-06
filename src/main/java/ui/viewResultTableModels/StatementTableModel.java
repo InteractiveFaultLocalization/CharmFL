@@ -3,6 +3,7 @@ package ui.viewResultTableModels;
 import java.util.ArrayList;
 
 import javax.swing.event.*;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import modules.PluginModule;
@@ -12,7 +13,7 @@ import models.bean.*;
 import services.RankingService;
 import services.Resources;
 
-public class StatementTableModel implements TableModel {
+public class StatementTableModel extends AbstractTableModel {
     private static final String[] columnNames = {"File name", "Line", "Score", "Rank"};
 
     public static final int NAME_COLUMN_INDEX = 0;
@@ -168,5 +169,10 @@ public class StatementTableModel implements TableModel {
     @Override
     public void removeTableModelListener(TableModelListener listener) {
 
+    }
+
+    @Override
+    public void fireTableDataChanged() {
+        super.fireTableDataChanged();
     }
 }

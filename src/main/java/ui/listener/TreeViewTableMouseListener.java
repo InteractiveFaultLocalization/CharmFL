@@ -1,4 +1,4 @@
-package ui;
+package ui.listener;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -27,16 +27,12 @@ import ui.viewResultTableModels.TreeTableModel;
 import com.intellij.openapi.progress.ProgressManager;
 
 import java.lang.Thread;
+import java.util.List;
 
-public final class TreeViewTableMouseListener extends MouseInputAdapter {
-    private final JTable resultTable;
-    private final TreeTableModel tableModel;
-
+public final class TreeViewTableMouseListener extends AbstractTableMouseListener {
     public TreeViewTableMouseListener(JTable resultTable, TreeTableModel tableModel) {
-        this.resultTable = resultTable;
-        this.tableModel = tableModel;
+        super(resultTable, tableModel);
     }
-
     /**
      * If you click once on a row in the table then the highlight is shown
      * If you click twice on a row then it opens the file in the editor
@@ -69,5 +65,10 @@ public final class TreeViewTableMouseListener extends MouseInputAdapter {
             }
 
         }
+    }
+
+    @Override
+    protected void updateIndicatorPanel(String path, int lineNumber) {
+
     }
 }

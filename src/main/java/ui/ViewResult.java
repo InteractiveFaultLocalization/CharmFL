@@ -4,8 +4,6 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SearchTextField;
 import com.intellij.ui.components.JBScrollPane;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +27,10 @@ import java.awt.event.*;
 
 import services.FlServiceImpl;
 import services.Resources;
+import ui.listener.ClassTableMouseListener;
+import ui.listener.MethodTableMouseListener;
+import ui.listener.StatementTableMouseListener;
+import ui.listener.TreeViewTableMouseListener;
 import ui.viewResultTableModels.*;
 import modules.PluginModule;
 
@@ -193,7 +195,8 @@ public class ViewResult extends DialogWrapper {
                 StatementTableModel.RANK_COLUMN_INDEX);
 
         statementViewTable.addMouseListener(new StatementTableMouseListener(statementViewTable, testData));
-
+        methodViewTable.addMouseListener(new MethodTableMouseListener(methodViewTable,testData));
+        classViewTable.addMouseListener(new ClassTableMouseListener(classViewTable,testData));
         JTabbedPane tabsPane = new JTabbedPane();
         tabsPane.addTab(Resources.get("titles", "tree_pane"), createTableScrollPane(treeViewTable));
         tabsPane.addTab(Resources.get("titles", "class_pane"), createTableScrollPane(classViewTable));
