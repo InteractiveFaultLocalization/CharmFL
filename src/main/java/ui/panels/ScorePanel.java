@@ -4,6 +4,7 @@ import com.intellij.util.ui.JBUI;
 import models.bean.Formula;
 import models.bean.ITestData;
 import models.bean.context.Context;
+import services.interactivity.StatementInteractivity;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -23,8 +24,10 @@ public class ScorePanel extends JPanel {
     private List<JPanel> indicators;
     private Context context;
     private ITestData element;
+    private Formula formula;
 
     private double score;
+    private StatementInteractivity interactivity;
 
     /**
      * @param label the label of the panel
@@ -35,7 +38,7 @@ public class ScorePanel extends JPanel {
         this.label = createLabel(label);
         this.slider = createSlider();
         this.scale = createScalePanel();
-
+        this.interactivity = new StatementInteractivity();
         initComponents();
         initResponseArea();
     }
@@ -54,6 +57,7 @@ public class ScorePanel extends JPanel {
         }
         this.context = context;
         this.element = element;
+        this.formula = formula;
         this.score = contextScore(element, context, formula);
         slider.setValue(0);
         initResponseArea();
@@ -121,22 +125,29 @@ public class ScorePanel extends JPanel {
         scoreSlider.setMajorTickSpacing(25);
 
         scoreSlider.addChangeListener(change -> {
-            /**
+            /*
              * Here comes the updated multiplier
              * TODO: finish implementation!
              */
             if(!scoreSlider.getValueIsAdjusting()){
-                initResponseArea();
+
+                score *= calculateScoreMultiplier();
                 switch(context){
                     default:
                         break;
+                    case OTHER:
+                        interactivity.recalculateOtherElementScores(element,calculateScoreMultiplier(),formula);
+                        break;
                     case COMPONENT:
+                        interactivity.recalculateEntityScore(element,calculateScoreMultiplier(),formula);
                         break;
                     case CLOSE_CONTEXT:
+                        interactivity.recalculateCloseContextScores(element,calculateScoreMultiplier(),formula);
                         break;
                     case FAR_CONTEXT:
                         break;
                 }
+                initResponseArea();
             }
         });
         return scoreSlider;

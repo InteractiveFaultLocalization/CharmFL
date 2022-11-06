@@ -3,13 +3,13 @@ package ui.viewResultTableModels;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
 import org.jetbrains.annotations.Nls;
 
 import models.bean.*;
 
-public class TreeTableModel implements TableModel {
+public class TreeTableModel extends AbstractTableModel {
     private static final ImageIcon TABLE_ARROW_DOWN_ICON = new ImageIcon(TreeTableModel.class.getClassLoader().getResource("table-icons/arrow-down.png"));
     private static final ImageIcon TABLE_OPEN_EDITOR_ICON = new ImageIcon(TreeTableModel.class.getClassLoader().getResource("table-icons/open-editor.png"));
     private static final String[] columnNames = {"Name", "Line", "Action"};
