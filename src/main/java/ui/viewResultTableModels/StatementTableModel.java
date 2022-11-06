@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javax.swing.event.*;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import modules.PluginModule;
 import org.jetbrains.annotations.Nls;

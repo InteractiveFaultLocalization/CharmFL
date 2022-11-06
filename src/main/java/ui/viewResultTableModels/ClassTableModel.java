@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.event.*;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
 import modules.PluginModule;
 import org.jetbrains.annotations.Nls;
@@ -13,7 +13,7 @@ import models.bean.*;
 import services.RankingService;
 import services.Resources;
 
-public class ClassTableModel implements TableModel {
+public class ClassTableModel extends AbstractTableModel {
     private static final String[] columnNames = {"File name", "Class name", "Score", "Rank"};
 
     public static final int FILE_NAME_COLUMN_INDEX = 0;

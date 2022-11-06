@@ -2,14 +2,11 @@ package ui.listener;
 
 import models.bean.MethodTestData;
 import models.bean.TestData;
-import ui.StatementOptions;
 import ui.viewResultTableModels.MethodTableModel;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MethodTableMouseListener extends AbstractTableMouseListener {

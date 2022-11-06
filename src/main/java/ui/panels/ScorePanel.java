@@ -4,7 +4,6 @@ import com.intellij.util.ui.JBUI;
 import models.bean.Formula;
 import models.bean.ITestData;
 import models.bean.context.Context;
-import services.interactivity.Interactivity;
 import services.interactivity.StatementInteractivity;
 
 import javax.swing.*;
@@ -126,7 +125,7 @@ public class ScorePanel extends JPanel {
         scoreSlider.setMajorTickSpacing(25);
 
         scoreSlider.addChangeListener(change -> {
-            /**
+            /*
              * Here comes the updated multiplier
              * TODO: finish implementation!
              */
