@@ -8,6 +8,8 @@ import models.bean.context.OtherContext;
 public class MethodTestData implements ITestData {
 
     private String name;
+    private String className;
+    private String relativePath;
     private int line;
     private double tarantula;
     private double ochiai;
@@ -19,8 +21,12 @@ public class MethodTestData implements ITestData {
     private CloseContext closeContext;
     private OtherContext otherContext;
 
+
+
     public MethodTestData() {
         name = "";
+        className = "";
+        relativePath = "";
         line = 0;
         tarantula = 0;
         ochiai = 0;
@@ -33,6 +39,22 @@ public class MethodTestData implements ITestData {
         otherContext = new OtherContext(this);
     }
 
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
+    }
+
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
     /**
      * This represents the name of the method in the python file.
      *

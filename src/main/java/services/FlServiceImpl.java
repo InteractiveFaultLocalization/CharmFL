@@ -270,6 +270,8 @@ public class FlServiceImpl {
 
                     methodTestData = new MethodTestData();
                     methodTestData.setName(name);
+                    methodTestData.setRelativePath(relativePath);
+                    methodTestData.setClassName(classTestData.getName());
                     methodTestData.setLine(line);
                     methodTestData.setTarantula(tarantula);
                     methodTestData.setOchiai(ochiai);

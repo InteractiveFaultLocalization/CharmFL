@@ -42,7 +42,7 @@ public class StatementInteractivity implements Interactivity {
     }
 
     @Override
-    public void recalculateFarContextScores(int line, FarContext farContext, Double recalculationFactor) {
+    public void recalculateFarContextScores(int line, FarContextMethodLevel farContext, Double recalculationFactor) {
 
     }
 
