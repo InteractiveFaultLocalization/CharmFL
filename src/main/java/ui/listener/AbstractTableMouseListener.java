@@ -31,12 +31,14 @@ public abstract class AbstractTableMouseListener extends MouseInputAdapter {
         this.testData = null;
     }
 
-    protected void updateIndicatorPanel(String path, int lineNumber){
+    protected void updateIndicatorPanel(String path, String name, int lineNumber){
         Component[] panels = (Component[]) getFloatingWindowComponent(0);
         ScorePanel cmp = (ScorePanel)panels[0];
         ScorePanel cls = (ScorePanel)panels[1];
         ScorePanel far = (ScorePanel)panels[2];
         ScorePanel oth = (ScorePanel)panels[3];
+
+        cmp.setLabel(name);
 
         cmp.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.COMPONENT, PluginModule.getSelectedFormula());
         cls.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.CLOSE_CONTEXT, PluginModule.getSelectedFormula());

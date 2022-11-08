@@ -55,8 +55,4 @@ public final class TreeViewTableMouseListener extends AbstractTableMouseListener
         }
     }
 
-    @Override
-    protected void updateIndicatorPanel(String path, int lineNumber) {
-
-    }
 }

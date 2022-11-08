@@ -63,6 +63,10 @@ public class ScorePanel extends JPanel {
         initResponseArea();
     }
 
+    public void setLabel(String componentName){
+        this.label.setText(componentName);
+    }
+
     /**
      * This function calculates suspiciousness score based on the context
      * If the context not the component itself, then the result will be the average
