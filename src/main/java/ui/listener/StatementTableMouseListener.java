@@ -28,7 +28,7 @@ public class StatementTableMouseListener extends AbstractTableMouseListener {
                 String name = resultTable.getValueAt(selectedRow, StatementTableModel.NAME_COLUMN_INDEX).toString();
                 int line = (int) resultTable.getValueAt(selectedRow, StatementTableModel.LINE_COLUMN_INDEX);
 
-                updateIndicatorPanel(name, line);
+                updateIndicatorPanel(name, name, line);
         }
     }
 }

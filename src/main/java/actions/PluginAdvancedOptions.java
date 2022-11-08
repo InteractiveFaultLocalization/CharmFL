@@ -10,6 +10,7 @@ import services.FlServiceImpl;
 import services.Resources;
 import ui.AdvancedOptions;
 import ui.ViewResult;
+import ui.ViewResultHolder;
 
 /**
  *  This class represents the CharmFL menu's Option button.
@@ -36,7 +37,7 @@ public class PluginAdvancedOptions extends DumbAwareAction {
 
             if (flService.isTestDataCollected()) {
                 flService.setViewResultTableDialogOpened(true);
-                new ViewResult().show();
+                ViewResultHolder.reOpen();
             } else {
                 Messages.showMessageDialog(
                         e.getProject(),

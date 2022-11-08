@@ -11,15 +11,14 @@ import org.jetbrains.annotations.Nls;
 
 import models.bean.*;
 import services.RankingService;
-import services.Resources;
 
 public class MethodTableModel extends AbstractTableModel {
-    private static final String[] columnNames = {"File name", "Method name", "Score", "Rank"};
+    private static final String[] columnNames = {"File name", "Method name", "Line", "Score"};
 
     public static final int FILE_NAME_COLUMN_INDEX = 0;
     public static final int NAME_COLUMN_INDEX = 1;
-    public static final int SCORE_COLUMN_INDEX = 2;
-    public static final int RANK_COLUMN_INDEX = 3;
+    public static final int SCORE_COLUMN_INDEX = 3;
+    public static final int RANK_COLUMN_INDEX = 2;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
 
@@ -137,7 +136,7 @@ public class MethodTableModel extends AbstractTableModel {
                     return -1;
                 }
             case RANK_COLUMN_INDEX:
-                if(selectedRankType.equals(Resources.get("titles", "average_button"))){
+                /*if(selectedRankType.equals(Resources.get("titles", "average_button"))){
                     return tableDataAtRowIndex.getAvgRank();
                 }else if (selectedRankType.equals(Resources.get("titles", "minimum_button"))){
                     return tableDataAtRowIndex.getMinRank();
@@ -145,7 +144,8 @@ public class MethodTableModel extends AbstractTableModel {
                     return tableDataAtRowIndex.getMaxRank();
                 }else {
                     return -1;
-                }
+                }*/
+                return tableDataAtRowIndex.getLine();
             default:
                 return "";
         }

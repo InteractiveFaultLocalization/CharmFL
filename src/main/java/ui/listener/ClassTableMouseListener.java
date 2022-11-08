@@ -27,7 +27,10 @@ public class ClassTableMouseListener extends AbstractTableMouseListener{
 
             ClassTestData selected = classes.stream().filter(x -> name.equals(x.getName())).collect(Collectors.toList()).get(0);
 
-            updateIndicatorPanel(resultTable.getValueAt(selectedRow, ClassTableModel.FILE_NAME_COLUMN_INDEX).toString(),selected.getLine());
+            updateIndicatorPanel(resultTable.getValueAt(selectedRow,
+                                                        ClassTableModel.FILE_NAME_COLUMN_INDEX).toString(),
+                                                        name,
+                                                        selected.getLine());
         }
     }
 }
