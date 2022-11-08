@@ -38,10 +38,10 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
         mainPanel.add("Scores",createIndicatorPanel());
         //TODO: Here comes the one of the remaining two components
         // TODO: Also do not forget to add it to the panels list
-        mainPanel.add("Byte my shiny metal ass",new JPanel());
+        mainPanel.add("Sunburst",new JPanel());
         //TODO: And here the other
         //TODO: same todo here!
-        mainPanel.add("Cica",new CallGraphView().createCenterPanel());
+        mainPanel.add("Static Callgraph",new CallGraphView().createCenterPanel());
 
         toolWindow.getComponent().add(mainPanel);
     }

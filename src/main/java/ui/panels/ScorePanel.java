@@ -195,6 +195,7 @@ public class ScorePanel extends JPanel {
     private JButton createButton(String name, ActionListener action){
         JButton button = new JButton(name);
         button.addActionListener(action);
+        //button.setPreferredSize(new Dimension(50,50));
         return button;
     }
 
@@ -282,10 +283,10 @@ public class ScorePanel extends JPanel {
         labels.put(-100,new JLabel("-100%",SwingConstants.LEFT));
         labels.put(-67,new JLabel("-67%",SwingConstants.LEFT));
         labels.put(-33,new JLabel("-33%",SwingConstants.LEFT));
-        labels.put(0,new JLabel("0%",SwingConstants.LEFT));
-        labels.put(33,new JLabel("33%",SwingConstants.LEFT));
-        labels.put(67,new JLabel("67%",SwingConstants.LEFT));
-        labels.put(100,new JLabel("100%",SwingConstants.LEFT));
+        labels.put(0,new JLabel(" 0%",SwingConstants.LEFT));
+        labels.put(33,new JLabel("+33%",SwingConstants.LEFT));
+        labels.put(67,new JLabel("+67%",SwingConstants.LEFT));
+        labels.put(100,new JLabel("+100%",SwingConstants.LEFT));
         return labels;
     }
 }
