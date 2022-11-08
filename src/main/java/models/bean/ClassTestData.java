@@ -2,6 +2,7 @@ package models.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import models.bean.context.CloseContext;
 import models.bean.context.OtherContext;
 
@@ -185,5 +186,13 @@ public class ClassTestData  implements ITestData{
      */
     public ArrayList<MethodTestData> getMethods() {
         return methods;
+    }
+
+    public MethodTestData getMethodByName(String methodsName){
+        return (MethodTestData) methods.stream().filter(m -> m.getName().equals(methodsName)).collect(Collectors.toList()).get(0);
+    }
+
+    public MethodTestData getMethodByLineNumber(int lineNumber){
+        return (MethodTestData) methods.stream().filter(m -> m.getLine() == lineNumber).collect(Collectors.toList()).get(0);
     }
 }

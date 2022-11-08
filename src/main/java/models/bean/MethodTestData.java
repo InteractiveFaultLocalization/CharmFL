@@ -3,6 +3,7 @@ package models.bean;
 import java.util.ArrayList;
 import java.util.List;
 import models.bean.context.CloseContext;
+import models.bean.context.FarContextMethodLevel;
 import models.bean.context.OtherContext;
 
 public class MethodTestData implements ITestData {
@@ -20,6 +21,7 @@ public class MethodTestData implements ITestData {
     private ArrayList<StatementTestData> statements;
     private CloseContext closeContext;
     private OtherContext otherContext;
+    private FarContextMethodLevel farContext;
 
 
 
@@ -37,6 +39,7 @@ public class MethodTestData implements ITestData {
         statements = new ArrayList<>();
         closeContext = new CloseContext(this);
         otherContext = new OtherContext(this);
+        farContext = new FarContextMethodLevel(this);
     }
 
     public String getRelativePath() {
@@ -191,6 +194,8 @@ public class MethodTestData implements ITestData {
     public List<ITestData> getOtherContext() {
         return (List<ITestData>) otherContext.getOtherContext();
     }
+
+    public List<MethodTestData> getFarContext(){return farContext.getFarContext();}
 
     /**
      * This provides the statemets that belong to this method.

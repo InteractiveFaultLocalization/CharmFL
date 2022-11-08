@@ -23,12 +23,15 @@ public class MethodTableMouseListener extends AbstractTableMouseListener {
             String fullName = resultTable.getValueAt(selectedRow, MethodTableModel.NAME_COLUMN_INDEX).toString();
             String[] temp = fullName.split("\\\\");
             String name = temp[temp.length-1];
+            System.out.println(methods.stream().anyMatch(x -> name.equals(x.getName())));
             MethodTestData selected = methods.stream().filter(x -> name.equals(x.getName())).collect(Collectors.toList()).get(0);
+            for( var a : selected.getFarContext()){
+                System.out.println(a.getName());
+                System.out.println(a.getLine());
 
-            updateIndicatorPanel(resultTable.getValueAt(selectedRow,
-                                                        MethodTableModel.FILE_NAME_COLUMN_INDEX).toString(),
-                                                        name,
-                                                        selected.getLine());
+            }
+            System.out.println(selected.getName()+ " "+ selected.getLine());
+            updateIndicatorPanel(resultTable.getValueAt(selectedRow, MethodTableModel.FILE_NAME_COLUMN_INDEX).toString(),selected.getLine());
         }
     }
 
