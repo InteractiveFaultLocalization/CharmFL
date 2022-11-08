@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import services.FlServiceImpl;
 import ui.ViewResult;
+import ui.ViewResultHolder;
 
 public class PluginTableView extends DumbAwareAction {
     /**
@@ -21,7 +22,8 @@ public class PluginTableView extends DumbAwareAction {
         FlServiceImpl flService = new FlServiceImpl();
         if (flService.isTestDataCollected()) {
             flService.setViewResultTableDialogOpened(true);
-            new ViewResult().show();
+            //new ViewResult().show();
+            ViewResultHolder.reOpen();
         } else {
             Messages.showMessageDialog(
                     e.getProject(),

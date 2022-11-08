@@ -34,7 +34,7 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
 
         this.init(toolWindow);
         JBTabbedPane mainPanel = new JBTabbedPane();
-        mainPanel.setBounds(50,50,200,200);
+        mainPanel.setBounds(50,50,220,200);
         mainPanel.add("Scores",createIndicatorPanel());
         //TODO: Here comes the one of the remaining two components
         // TODO: Also do not forget to add it to the panels list
@@ -61,8 +61,8 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
     private JComponent createIndicatorPanel(){
         JPanel indicatorPanel = new JPanel();
         indicatorPanel.setLayout(new GridLayout(1,4));
-        indicatorPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        indicatorPanel.setPreferredSize(new Dimension(600,400));
+        indicatorPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
+        indicatorPanel.setPreferredSize(new Dimension(620,400));
         //todo
         indicators.put("Comp",new ScorePanel("Component"));
         indicators.put("Close",new ScorePanel("Close Context"));

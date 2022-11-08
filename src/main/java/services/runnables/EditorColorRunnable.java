@@ -9,6 +9,7 @@ import services.ColorService;
 import services.FlServiceImpl;
 import services.Resources;
 import ui.ViewResult;
+import ui.ViewResultHolder;
 
 public class EditorColorRunnable implements Runnable {
     private Editor editor;
@@ -47,6 +48,7 @@ public class EditorColorRunnable implements Runnable {
         flService.startFileEditorManagerListener(ProjectModule.getProject());
         flService.setViewResultTableDialogOpened(true);
         flService.setTestDataCollecting(false);
-        new ViewResult().show();
+        //new ViewResult().show();
+        ViewResultHolder.reOpen();
     }
 }

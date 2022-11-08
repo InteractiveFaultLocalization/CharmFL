@@ -5,14 +5,18 @@ import models.bean.Formula;
 import models.bean.ITestData;
 import models.bean.context.Context;
 import services.interactivity.StatementInteractivity;
+import ui.ViewResult;
+import ui.ViewResultHolder;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This class represents an indicator panel in the floating window
@@ -61,10 +65,22 @@ public class ScorePanel extends JPanel {
         this.score = contextScore(element, context, formula);
         slider.setValue(0);
         initResponseArea();
+        setScoreLabel();
     }
 
     public void setLabel(String componentName){
         this.label.setText(componentName);
+    }
+
+    private void setScoreLabel(){
+        int limit = calculateLimit();
+        if(12 == limit)limit = 11;
+        else if(-1 == limit) limit = 0;
+        JLabel valueLabel = createLabel(String.format(Locale.US,"%.2f",score));
+        valueLabel.setFont(new Font(Font.SERIF, Font.BOLD, 12));
+        valueLabel.setForeground(Color.BLACK);
+        indicators.forEach(Container::removeAll);
+        indicators.get(limit).add(valueLabel,BorderLayout.CENTER);
     }
 
     /**
@@ -113,7 +129,6 @@ public class ScorePanel extends JPanel {
     private void initComponents(){
         this.setLayout(new BorderLayout());
         this.setBorder(JBUI.Borders.empty(5));
-        this.add(slider, BorderLayout.EAST);
         this.add(label, BorderLayout.NORTH);
         this.add(scale, BorderLayout.CENTER);
     }
@@ -123,11 +138,12 @@ public class ScorePanel extends JPanel {
      */
     private JSlider createSlider(){
         JSlider scoreSlider = new JSlider(JSlider.VERTICAL, -100, 100, 0);
-        scoreSlider.setPaintTicks(true);
+        scoreSlider.setBorder(new EmptyBorder(0,0,0,0));
+        scoreSlider.setPaintTicks(false);
         scoreSlider.setPaintLabels(true);
+        scoreSlider.setLabelTable(createCustomLabeling());
         scoreSlider.setMinorTickSpacing(25);
         scoreSlider.setMajorTickSpacing(25);
-
         scoreSlider.addChangeListener(change -> {
             /*
              * Here comes the updated multiplier
@@ -136,22 +152,28 @@ public class ScorePanel extends JPanel {
             if(!scoreSlider.getValueIsAdjusting()){
 
                 score *= calculateScoreMultiplier();
-                switch(context){
-                    default:
-                        break;
-                    case OTHER:
-                        interactivity.recalculateOtherElementScores(element,calculateScoreMultiplier(),formula);
-                        break;
-                    case COMPONENT:
-                        interactivity.recalculateEntityScore(element,calculateScoreMultiplier(),formula);
-                        break;
-                    case CLOSE_CONTEXT:
-                        interactivity.recalculateCloseContextScores(element,calculateScoreMultiplier(),formula);
-                        break;
-                    case FAR_CONTEXT:
-                        break;
+                try {
+                    switch (context) {
+                        default:
+                            break;
+                        case OTHER:
+                            interactivity.recalculateOtherElementScores(element, calculateScoreMultiplier(), formula);
+                            break;
+                        case COMPONENT:
+                            interactivity.recalculateEntityScore(element, calculateScoreMultiplier(), formula);
+                            break;
+                        case CLOSE_CONTEXT:
+                            interactivity.recalculateCloseContextScores(element, calculateScoreMultiplier(), formula);
+                            break;
+                        case FAR_CONTEXT:
+                            break;
+                    }
+                }catch (NullPointerException nullptr){
+                    System.err.println(nullptr.getMessage());
                 }
                 initResponseArea();
+                setScoreLabel();
+                ViewResultHolder.reOpen();
             }
         });
         return scoreSlider;
@@ -182,9 +204,11 @@ public class ScorePanel extends JPanel {
      */
     private JPanel createScalePanel(){
         JPanel scalePanel = new JPanel(new BorderLayout());
-
+        JPanel center = new JPanel(new GridLayout(1,2));
+        center.add(createResponseArea(12));
+        center.add(slider);
         scalePanel.add(createButton("Faulty",(ac -> slider.setValue(100))),BorderLayout.NORTH);
-        scalePanel.add(createResponseArea(10),BorderLayout.CENTER);
+        scalePanel.add(center,BorderLayout.CENTER);
         scalePanel.add(createButton("Not Faulty", (ac -> slider.setValue(-100))),BorderLayout.SOUTH);
 
         return scalePanel;
@@ -198,7 +222,7 @@ public class ScorePanel extends JPanel {
         JPanel responseArea = new JPanel();
         responseArea.setLayout(new BoxLayout(responseArea, BoxLayout.PAGE_AXIS));
         for (int i = 0; i < limit; i++) {
-            JPanel field = new JPanel();
+            JPanel field = new JPanel(new BorderLayout());
             field.setBackground(getColorByPosition(i));
             field.setBorder(new LineBorder(Color.WHITE,1,true));
             responseArea.add(field,0);
@@ -212,9 +236,9 @@ public class ScorePanel extends JPanel {
      * @return the color related to the given position
      */
     private Color getColorByPosition(int value){
-        if(value >= 6)
+        if(value >= 8)
             return Color.GREEN;
-        else if( value >= 2 && value < 6)
+        else if( value >= 4)
             return Color.YELLOW;
 
         return Color.RED;
@@ -250,6 +274,18 @@ public class ScorePanel extends JPanel {
      * @return the number that represents the rounded value of the indicators that need to be white
      */
     private int calculateLimit(){
-        return 10 - (Math.min((int)Math.round(score * 10), 10));
+        return 12 - (Math.min((int)Math.round(score * 12), 12));
+    }
+
+    private Hashtable<Integer,JLabel> createCustomLabeling(){
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
+        labels.put(-100,new JLabel("-100%",SwingConstants.LEFT));
+        labels.put(-67,new JLabel("-67%",SwingConstants.LEFT));
+        labels.put(-33,new JLabel("-33%",SwingConstants.LEFT));
+        labels.put(0,new JLabel("0%",SwingConstants.LEFT));
+        labels.put(33,new JLabel("33%",SwingConstants.LEFT));
+        labels.put(67,new JLabel("67%",SwingConstants.LEFT));
+        labels.put(100,new JLabel("100%",SwingConstants.LEFT));
+        return labels;
     }
 }

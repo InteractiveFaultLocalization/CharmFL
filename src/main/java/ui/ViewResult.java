@@ -185,8 +185,8 @@ public class ViewResult extends DialogWrapper {
                 methodTableModel,
                 methodTableModel.FILE_NAME_COLUMN_INDEX,
                 MethodTableModel.NAME_COLUMN_INDEX,
-                MethodTableModel.SCORE_COLUMN_INDEX,
-                MethodTableModel.RANK_COLUMN_INDEX);
+                MethodTableModel.RANK_COLUMN_INDEX,
+                MethodTableModel.SCORE_COLUMN_INDEX);
         this.statementViewTable = createSubViewTable(
                 statementTableModel,
                 statementTableModel.NAME_COLUMN_INDEX,
@@ -203,7 +203,7 @@ public class ViewResult extends DialogWrapper {
         tabsPane.addTab(Resources.get("titles", "method_pane"), createTableScrollPane(methodViewTable));
         tabsPane.addTab(Resources.get("titles", "statement_pane"), createTableScrollPane(statementViewTable));
         tabsPane.setPreferredSize(new Dimension(500, 500));
-
+        tabsPane.setSelectedIndex(3);
         pack();
         return tabsPane;
     }
@@ -267,7 +267,7 @@ public class ViewResult extends DialogWrapper {
     }
 
     private void closeWindow() {
-        refresh();
+        //refresh();
         flService.setViewResultTableDialogOpened(false);
         close(0);
     }
