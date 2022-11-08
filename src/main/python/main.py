@@ -10,7 +10,8 @@ from faultloc.Metrics import Metrics
 from utils.Result_Builder import Result_Builder
 
 
-#import call_graphs.statical_call_graph as cg
+# import call_graphs.statical_call_graph as cg
+import sunburst_visualization_colours.sunburst as vs
 
 from constans import COVERAGE_RC_FILE_NAME
 from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVERAGE_RC_FILE
@@ -23,7 +24,7 @@ from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVER
 
 def main():
     parser = argparse.ArgumentParser(add_help=False)
-    parser.version = 'CharmFL 1.4.0'
+    parser.version = '1.5'
     parser.add_argument("-d", "--directory", action="store", metavar="PROJECT_DIRECTORY",
                         help="Project directory absolute path.", required=True)
     parser.add_argument("-fl", "--FaultLoc", help="To start the Fault Localization process", action="store_true")
@@ -35,6 +36,8 @@ def main():
     parser.add_argument("-s", "--spectrum", action="store", metavar="SPECTRUM", help="To get the spectrum.")
     parser.add_argument("-h", "--help", action="help", help="Show this help message.")
     parser.add_argument("-v", "--version", action="version", help="Show version number.")
+    parser.add_argument("-vs", "--SunBurst", help="To visalize the sunburst chart", action="store_true")
+
 
     args = vars(parser.parse_args())
     plugin_path = os.path.dirname(os.path.abspath(__file__))
@@ -61,9 +64,7 @@ def main():
         class_cov.set_base_coverage(line_cov) \
             .make_coverage_with_context()
         method_spectra.create_spectrum_from(method_cov, tests)
-
         method_metrics.create_scores_from(method_spectra)
-
         class_spectra.create_spectrum_from(class_cov, tests)
         class_metrics.create_scores_from(class_spectra)
         result_builder.set_path_to_root(project_path)\
@@ -78,6 +79,10 @@ def main():
     if (args["CallGraph"] == True):
         call_graph = cg.StaticalCallGraph()
         call_graph.createHTML()
+
+    if (args["SunBurst"] == True):
+        sunburst = vs.SunBurstVisualization(project_path)
+        sunburst.createHTML()
 
 
 if __name__ == "__main__":
