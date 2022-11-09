@@ -69,7 +69,7 @@ class Metrics:
         nf = float(nf)
         np = float(np)
         try:
-            score = math.pow(ef, 2) / (ep + np)
+            score = math.pow(ef, 2) / (ep + nf)
 
         except ZeroDivisionError:
             score = 0.0
