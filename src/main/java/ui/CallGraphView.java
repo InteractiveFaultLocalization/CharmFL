@@ -1,5 +1,6 @@
 package ui;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import modules.PluginModule;
 import org.jetbrains.annotations.Nullable;
@@ -11,10 +12,15 @@ import modules.ProjectModule;
 import com.intellij.ui.jcef.*;
 import services.Resources;
 
-public class CallGraphView extends DialogWrapper {
+import java.io.File;
 
-    public CallGraphView() {
+public class CallGraphView extends DialogWrapper {
+    private Project project;
+    private String fileName;
+    public CallGraphView(String fileName, Project project) {
         super(true);
+        this.project = project;
+        this.fileName = fileName;
         setTitle(Resources.get("titles", "call_graph_title"));
         setModal(false);
         init();
@@ -24,8 +30,11 @@ public class CallGraphView extends DialogWrapper {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        String url = ProjectModule.getProjectPath() + "\\static_call_graph.html";
-        return new JBCefBrowser(url).getComponent();
+        StringBuilder url = new StringBuilder();
+        url.append(project.getBasePath())
+           .append(File.separator)
+           .append(fileName);
+        return new JBCefBrowser(url.toString()).getComponent();
 
     }
 }

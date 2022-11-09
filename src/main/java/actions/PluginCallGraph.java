@@ -30,6 +30,6 @@ public class PluginCallGraph extends DumbAwareAction {
         } catch (InterruptedException z) {
             Thread.currentThread().interrupt();
         }
-        new CallGraphView().show();
+        //new CallGraphView("",e.getProject()).show();
     }
 }
