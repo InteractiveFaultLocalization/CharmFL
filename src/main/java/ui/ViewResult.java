@@ -49,10 +49,11 @@ public class ViewResult extends DialogWrapper {
     private JTable classViewTable;
     private JTable methodViewTable;
     private JTable statementViewTable;
+    private JTabbedPane tabsPane;
 
     public ViewResult() {
         super(true);
-
+        tabsPane = new JTabbedPane();
         String rankType = "";
         if (PluginModule.isAverageSelected()) {
             rankType = Resources.get("titles", "average_button");
@@ -92,6 +93,9 @@ public class ViewResult extends DialogWrapper {
         });
         init();
     }
+
+    public int getSelectedIndex(){return tabsPane.getSelectedIndex();}
+    public void setSelectedIndex(int index){tabsPane.setSelectedIndex(index);}
 
     private static class SearchField {
 
@@ -197,13 +201,13 @@ public class ViewResult extends DialogWrapper {
         statementViewTable.addMouseListener(new StatementTableMouseListener(statementViewTable, testData));
         methodViewTable.addMouseListener(new MethodTableMouseListener(methodViewTable,testData));
         classViewTable.addMouseListener(new ClassTableMouseListener(classViewTable,testData));
-        JTabbedPane tabsPane = new JTabbedPane();
         tabsPane.addTab(Resources.get("titles", "tree_pane"), createTableScrollPane(treeViewTable));
         tabsPane.addTab(Resources.get("titles", "class_pane"), createTableScrollPane(classViewTable));
         tabsPane.addTab(Resources.get("titles", "method_pane"), createTableScrollPane(methodViewTable));
         tabsPane.addTab(Resources.get("titles", "statement_pane"), createTableScrollPane(statementViewTable));
         tabsPane.setPreferredSize(new Dimension(500, 500));
         tabsPane.setSelectedIndex(3);
+        tabsPane.setLocation(600,300);
         pack();
         return tabsPane;
     }

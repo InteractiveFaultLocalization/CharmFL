@@ -36,12 +36,8 @@ public class ScoresFloatingWindow implements ToolWindowFactory, DumbAware{
         JBTabbedPane mainPanel = new JBTabbedPane();
         mainPanel.setBounds(50,50,220,200);
         mainPanel.add("Scores",createIndicatorPanel());
-        //TODO: Here comes the one of the remaining two components
-        // TODO: Also do not forget to add it to the panels list
-        mainPanel.add("Sunburst",new JPanel());
-        //TODO: And here the other
-        //TODO: same todo here!
-        mainPanel.add("Static Callgraph",new CallGraphView().createCenterPanel());
+        mainPanel.add("Sunburst", new CallGraphView("sunburst.html",project).createCenterPanel());
+        mainPanel.add("Static Callgraph", new CallGraphView("static_call_graph.html",project).createCenterPanel());
 
         toolWindow.getComponent().add(mainPanel);
     }
