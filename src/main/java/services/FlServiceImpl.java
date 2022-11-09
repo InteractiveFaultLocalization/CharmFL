@@ -178,7 +178,7 @@ public class FlServiceImpl {
             fileObject = filesArray.getJSONObject(i);
             classesArray = fileObject.getJSONArray("classes");
             relativePath = fileObject.getString("relativePath");
-
+            //TestData.getInstance(relativePath);
             for (int j = 0; j < classesArray.length(); j++) {
                 classObject = classesArray.getJSONObject(j);
                 name = classObject.getString("name");
@@ -272,8 +272,9 @@ public class FlServiceImpl {
                     methodTestData = new MethodTestData();
                     methodTestData.setName(name);
                     methodTestData.setRelativePath(relativePath);
-                    methodTestData.setClassName(classTestData.getName());
+                    methodTestData.setSuperName(classTestData.getName());
                     methodTestData.setLine(line);
+                    methodTestData.setSuperLine(classTestData.getLine());
                     methodTestData.setTarantula(tarantula);
                     methodTestData.setOchiai(ochiai);
                     methodTestData.setWong2(wong2);
@@ -298,8 +299,9 @@ public class FlServiceImpl {
 
                         statementTestData = new StatementTestData();
                         statementTestData.setClassName(classTestData.getName());
-                        statementTestData.setMethodName(methodTestData.getName());
+                        statementTestData.setSuperName(methodTestData.getName());
                         statementTestData.setLine(line);
+                        statementTestData.setSuperLine(methodTestData.getLine());
                         statementTestData.setTarantula(tarantula);
                         statementTestData.setOchiai(ochiai);
                         statementTestData.setWong2(wong2);
@@ -307,10 +309,10 @@ public class FlServiceImpl {
                         statementTestData.setRank(rank);
                         statementTestData.setFaulty(faulty);
 
-                        methodTestData.getStatements().add(statementTestData);
+                        methodTestData.getElements().add(statementTestData);
                     }
 
-                    classTestData.getMethods().add(methodTestData);
+                    classTestData.getElements().add(methodTestData);
                 }
 
                 testData.getClasses().add(classTestData);
@@ -347,12 +349,12 @@ public class FlServiceImpl {
                 if (e.getManager() != null) {
                     Editor editor = e.getManager().getSelectedTextEditor();
                     if (editor != null) {
-                        ColorService colorService = new ColorService();
-                        colorService.setEditor(editor);
-                        colorService.removeColorsByEditor();
+//                        ColorService colorService = new ColorService();
+//                        colorService.setEditor(editor);
+//                        colorService.removeColorsByEditor();
                         if (testDataCollected) {
                             String relativeFilePath = parseRelativeFilePath(e.getNewFile().getPath(), ProjectModule.getProjectPath());
-                            colorService.setColorsByEditor(testData, relativeFilePath);
+                            //colorService.setColorsByEditor(testData, relativeFilePath);
                         }
                     }
                 }

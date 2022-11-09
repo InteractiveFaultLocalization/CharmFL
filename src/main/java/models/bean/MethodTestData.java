@@ -3,13 +3,14 @@ package models.bean;
 import java.util.ArrayList;
 import java.util.List;
 import models.bean.context.CloseContext;
-import models.bean.context.FarContextMethodLevel;
+import models.bean.context.FarContext;
 import models.bean.context.OtherContext;
 
 public class MethodTestData implements ITestData {
 
     private String name;
     private String className;
+    private int classLine;
     private String relativePath;
     private int line;
     private double tarantula;
@@ -18,10 +19,11 @@ public class MethodTestData implements ITestData {
     private double dstar;
     private int rank;
     private boolean faulty;
-    private ArrayList<StatementTestData> statements;
+    private ArrayList<ITestData> statements;
     private CloseContext closeContext;
     private OtherContext otherContext;
-    private FarContextMethodLevel farContext;
+    private FarContext farContext;
+
 
 
 
@@ -39,7 +41,7 @@ public class MethodTestData implements ITestData {
         statements = new ArrayList<>();
         closeContext = new CloseContext(this);
         otherContext = new OtherContext(this);
-        farContext = new FarContextMethodLevel(this);
+        farContext = new FarContext(this);
     }
 
     public String getRelativePath() {
@@ -50,14 +52,27 @@ public class MethodTestData implements ITestData {
         this.relativePath = relativePath;
     }
 
+    @Override
+    public int getSuperLine() {
+        return classLine;
+    }
 
-    public String getClassName() {
+    @Override
+    public void setSuperLine(int superLine) {
+        classLine = superLine;
+    }
+
+    @Override
+    public String getSuperName() {
         return className;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    @Override
+    public void setSuperName(String superName) {
+        className = superName;
     }
+
+
     /**
      * This represents the name of the method in the python file.
      *
@@ -179,6 +194,11 @@ public class MethodTestData implements ITestData {
         return faulty;
     }
 
+    @Override
+    public int getLevel() {
+        return 2;
+    }
+
     /**
      * Sets the faulty parameter of the class object.
      */
@@ -195,14 +215,19 @@ public class MethodTestData implements ITestData {
         return (List<ITestData>) otherContext.getOtherContext();
     }
 
-    public List<MethodTestData> getFarContext(){return farContext.getFarContext();}
+    @Override
+    public List<ITestData> getElements() {
+        return statements;
+    }
+
+    public List<ITestData> getFarContext(){return farContext.getFarContextForMethodLevel();}
 
     /**
      * This provides the statemets that belong to this method.
      *
      * @return a list of statements
      */
-    public ArrayList<StatementTestData> getStatements() {
-        return statements;
-    }
+//    public ArrayList<StatementTestData> getStatements() {
+//        return statements;
+//    }
 }

@@ -1,6 +1,7 @@
 package ui;
 
 import com.intellij.openapi.ui.DialogWrapper;
+import modules.PluginModule;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class CallGraphView extends DialogWrapper {
         setTitle(Resources.get("titles", "call_graph_title"));
         setModal(false);
         init();
+
     }
 
     @Nullable

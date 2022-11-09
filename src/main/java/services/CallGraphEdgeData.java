@@ -3,6 +3,7 @@ package services;
 import com.intellij.openapi.roots.ProjectRootManager;
 import java.util.HashMap;
 import models.bean.ProcessResultData;
+import models.bean.TestData;
 import modules.PluginModule;
 import modules.ProjectModule;
 import java.io.File;
@@ -15,7 +16,7 @@ public class CallGraphEdgeData {
     private String filterName;
     private String methodName;
     private String className;
-
+    private static final String SEPARATOR = "__";
 
     class Edge {
         String callerMethod;
@@ -32,39 +33,34 @@ public class CallGraphEdgeData {
      * @param relativePath, methodName
      */
 
-    public CallGraphEdgeData(String relativePath, String className, String methodName) {
+    public CallGraphEdgeData(String relativePath, String className, String methodName, TestData testData) {
         this.className = className;
         this.methodName = methodName;
         String pythonBinPath = ProjectRootManager.getInstance(ProjectModule.getProject()).getProjectSdk().getHomePath();
         PluginModule.setPythonBinPath(pythonBinPath);
 
 
-        String relativePart = relativePath.substring(0, relativePath.indexOf(".py")).replace("\\", "__");
-        String nodeName = relativePart + "__" + methodName;
-//        if(className.equals("<not_class>"))
-//            if (methodName.equals("<not_method>"))
-                this.filterName = relativePart;
-//            else
-//                this.filterName =relativePart + "__" + methodName;
-//        else
-//            this.filterName =relativePart + "__" + className + "__" + methodName;
+        String relativePart = relativePath.substring(0, relativePath.indexOf(".py")).replace("\\", SEPARATOR);
+        String nodeName = relativePart + SEPARATOR + methodName;
+        this.filterName = relativePart;
+
 
 
 
 
 
         this.command = PluginModule.getPythonBinPath() + " " + PluginModule.getCallGraphEdges() +
-                " " + ProjectModule.getProjectPath() + File.separator + "**/*.py" +
+                " " + ProjectModule.getProjectPath() + File.separator + "**/"+relativePath +
                 " " + ProjectModule.getProjectPath() + " " + nodeName + " " + PluginModule.getPythonBinPath();
-        System.out.println(this.command);
-        getEdges();
+        //System.out.println(this.command);
+        getEdges(testData);
 
     }
 
     /**
      * Gets [(callerMethod, calledMethod), ...] string list from stdOut and removes "[" and "]" brackets
      */
-    private void getEdges() {
+    private void getEdges(TestData testData) {
 
         ProcessResultData processResultData = ProcessService.executeCommand(command);
         ArrayList<String> collectedEdges = processResultData.getOutput();
@@ -93,8 +89,8 @@ public class CallGraphEdgeData {
             calledMethod = vertexList[1].substring(1, vertexList[1].length() - 1);
             if (!callerMethod.contains("test") &&
                     (callerMethod.equals(filterName) ||
-                            callerMethod.contains(filterName + "__") ||
-                            calledMethod.contains(filterName + "__"))) {
+                            callerMethod.contains(filterName + SEPARATOR) ||
+                            calledMethod.contains(filterName + SEPARATOR))) {
                 this.edges.add(new Edge(callerMethod, calledMethod));
             }
             edgeDataList = edgeDataList.substring(edgeDataList.indexOf(")") + 1);

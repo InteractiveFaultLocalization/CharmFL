@@ -68,7 +68,7 @@ public class TreeTableModel extends AbstractTableModel {
                         continue;
                     this.tableDataList.add(classTableData);
 
-                    for (MethodTestData methodData : classData.getMethods()) {
+                    for (ITestData methodData : classData.getElements()) {
                         TableData methodTableData = new TableData();
                         methodTableData.setName(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + methodData.getName());
                         methodTableData.setPath(relativePath);
@@ -81,7 +81,7 @@ public class TreeTableModel extends AbstractTableModel {
                         methodTableData.setLevel(TableData.METHOD_LEVEL);
                         this.tableDataList.add(methodTableData);
 
-                        for (StatementTestData statementData : methodData.getStatements()) {
+                        for (ITestData statementData : methodData.getElements()) {
                             TableData thirdData = new TableData();
                             thirdData.setName("");
                             thirdData.setPath(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + relativePath);

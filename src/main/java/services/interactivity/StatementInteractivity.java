@@ -2,8 +2,10 @@ package services.interactivity;
 
 import models.bean.Formula;
 import models.bean.ITestData;
-import models.bean.context.FarContextMethodLevel;
 
+/**
+ * TODO This should have been more than one class, but very good thing to make in the future
+ */
 public class StatementInteractivity implements Interactivity {
 
 
@@ -42,8 +44,10 @@ public class StatementInteractivity implements Interactivity {
     }
 
     @Override
-    public void recalculateFarContextScores(int line, FarContextMethodLevel farContext, Double recalculationFactor) {
-
+    public void recalculateFarContextScores(ITestData element,  Double recalculationFactor, Formula formula) {
+        for (var farContext : element.getFarContext()){
+            setScore(farContext, recalculationFactor, formula);
+        }
     }
 
     @Override

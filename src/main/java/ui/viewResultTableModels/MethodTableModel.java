@@ -13,12 +13,12 @@ import models.bean.*;
 import services.RankingService;
 
 public class MethodTableModel extends AbstractTableModel {
-    private static final String[] columnNames = {"File name", "Method name", "Line", "Score"};
+    private static final String[] columnNames = {"File name", "Method name", "Score", "Line"};
 
     public static final int FILE_NAME_COLUMN_INDEX = 0;
     public static final int NAME_COLUMN_INDEX = 1;
-    public static final int SCORE_COLUMN_INDEX = 3;
-    public static final int RANK_COLUMN_INDEX = 2;
+    public static final int SCORE_COLUMN_INDEX = 2;
+    public static final int RANK_COLUMN_INDEX = 3;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
 
@@ -38,9 +38,9 @@ public class MethodTableModel extends AbstractTableModel {
         for (ClassTestData classData : data.getClasses()) {
             String relativePath = classData.getRelativePath();
 
-            for (MethodTestData methodData : classData.getMethods()) {
+            for (ITestData methodData : classData.getElements()) {
                 TableData methodTableData = new TableData();
-                methodTableData.setName(relativePath + File.separator + methodData.getName());
+                methodTableData.setName(methodData.getSuperName() + File.separator + methodData.getName());
                 methodTableData.setPath(relativePath);
                 methodTableData.setLine(methodData.getLine());
                 methodTableData.setTarantulaScore(methodData.getTarantula());
