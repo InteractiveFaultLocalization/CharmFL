@@ -62,8 +62,9 @@ public class CallGraphEdgeData {
      */
     private void getEdges(TestData testData) {
 
-        ProcessResultData processResultData = ProcessService.executeCommand(command);
-        ArrayList<String> collectedEdges = processResultData.getOutput();
+        //ProcessResultData processResultData = ProcessService.executeCommand(command);
+        //ArrayList<String> collectedEdges = processResultData.getOutput();
+        ArrayList<String> collectedEdges = testData.getEdgeArrayList();
         for (String edge : collectedEdges) {
             makeEdgesArray(edge.substring(edge.indexOf("[")+1, edge.indexOf("]")));
         }

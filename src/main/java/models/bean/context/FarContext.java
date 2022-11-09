@@ -74,6 +74,7 @@ public class FarContext {
 
     public List<ITestData> getFarContextForStatementLevel(){
         MethodTestData method = (MethodTestData) testData.getElement(element.getRelativePath(), element.getSuperLine());
+        System.out.println(element.getRelativePath() + String.valueOf(element.getSuperLine()));
         this.callGraphEdgeData = new CallGraphEdgeData(method.getRelativePath(), method.getSuperName(), element.getName(), testData);
         var edgeDataTransformer = testData.makeEdgeTransformation();
         List<ITestData> farContextMethods = new ArrayList<>();

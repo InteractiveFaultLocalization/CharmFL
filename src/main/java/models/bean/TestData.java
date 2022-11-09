@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import modules.PluginModule;
+import modules.ProjectModule;
+import services.ProcessService;
 
 /**
  * This represents the python module which contains python classes.
@@ -13,6 +16,7 @@ public class TestData {
     private static TestData instance;
     private ArrayList<ClassTestData> classes;
     private HashMap<String , MethodTestData> edgeDataTransformer;
+    private static ArrayList<String> edgeArrayList;
 
 
 
@@ -27,6 +31,24 @@ public class TestData {
         }
         return instance;
     }
+
+    public static TestData getInstance(String relativePath){
+        if (instance == null){
+            instance = new TestData();
+        }
+        String command = PluginModule.getPythonBinPath() + " " + PluginModule.getCallGraphEdges() +
+                " " + ProjectModule.getProjectPath() + File.separator + "**/"+relativePath +
+                " " + ProjectModule.getProjectPath() + " " + "-" + " " + PluginModule.getPythonBinPath();
+        ProcessResultData processResultData = ProcessService.executeCommand(command);
+        edgeArrayList = processResultData.getOutput();
+
+        return instance;
+    }
+
+    public ArrayList<String> getEdgeArrayList(){
+        return edgeArrayList;
+    }
+
     public HashMap<String, MethodTestData> makeEdgeTransformation(){
         getAllMethods().stream().forEach(m -> {
             String edgeName= m.getRelativePath().substring(0,  m.getRelativePath().indexOf(".py")).replace(File.separator, "__");

@@ -167,7 +167,7 @@ public class FlServiceImpl {
         double tarantula, ochiai, wong2, dstar;
         int rank;
         boolean faulty;
-        String relativePath;
+        String relativePath = "" ;
         ClassTestData classTestData;
         MethodTestData methodTestData;
         StatementTestData statementTestData;
@@ -301,6 +301,7 @@ public class FlServiceImpl {
                         statementTestData.setClassName(classTestData.getName());
                         statementTestData.setSuperName(methodTestData.getName());
                         statementTestData.setLine(line);
+                        statementTestData.setRelativePath(relativePath);
                         statementTestData.setSuperLine(methodTestData.getLine());
                         statementTestData.setTarantula(tarantula);
                         statementTestData.setOchiai(ochiai);
@@ -318,7 +319,7 @@ public class FlServiceImpl {
                 testData.getClasses().add(classTestData);
             }
         }
-
+        testData = TestData.getInstance(relativePath);
         return testData;
     }
 
