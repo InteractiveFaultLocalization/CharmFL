@@ -48,11 +48,19 @@ def get_all_product_num():
 if __name__ == "__main__":
     import sys
 
+    print("This is a simple webshop-like script.")
+    print("You can add, remove and print products from your cart.")
+    print("****")
     for line in sys.stdin:
         if 'Exit' == line.rstrip():
             break
 
-        print(f'Processing Message from sys.stdin *****{line}*****')
-        add_to_cart(line)
+
+        if str(line).startswith("add "):
+            add_to_cart(line)
+        elif str(line).startswith("delete "):
+            remove_from_cart(line)
+        elif str(line).startswith("print "):
+            get_product_count(line)
         print_products_in_cart()
     print("Done")
