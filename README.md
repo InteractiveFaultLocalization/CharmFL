@@ -60,7 +60,7 @@ dynamic_context = test_function
  ```
 You can download an example [.coveragerc](test_project/products/.coveragerc) file.
 
-> :warning: This step is crucial for creating Statical Call Graphs!
+> :warning: This step is crucial for creating Static Call Graphs!
 
 [Pyan](https://pypi.org/project/pyan3/) use Graphviz for creating the static call graph html file.
 
