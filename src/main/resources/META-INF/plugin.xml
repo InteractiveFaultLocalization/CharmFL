@@ -12,10 +12,12 @@
             <add-to-group group-id="MainMenu" anchor="last" />
             <action id="CharmFl.Run" class="actions.PluginTestRun" text="Run Fault Localization" description="Run test" icon="menu-icons/run.png" />
             <action id="CharmFl.Clear" class="actions.PluginTestClear" text="Clear Data" description="Clear test" icon="menu-icons/clear.png" />
+            <separator>Visualization</separator>
             <action id="CharmFl.View" class="actions.PluginTableView" text="View Fault Localization Table" description="View results" icon="menu-icons/view.png" />
-            <action id="CharmFl.CallGraph" class="actions.PluginCallGraph" text="Start Call Graph" description="Start Call Graph" icon="menu-icons/graph.png" />
-            <separator></separator>
-            <action id="CharmFl.AdvancedOptions" class="actions.PluginAdvancedOptions" text="Options" description="Advanced options" icon="menu-icons/options.png" />
+            <action id="CharmFl.CallGraph" class="actions.PluginCallGraph" text="View Static Call Graph" description="View Static Call Graph" icon="menu-icons/graph.png" />
+            <action id="CharmFl.Sunburst" class="actions.PluginCallGraph" text="View Sunburst Diagram" description="View Sunburst Diagram" icon="menu-icons/graph.png" />
+            <separator>Settings</separator>
+            <action id="CharmFl.AdvancedOptions" class="actions.PluginAdvancedOptions" text="Settings" description="Advanced options" icon="menu-icons/options.png" />
         </group>
     </actions>
     <extensions defaultExtensionNs="com.intellij">
