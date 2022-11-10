@@ -11,7 +11,7 @@
         <group id="CharmFl.MainMenu" text="CharmFL" description="CharmFL Menu">
             <add-to-group group-id="MainMenu" anchor="last" />
             <action id="CharmFl.Run" class="actions.PluginTestRun" text="Run Fault Localization" description="Run test" icon="menu-icons/run.png" />
-            <action id="CharmFl.Clear" class="actions.PluginTestClear" text="Clear Highlights and Data" description="Clear test" icon="menu-icons/clear.png" />
+            <action id="CharmFl.Clear" class="actions.PluginTestClear" text="Clear Data" description="Clear test" icon="menu-icons/clear.png" />
             <action id="CharmFl.View" class="actions.PluginTableView" text="View Fault Localization Table" description="View results" icon="menu-icons/view.png" />
             <action id="CharmFl.CallGraph" class="actions.PluginCallGraph" text="Start Call Graph" description="Start Call Graph" icon="menu-icons/graph.png" />
             <separator></separator>
