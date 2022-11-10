@@ -6,7 +6,7 @@ import subprocess as sp
 from coverage import Coverage
 
 from constans import EXCEL_REPORT_FILE_NAME, JSON_REPORT_FILE_NAME
-from error_codes import EXCEL_REPORT_FILE_NOT_FOUND, RESULT_DICT_EMPTY, JSON_REPORT_FILE_NOT_FOUND
+from error_codes import RESULT_DICT_EMPTY, JSON_REPORT_FILE_NOT_FOUND
 from testing.Test_Utils import Test_Utils
 
 

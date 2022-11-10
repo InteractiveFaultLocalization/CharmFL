@@ -44,7 +44,27 @@ This is aggregated down to statement level, i.e. for each statement in the metho
 - Click on Plugins
 - Click on the Gear Icon
 - Select "Install Plugin from Disk..."
-- Select <path-to-charmfl-zip>/CharmFL-1.6.5.zip
+- Select <path-to-charmfl-zip>/CharmFL-1.7.0.zip
+
+## Preconditions
+
+> :warning: This step is crucial for CharmFL to work!
+ 
+ Create a _.coveragerc_ file in your root directory. This is important for CharmFL to run fault localization properly.
+ 
+ After creating the file, you should insert the following:
+ 
+``` 
+[run]
+dynamic_context = test_function
+ ```
+You can download an example [.coveragerc](test_project/products/.coveragerc) file.
+
+> :warning: This step is crucial for creating Statical Call Graphs!
+
+[Pyan](https://pypi.org/project/pyan3/) use Graphviz for creating the static call graph html file.
+
+In order to have it run properly please install Graphviz following their website: https://graphviz.org/
 
 # Main features
 - Run Fault Localization on 3 different granularities (statement, method, class)
