@@ -45,8 +45,8 @@ public abstract class AbstractTableMouseListener extends MouseInputAdapter {
             cls.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.CLOSE_CONTEXT, PluginModule.getSelectedFormula());
             far.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.FAR_CONTEXT, PluginModule.getSelectedFormula());
             oth.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.OTHER, PluginModule.getSelectedFormula());
-        }catch(NullPointerException npe){
-            //well...
+        }catch(Exception e){
+            //This should fix any issue caused by non-existing components... for now at least...
         }
     }
 
