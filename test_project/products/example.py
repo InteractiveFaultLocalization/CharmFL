@@ -5,60 +5,54 @@ from directory import example2
 cart = {}
 
 
-def addToCart(product):
+
+def add_to_cart(product):
     if (product not in cart.keys()):
         cart[str(product)] = 1
     else:
-        cart[str(product)] = cart[(str(product))] + 2  # bug -> should be 1
+        cart[str(product)] = cart[(str(product))] + 1
 
 
-def removeFromCart(product):
-    example2.printProductsInCart()
+def remove_from_cart(product):
     if (product in cart.keys()):
         if (cart[str(product)] > 1):
-            cart[str(product)] = cart[str(product)] - 1
+            cart[str(product)] = cart[str(product)] - 2
         elif (cart[str(product)] == 1):
             del cart[str(product)]
     else:
         print("Something's fishy")
 
 
-def printProductsInCart():
+def print_products_in_cart():
     print("Your cart: ")
 
-    getProductCount()
-    example2.printProductsInCart()
+    product_count = 0
 
     for product_name in cart.keys():
-        product_count = cart[str(product_name)]
-        # print("* " + str(product_name) + ": " + str(product_count))
+        product_count = get_product_count(product_name)
+        print("* " + str(product_name) + ": " + str(product_count))
+    print("No. Products in cart:", str(product_count) + "/" + str(get_all_product_num()))
 
 
-def getProductCount(product):
-    addToCart("apple")
+def get_product_count(product):
     if (product not in cart.keys()):
         return 0
     else:
         return cart[str(product)]
 
 
-"""
-# We need
-#        4 apples
-#        1 orange juice
-#        cheeser mum
-#        U
+def get_all_product_num():
+    return sum(cart.values())
 
-for i in range(1,4):
-    addToCart("apple")
-
-removeFromCart("apple")
-addToCart("OJ")
-addToCart("cheese")
-addToCart("Ur mum")
-
-printProductsInCart()
-"""
 
 if __name__ == "__main__":
-    printProductsInCart()
+    import sys
+
+    for line in sys.stdin:
+        if 'Exit' == line.rstrip():
+            break
+
+        print(f'Processing Message from sys.stdin *****{line}*****')
+        add_to_cart(line)
+        print_products_in_cart()
+    print("Done")

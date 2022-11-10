@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c5d45f7-704c-4c0e-9016-aff925b52df5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/ScoresFloatingWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/ScoresFloatingWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/panels/ScorePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/panels/ScorePanel.java" afterDir="false" />
+    <list default="true" id="9771f71d-9265-49ce-9c72-8012e50db161" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.idea/modules/CharmFL.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/modules/CharmFL.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/actions/PluginCallGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/actions/PluginCallGraph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/services/FlServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/services/FlServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/services/runnables/EditorColorRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/services/runnables/EditorColorRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/services/runnables/RunCallGraphRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/services/runnables/RunCallGraphRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/services/runnables/RunTestRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/services/runnables/RunTestRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/CallGraphHighlightedView.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/PopUpView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/StatementOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/StatementOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/ViewResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/ViewResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/listener/ClassTableMouseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/listener/ClassTableMouseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/listener/MethodTableMouseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/listener/MethodTableMouseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/listener/StatementTableMouseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/listener/StatementTableMouseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/viewResultTableModels/ClassTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/viewResultTableModels/ClassTableModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/viewResultTableModels/MethodTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/viewResultTableModels/MethodTableModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/python/call_graphs/statical_call_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/python/call_graphs/statical_call_graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/python/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/python/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/resources/META-INF/plugin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/resources/META-INF/plugin.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/products.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/products.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.report.json" beforeDir="false" afterPath="$PROJECT_DIR$/.report.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results.json" beforeDir="false" afterPath="$PROJECT_DIR$/results.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.report.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/directory/example2.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory/example2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example.py" beforeDir="false" afterPath="$PROJECT_DIR$/example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myuses.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/testAddProducts2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/testAddProducts.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/testAddProducts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_add_products.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_add_products.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +41,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectId" id="2FR72aho4cOWiA5NUFwOYUKUNK3" />
+  <component name="ProjectId" id="2HLgxRyY1gWnYJxeT5jMCxRkguV" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -25,17 +50,16 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2c5d45f7-704c-4c0e-9016-aff925b52df5" name="Changes" comment="" />
-      <created>1664442837112</created>
+      <changelist id="9771f71d-9265-49ce-9c72-8012e50db161" name="Changes" comment="" />
+      <created>1668070028534</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1664442837112</updated>
+      <updated>1668070028534</updated>
     </task>
     <servers />
   </component>
