@@ -11,7 +11,7 @@ from faultloc.Metrics import Metrics
 from utils.Result_Builder import Result_Builder
 
 
-# import call_graphs.statical_call_graph as cg
+import call_graphs.statical_call_graph as cg
 import sunburst_visualization_colours.sunburst as vs
 
 from constans import COVERAGE_RC_FILE_NAME
