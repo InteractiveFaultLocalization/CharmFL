@@ -21,13 +21,13 @@ public class CloseContext {
             if (classInstance.getLine() == elementData.getLine()) {
                 return testData.getClasses().stream().filter(element -> element.getLine() != classInstance.getLine()).collect(Collectors.toList());
             } else {
-                for (var methodInstance : classInstance.getMethods()) {
+                for (var methodInstance : classInstance.getElements()) {
                     if (methodInstance.getLine() == elementData.getLine()) {
-                        return classInstance.getMethods().stream().filter(element -> element.getLine() != methodInstance.getLine()).collect(Collectors.toList());
+                        return classInstance.getElements().stream().filter(element -> element.getLine() != methodInstance.getLine()).collect(Collectors.toList());
                     } else {
-                        for (var statementInstance : methodInstance.getStatements()) {
+                        for (var statementInstance : methodInstance.getElements()) {
                             if (statementInstance.getLine() == elementData.getLine()) {
-                                return methodInstance.getStatements().stream().filter(element -> element.getLine() != statementInstance.getLine()).collect(Collectors.toList());
+                                return methodInstance.getElements().stream().filter(element -> element.getLine() != statementInstance.getLine()).collect(Collectors.toList());
                             }
                         }
                     }

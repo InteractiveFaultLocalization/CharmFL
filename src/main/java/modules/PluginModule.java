@@ -32,9 +32,9 @@ public class PluginModule {
     private static boolean dStarSelected = false;
     private static boolean wongIISelected = false;
 
-    private static boolean maximumSelected = true;
+    private static boolean maximumSelected = false;
     private static boolean minimumSelected = false;
-    private static boolean averageSelected = false;
+    private static boolean averageSelected = true;
 
     /**
      * Sets this object's plugin id to the built-in plugin id.

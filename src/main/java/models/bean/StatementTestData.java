@@ -2,32 +2,40 @@ package models.bean;
 
 import java.util.List;
 import models.bean.context.CloseContext;
+import models.bean.context.FarContext;
 import models.bean.context.OtherContext;
 
 public class StatementTestData implements ITestData {
 
     private String className;
     private String methodName;
+    private int methodLine;
     private int line;
     private double tarantula;
     private double ochiai;
     private double wong2;
+    private double dstar;
     private int rank;
     private boolean faulty;
     private CloseContext closeContext;
     private OtherContext otherContext;
+    private FarContext farContext;
+    private String relativePath;
 
     public StatementTestData() {
         className = "";
         methodName = "";
+        methodLine = 0;
         line = 0;
         tarantula = 0;
         ochiai = 0;
         wong2 = 0;
+        dstar = 0;
         rank = 0;
         faulty = false;
         closeContext = new CloseContext(this);
         otherContext = new OtherContext(this);
+        farContext = new FarContext(this);
     }
 
     /**
@@ -54,6 +62,7 @@ public class StatementTestData implements ITestData {
     public String getMethodName() {
         return methodName;
     }
+
 
     /**
      * Set the method name of the statement object
@@ -143,6 +152,62 @@ public class StatementTestData implements ITestData {
         this.wong2 = wong2;
     }
 
+    /**
+     * This provides the wong2 score of the class.
+     *
+     * @return the score
+     */
+    public double getDstar() {
+        return dstar;
+    }
+
+    /**
+     * This provides the relative path of the python class starting from the root.
+     * @return a string of the relative path.
+     */
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    /**
+     * This sets the relative path of the python class
+     * @param path, a relative path starting from the root.
+     */
+    public void setRelativePath(String path) {
+        this.relativePath = path;
+    }
+
+    @Override
+    public int getSuperLine() {
+        return methodLine;
+    }
+
+    @Override
+    public void setSuperLine(int superLine) {
+        methodLine = superLine;
+    }
+
+    @Override
+    public String getSuperName() {
+        return methodName;
+    }
+
+    @Override
+    public void setSuperName(String superName) {
+        methodName = superName;
+    }
+
+
+    /**
+     * This method sets the wong2 score for the class object.
+     *
+     * @param dstar score, a double type number
+     */
+    public void setDstar(double dstar) {
+        this.dstar = dstar;
+    }
+
+
     public int getRank() {
         return rank;
     }
@@ -160,13 +225,28 @@ public class StatementTestData implements ITestData {
         return faulty;
     }
 
+    @Override
+    public int getLevel() {
+        return 3;
+    }
+
     public List<ITestData> getCloseContext() {
         return (List<ITestData>) closeContext.getCloseContext();
     }
 
     @Override
+    public List<ITestData> getFarContext() {
+        return farContext.getFarContextForStatementLevel();
+    }
+
+    @Override
     public List<ITestData> getOtherContext() {
         return (List<ITestData>) otherContext.getOtherContext();
+    }
+
+    @Override
+    public List<ITestData> getElements() {
+        return null;
     }
 
     public void setFaulty(boolean faulty) {

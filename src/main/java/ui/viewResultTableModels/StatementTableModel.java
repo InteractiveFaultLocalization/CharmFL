@@ -36,8 +36,8 @@ public class StatementTableModel extends AbstractTableModel {
         for (ClassTestData classData : data.getClasses()) {
             String relativePath = classData.getRelativePath();
 
-            for (MethodTestData methodData : classData.getMethods()) {
-                for (StatementTestData statementData : methodData.getStatements()) {
+            for (ITestData methodData : classData.getElements()) {
+                for (ITestData statementData : methodData.getElements()) {
                     TableData thirdData = new TableData();
                     thirdData.setName("");
                     thirdData.setPath(relativePath);

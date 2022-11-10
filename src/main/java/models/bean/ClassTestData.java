@@ -2,6 +2,7 @@ package models.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import models.bean.context.CloseContext;
 import models.bean.context.OtherContext;
 
@@ -11,10 +12,11 @@ public class ClassTestData  implements ITestData{
     private double tarantula;
     private double ochiai;
     private double wong2;
+    private double dstar;
     private int rank;
     private boolean faulty;
     private String relativePath;
-    private ArrayList<MethodTestData> methods;
+    private ArrayList<ITestData> methods;
     private CloseContext closeContext;
     private OtherContext otherContext;
 
@@ -24,6 +26,7 @@ public class ClassTestData  implements ITestData{
         tarantula = 0;
         ochiai = 0;
         wong2 = 0;
+        dstar = 0;
         rank = 0;
         faulty = false;
         relativePath = "";
@@ -100,6 +103,8 @@ public class ClassTestData  implements ITestData{
         return wong2;
     }
 
+
+
     /**
      * This method sets the wong2 score for the class object.
      * @param wong2 score, a double type number
@@ -107,6 +112,23 @@ public class ClassTestData  implements ITestData{
     public void setWong2(double wong2) {
         this.wong2 = wong2;
     }
+
+    /**
+     * This method sets the dstar score for the class object.
+     * @param dstar score, a double type number
+     */
+    public void setDstar(double dstar) {
+        this.dstar = dstar;
+    }
+
+    /**
+     * This provides the dstar score of the class.
+     * @return the score
+     */
+    public double getDstar() {
+        return dstar;
+    }
+
 
 
     public int getRank() {
@@ -123,6 +145,12 @@ public class ClassTestData  implements ITestData{
      */
     public boolean isFaulty() {
         return faulty;
+    }
+
+
+    @Override
+    public int getLevel() {
+        return 1;
     }
 
     /**
@@ -149,8 +177,33 @@ public class ClassTestData  implements ITestData{
         this.relativePath = path;
     }
 
+    @Override
+    public int getSuperLine() {
+        return 0;
+    }
+
+    @Override
+    public void setSuperLine(int superLine) {
+
+    }
+
+    @Override
+    public String getSuperName() {
+        return relativePath;
+    }
+
+    @Override
+    public void setSuperName(String superName) {
+        this.relativePath = superName;
+    }
+
     public List<ITestData> getCloseContext(){
         return (List<ITestData>) closeContext.getCloseContext();
+    }
+
+    @Override
+    public List<ITestData> getFarContext() {
+        return null;
     }
 
     @Override
@@ -158,11 +211,24 @@ public class ClassTestData  implements ITestData{
         return (List<ITestData>) otherContext.getOtherContext();
     }
 
+    @Override
+    public List<ITestData> getElements() {
+        return methods;
+    }
+
     /**
      * This provides the class's methods
      * @return a list of methods of a class.
      */
-    public ArrayList<MethodTestData> getMethods() {
-        return methods;
+//    public ArrayList<MethodTestData> getMethods() {
+//        return methods;
+//    }
+
+    public MethodTestData getMethodByName(String methodsName){
+        return (MethodTestData) methods.stream().filter(m -> m.getName().equals(methodsName)).collect(Collectors.toList()).get(0);
+    }
+
+    public MethodTestData getMethodByLineNumber(int lineNumber){
+        return (MethodTestData) methods.stream().filter(m -> m.getLine() == lineNumber).collect(Collectors.toList()).get(0);
     }
 }

@@ -150,16 +150,17 @@ public class StatementOptions extends DialogWrapper {
         });
         viewFarContextButton.addActionListener(e -> {
             for (ClassTestData classTestData : testData.getClasses()) {
-                for (MethodTestData methodTestData : classTestData.getMethods()) {
-                    for (StatementTestData statement : methodTestData.getStatements()) {
+                for (var methodTestData : classTestData.getElements()) {
+                    for (var statement : methodTestData.getElements()) {
                         if (this.nameList.get(currentRow).equals(classTestData.getRelativePath()) &&
                                 this.lineList.get(currentRow) == statement.getLine()) {
                             String relativePath = classTestData.getRelativePath();
-                            String methodName = statement.getMethodName();
-                            CallGraphEdgeData callGraphEdges = new CallGraphEdgeData(relativePath, methodName);
-                            for(int i=0; i<callGraphEdges.getEdgeList().size(); i++){
-                                System.out.println(callGraphEdges.getCalledMethod(i) + " -> " + callGraphEdges.getCalledMethod(i));
-                            }
+//                            String methodName = statement.getMethodName();
+//                            String className = statement.getClassName();
+//                            CallGraphEdgeData callGraphEdges = new CallGraphEdgeData(relativePath,className, methodName);
+//                            for(int i=0; i<callGraphEdges.getEdgeList().size(); i++){
+//                                System.out.println(callGraphEdges.getCallerMethod(i) + " -> " + callGraphEdges.getCalledMethod(i));
+//                            }
                         }
                     }
                 }
@@ -201,10 +202,10 @@ public class StatementOptions extends DialogWrapper {
 
     private StatementTestData getStatement(int line) {
         for (var classInstance : testData.getClasses()) {
-            for (var methodInstance : classInstance.getMethods()) {
-                for (var statementInstance : methodInstance.getStatements()) {
+            for (var methodInstance : classInstance.getElements()) {
+                for (var statementInstance : methodInstance.getElements()) {
                     if (statementInstance.getLine() == line) {
-                        return statementInstance;
+                        return (StatementTestData) statementInstance;
                     }
                 }
             }

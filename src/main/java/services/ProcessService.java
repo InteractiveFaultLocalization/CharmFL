@@ -17,7 +17,7 @@ public class ProcessService {
     public static ProcessResultData executeCommand(String command) {
         try{
             Process process = Runtime.getRuntime().exec(command);
-
+            System.out.println(command);
             BufferedReader stdInput = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
 
@@ -29,6 +29,7 @@ public class ProcessService {
 
             process.waitFor();
             stdInput.close();
+            System.out.println(process.exitValue());
             return new ProcessResultData(lines, process.exitValue());
 
         } catch (IOException | InterruptedException e) {

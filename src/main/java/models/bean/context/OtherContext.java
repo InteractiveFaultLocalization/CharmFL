@@ -30,13 +30,13 @@ public class OtherContext {
                         .filter(element -> !excludeLines.contains(element.getLine()))
                         .collect(Collectors.toList());
             } else {
-                for (var methodInstance : classInstance.getMethods()) {
+                for (var methodInstance : classInstance.getElements()) {
                     if (methodInstance.getLine() == elementData.getLine()) {
                         return testData.getAllMethods().stream()
                                 .filter(element -> !excludeLines.contains(element.getLine()))
                                 .collect(Collectors.toList());
                     } else {
-                        for (var statementInstance : methodInstance.getStatements()) {
+                        for (var statementInstance : methodInstance.getElements()) {
                             if (statementInstance.getLine() == elementData.getLine()) {
                                 return testData.getAllStatements().stream()
                                         .filter(element -> !excludeLines.contains(element.getLine()))

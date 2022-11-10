@@ -24,15 +24,41 @@ public interface ITestData {
 
     void setWong2(double wong2);
 
+    double getDstar();
+
+    void setDstar(double dstar);
+
     int getRank();
 
     void setRank(int rank);
 
     boolean isFaulty();
 
+    String getRelativePath();
+
+    void setRelativePath(String path);
+
+
+    int getSuperLine();
+
+    void setSuperLine(int superLine);
+
+    String getSuperName();
+
+    void setSuperName(String superName);
+
+
+    int getLevel();
+
     void setFaulty(boolean faulty);
+
     List<ITestData> getCloseContext();
 
+    List<ITestData> getFarContext();
+
+
     List<ITestData> getOtherContext();
+
+    List<ITestData> getElements();
 
 }

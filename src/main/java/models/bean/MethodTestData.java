@@ -3,33 +3,75 @@ package models.bean;
 import java.util.ArrayList;
 import java.util.List;
 import models.bean.context.CloseContext;
+import models.bean.context.FarContext;
 import models.bean.context.OtherContext;
 
 public class MethodTestData implements ITestData {
 
     private String name;
+    private String className;
+    private int classLine;
+    private String relativePath;
     private int line;
     private double tarantula;
     private double ochiai;
     private double wong2;
+    private double dstar;
     private int rank;
     private boolean faulty;
-    private ArrayList<StatementTestData> statements;
+    private ArrayList<ITestData> statements;
     private CloseContext closeContext;
     private OtherContext otherContext;
+    private FarContext farContext;
+
+
+
 
     public MethodTestData() {
         name = "";
+        className = "";
+        relativePath = "";
         line = 0;
         tarantula = 0;
         ochiai = 0;
         wong2 = 0;
+        dstar = 0;
         rank = 0;
         faulty = false;
         statements = new ArrayList<>();
         closeContext = new CloseContext(this);
         otherContext = new OtherContext(this);
+        farContext = new FarContext(this);
     }
+
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
+    }
+
+    @Override
+    public int getSuperLine() {
+        return classLine;
+    }
+
+    @Override
+    public void setSuperLine(int superLine) {
+        classLine = superLine;
+    }
+
+    @Override
+    public String getSuperName() {
+        return className;
+    }
+
+    @Override
+    public void setSuperName(String superName) {
+        className = superName;
+    }
+
 
     /**
      * This represents the name of the method in the python file.
@@ -116,6 +158,24 @@ public class MethodTestData implements ITestData {
         this.wong2 = wong2;
     }
 
+    /**
+     * This provides the wong2 score of the class.
+     *
+     * @return the score
+     */
+    public double getDstar() {
+        return dstar;
+    }
+
+    /**
+     * This method sets the wong2 score for the class object.
+     *
+     * @param wong2 score, a double type number
+     */
+    public void setDstar(double wong2) {
+        this.dstar = dstar;
+    }
+
 
     public int getRank() {
         return rank;
@@ -134,6 +194,11 @@ public class MethodTestData implements ITestData {
         return faulty;
     }
 
+    @Override
+    public int getLevel() {
+        return 2;
+    }
+
     /**
      * Sets the faulty parameter of the class object.
      */
@@ -150,12 +215,19 @@ public class MethodTestData implements ITestData {
         return (List<ITestData>) otherContext.getOtherContext();
     }
 
+    @Override
+    public List<ITestData> getElements() {
+        return statements;
+    }
+
+    public List<ITestData> getFarContext(){return farContext.getFarContextForMethodLevel();}
+
     /**
      * This provides the statemets that belong to this method.
      *
      * @return a list of statements
      */
-    public ArrayList<StatementTestData> getStatements() {
-        return statements;
-    }
+//    public ArrayList<StatementTestData> getStatements() {
+//        return statements;
+//    }
 }
