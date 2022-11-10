@@ -28,18 +28,25 @@ public class FlServiceImpl {
 
     /**
      * This calls the subprocess of executing the call graph
-     * @param callGraphScriptName
+     * @param pyflPath
      * @param projectPath
      * @param mainFileName
      * @param pythonBinPath
      * @return
      */
-    public ProcessResultData executeCallGraph(String callGraphScriptName, String projectPath, Object mainFileName, String pythonBinPath) {
+    public ProcessResultData executeCallGraph(String pyflPath, String projectPath, Object mainFileName, String pythonBinPath) {
         String command = "";
-        if (SystemUtils.IS_OS_WINDOWS) {
-            command = "\"" + pythonBinPath + "\" " + "\"" + callGraphScriptName + "\" " + "\"" + projectPath + "\" " + "\"" + mainFileName + "\" " + " -cg";
-    }
 
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " +
+                    "\"" + pyflPath + "\" -d " +
+                    "\"" + projectPath + "\"" +
+                    " -cg";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
+                    pyflPath.replaceAll(" ", "\\ ") + " -d " +
+                    projectPath.replaceAll(" ", "\\ ") + " -cg";
+        }
         return executeCommand(command);
     }
 
@@ -78,6 +85,22 @@ public class FlServiceImpl {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     pyflPath.replaceAll(" ", "\\ ") + " -d " +
                     projectPath.replaceAll(" ", "\\ ") + " -fl";
+        }
+
+        return executeCommand(command);
+    }
+
+    public ProcessResultData executeSunburst(String pythonBinPath, String pyflPath, String projectPath) {
+        String command = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " +
+                    "\"" + pyflPath + "\" -d " +
+                    "\"" + projectPath + "\"" +
+                    " -vs";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
+                    pyflPath.replaceAll(" ", "\\ ") + " -d " +
+                    projectPath.replaceAll(" ", "\\ ") + " -vs";
         }
 
         return executeCommand(command);

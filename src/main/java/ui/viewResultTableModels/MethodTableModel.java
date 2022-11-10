@@ -18,7 +18,7 @@ public class MethodTableModel extends AbstractTableModel {
     public static final int FILE_NAME_COLUMN_INDEX = 0;
     public static final int NAME_COLUMN_INDEX = 1;
     public static final int SCORE_COLUMN_INDEX = 2;
-    public static final int RANK_COLUMN_INDEX = 3;
+    public static final int LINE_COLUMN_INDEX = 3;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
 
@@ -101,7 +101,7 @@ public class MethodTableModel extends AbstractTableModel {
             case NAME_COLUMN_INDEX:
                 return String.class;
             case SCORE_COLUMN_INDEX:
-            case RANK_COLUMN_INDEX:
+            case LINE_COLUMN_INDEX:
                 return Double.class;
             default:
                 return Object.class;
@@ -135,7 +135,7 @@ public class MethodTableModel extends AbstractTableModel {
                 } else {
                     return -1;
                 }
-            case RANK_COLUMN_INDEX:
+            case LINE_COLUMN_INDEX:
                 /*if(selectedRankType.equals(Resources.get("titles", "average_button"))){
                     return tableDataAtRowIndex.getAvgRank();
                 }else if (selectedRankType.equals(Resources.get("titles", "minimum_button"))){

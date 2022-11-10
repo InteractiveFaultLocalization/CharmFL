@@ -22,14 +22,14 @@ public class PluginCallGraph extends DumbAwareAction {
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        String mainFileName = JOptionPane.showInputDialog(Resources.get("errors", "enter_main_file_message"));
+        //String mainFileName = JOptionPane.showInputDialog(Resources.get("errors", "enter_main_file_message"));
         ProgressManager.getInstance().run(new RunCallGraphRunnable(e.getProject(), PluginModule.getPluginName(),
-                FileEditorManager.getInstance(e.getProject()).getSelectedTextEditor(), mainFileName));
+                FileEditorManager.getInstance(e.getProject()).getSelectedTextEditor(), ""));
         try {
             Thread.sleep(3000);
         } catch (InterruptedException z) {
             Thread.currentThread().interrupt();
         }
-        //new CallGraphView("",e.getProject()).show();
+        new PopUpView("static_call_graph.html").show();
     }
 }

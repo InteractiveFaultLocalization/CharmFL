@@ -184,13 +184,13 @@ public class ViewResult extends DialogWrapper {
                 ClassTableModel.FILE_NAME_COLUMN_INDEX,
                 ClassTableModel.NAME_COLUMN_INDEX,
                 ClassTableModel.SCORE_COLUMN_INDEX,
-                ClassTableModel.RANK_COLUMN_INDEX);
+                ClassTableModel.LINE_COLUMN_INDEX);
         this.methodViewTable = createSubViewTable(
                 methodTableModel,
                 methodTableModel.FILE_NAME_COLUMN_INDEX,
                 MethodTableModel.NAME_COLUMN_INDEX,
-                MethodTableModel.RANK_COLUMN_INDEX,
-                MethodTableModel.SCORE_COLUMN_INDEX);
+                MethodTableModel.SCORE_COLUMN_INDEX,
+                MethodTableModel.LINE_COLUMN_INDEX);
         this.statementViewTable = createSubViewTable(
                 statementTableModel,
                 statementTableModel.NAME_COLUMN_INDEX,

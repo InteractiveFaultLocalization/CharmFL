@@ -25,7 +25,7 @@ public class RunCallGraphRunnable extends Task.Backgroundable implements Progres
         super(project, title, false);
         this.project = project;
         this.editor = editor;
-        this.mainFileName = mainFileName;
+        this.mainFileName = "";
     }
 
     @Override
@@ -184,11 +184,12 @@ public class RunCallGraphRunnable extends Task.Backgroundable implements Progres
         progressIndicator.setText(Resources.get("states", "running_call_graph"));
 
         flService.executeCallGraph(
-                PluginModule.getCallGraphScriptName(),
+                PluginModule.getPyflBinPath(),
                 ProjectModule.getProjectPath(),
                 mainFileName,
                 PluginModule.getPythonBinPath());
     }
+
 
     @Override
     public void finish(ProgressIndicator progressIndicator) {

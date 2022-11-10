@@ -44,13 +44,13 @@ This is aggregated down to statement level, i.e. for each statement in the metho
 - Click on Plugins
 - Click on the Gear Icon
 - Select "Install Plugin from Disk..."
-- Select <path-to-charmfl-zip>/CharmFL-1.3.0.zip
+- Select <path-to-charmfl-zip>/CharmFL-1.6.5.zip
 
 # Main features
 - Run Fault Localization on 3 different granularities (statement, method, class)
-- Change metrics (Tarantula, DStar, Ochiai, Wong2)
+- Change metrics (Tarantula, Ochiai)
 - Change tie strategy for ranking
 - Generate the static call-graph for your python project
   - CharmFL highlights the far context for the selected method
-- Sunburst visualization 
 - Heatmap visualization
+- Interact with the Fault Localization algorithm

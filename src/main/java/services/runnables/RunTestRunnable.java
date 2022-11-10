@@ -116,6 +116,9 @@ public class RunTestRunnable extends Task.Backgroundable implements Progress {
             flService.setTestDataCollecting(false);
             return;
         }
+
+        executeVisualizing(flService, progressIndicator);
+
         flService.setTestDataCollected(true);
 
         ApplicationManager.getApplication().invokeLater(new EditorColorRunnable(editor));
@@ -310,6 +313,8 @@ public class RunTestRunnable extends Task.Backgroundable implements Progress {
         return processResultData;
     }
 
+
+
     /**
      * Checks whether the fault localization process were successful
      *
@@ -412,6 +417,17 @@ public class RunTestRunnable extends Task.Backgroundable implements Progress {
         flService.setTestData(flService.parseTestDataJSON(lines));
     }
 
+
+    public ProcessResultData executeVisualizing(FlServiceImpl flService, ProgressIndicator progressIndicator) {
+        progressIndicator.setText("Visualizing data...");
+
+        ProcessResultData processResultData = flService.executeSunburst(
+                PluginModule.getPythonBinPath(),
+                PluginModule.getPyflBinPath(),
+                ProjectModule.getProjectPath());
+
+        return processResultData;
+    }
     /**
      * This method sets the background task to finish
      *
