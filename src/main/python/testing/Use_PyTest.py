@@ -19,7 +19,7 @@ class Use_Pytest(Test_Utils):
     def __init__(self, project_path):
         self.project_path = project_path
 
-    def run_tests(self):
+    def run_tests(self, venv_path):
         test_folder, tests_folder, test_files, tests_files = super(Use_Pytest, self).get_test_files(self.project_path)
 
         pytest_args = ["-v",  "--json-report"]
@@ -28,14 +28,21 @@ class Use_Pytest(Test_Utils):
         for file in test_files:
             pytest_args.append(self.project_path + os.path.sep + test_folder + os.path.sep + file)
 
-        cov = Coverage(config_file=True)
-        cov.erase()
-        cov.set_option("run:dynamic_context", "test_function")
-        cov.start()
-        pytest.main(pytest_args)
-        cov.stop()
-        cov.save()
-        os.system("coverage combine")
+        current_test_folder = test_folder if test_folder != '' else tests_folder
+        cmd = self.project_path + venv_path + "coverage run -m pytest --json-report "+str(current_test_folder)
+        print("-------------> ", current_test_folder)
+        print("-------------> ", cmd)
+        sp.call(cmd, shell=True)
+        # cov = Coverage()
+        # cov.erase()
+        # cov.set_option("run:dynamic_context", "test_function")
+        # cov.start()
+        # pytest.main(pytest_args)
+        # cov.stop()
+        # cov.save()
+        # sp.call("coverage combine")
+
+        sp.call(self.project_path + venv_path +"coverage combine", shell=True)
 
 
         self.__get_test_results_from_json(self.results_dict)

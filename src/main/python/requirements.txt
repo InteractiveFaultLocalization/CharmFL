@@ -1,7 +1,11 @@
 pytest
 coverage
 configparser
-pyan3
+pyan3==1.1.1
 pytest-cov>=2.10.1
 pytest-json-report
 IPython
+networkx
+plotly
+numpy
+pandas

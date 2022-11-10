@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 path = Path(__file__).parent.resolve()
 sys.path.append(str(path.parent.absolute()))
 
@@ -29,8 +30,8 @@ class TestMetrics(unittest.TestCase):
             'C:\\Users\\user\\Documents\\test_me\\example.py::3': {'ef': 2, 'ep': 1, 'nf': 1, 'np': 1}}
         self.metrics.create_scores_from(spectra_object)
         self.assertEqual(
-            {'C:\\Users\\user\\Documents\\test_me\\example.py::6': {'tar': 0.67, 'och': 0.87, 'wong2': 2.0},
-             'C:\\Users\\user\\Documents\\test_me\\example.py::3': {'tar': 0.57, 'och': 0.67, 'wong2': 1.0}},
+            {'C:\\Users\\user\\Documents\\test_me\\example.py::6': {'tar': 0.67, 'och': 0.87, 'wong2': 2.0, "dstar": 9.0},
+             'C:\\Users\\user\\Documents\\test_me\\example.py::3': {'tar': 0.57, 'och': 0.67, 'wong2': 1.0, "dstar": 2.0}},
             self.metrics.get_scores())
 
     def testGetMethodScores(self):
@@ -40,7 +41,8 @@ class TestMetrics(unittest.TestCase):
         self.metrics.create_scores_from(spectra_object)
         self.assertEqual({'C:\\Users\\user\\Documents\\test_me\\example.py::my_method::6::10': {'tar': 0.67,
                                                                                                 'och': 0.87,
-                                                                                                'wong2': 2.0}},
+                                                                                                'wong2': 2.0,
+                                                                                                'dstar': 9.0}},
                          self.metrics.get_scores())
 
 

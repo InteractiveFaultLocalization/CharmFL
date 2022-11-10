@@ -252,3 +252,6 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+# Test project
+test_project/**

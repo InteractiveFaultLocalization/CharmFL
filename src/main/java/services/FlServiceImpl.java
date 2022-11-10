@@ -79,6 +79,7 @@ public class FlServiceImpl {
                     pyflPath.replaceAll(" ", "\\ ") + " -d " +
                     projectPath.replaceAll(" ", "\\ ") + " -fl";
         }
+
         return executeCommand(command);
     }
 
@@ -156,17 +157,17 @@ public class FlServiceImpl {
      * @return
      */
     public TestData parseTestDataJSON(ArrayList<String> lines) {
-        TestData testData = new TestData();
+        TestData testData = TestData.getInstance();
         String json = String.join(" ", lines);
         JSONObject jsonObject = new JSONObject(json);
 
         JSONObject fileObject, classObject, methodObject, statementObject;
         String name;
         int line;
-        double tarantula, ochiai, wong2;
+        double tarantula, ochiai, wong2, dstar;
         int rank;
         boolean faulty;
-        String relativePath;
+        String relativePath = "" ;
         ClassTestData classTestData;
         MethodTestData methodTestData;
         StatementTestData statementTestData;
@@ -177,7 +178,7 @@ public class FlServiceImpl {
             fileObject = filesArray.getJSONObject(i);
             classesArray = fileObject.getJSONArray("classes");
             relativePath = fileObject.getString("relativePath");
-
+            //TestData.getInstance(relativePath);
             for (int j = 0; j < classesArray.length(); j++) {
                 classObject = classesArray.getJSONObject(j);
                 name = classObject.getString("name");
@@ -197,8 +198,15 @@ public class FlServiceImpl {
                 }
                 if (classObject.has("wong2")) {
                     wong2 = classObject.getDouble("wong2");
-                } else {
+                }
+                else {
                     wong2 = 0;
+                }
+                if (classObject.has("dstar")) {
+                    dstar = classObject.getDouble("dstar");
+                }
+                else {
+                    dstar = 0;
                 }
                 if (classObject.has("rank")) {
                     rank = classObject.getInt("rank");
@@ -217,6 +225,7 @@ public class FlServiceImpl {
                 classTestData.setTarantula(tarantula);
                 classTestData.setOchiai(ochiai);
                 classTestData.setWong2(wong2);
+                classTestData.setDstar(dstar);
                 classTestData.setRank(rank);
                 classTestData.setFaulty(faulty);
                 classTestData.setRelativePath(relativePath);
@@ -244,6 +253,11 @@ public class FlServiceImpl {
                     } else {
                         wong2 = 0;
                     }
+                    if (methodObject.has("dstar")) {
+                        dstar = methodObject.getDouble("dstar");
+                    } else {
+                        dstar = 0;
+                    }
                     if (methodObject.has("rank")) {
                         rank = methodObject.getInt("rank");
                     } else {
@@ -257,10 +271,14 @@ public class FlServiceImpl {
 
                     methodTestData = new MethodTestData();
                     methodTestData.setName(name);
+                    methodTestData.setRelativePath(relativePath);
+                    methodTestData.setSuperName(classTestData.getName());
                     methodTestData.setLine(line);
+                    methodTestData.setSuperLine(classTestData.getLine());
                     methodTestData.setTarantula(tarantula);
                     methodTestData.setOchiai(ochiai);
                     methodTestData.setWong2(wong2);
+                    methodTestData.setDstar(dstar);
                     methodTestData.setRank(rank);
                     methodTestData.setFaulty(faulty);
 
@@ -271,6 +289,7 @@ public class FlServiceImpl {
                         tarantula = statementObject.getDouble("tar");
                         ochiai = statementObject.getDouble("och");
                         wong2 = statementObject.getDouble("wong2");
+                        dstar = statementObject.getDouble("dstar");
                         if (statementObject.has("rank")) {
                             rank = statementObject.getInt("rank");
                         } else {
@@ -280,24 +299,27 @@ public class FlServiceImpl {
 
                         statementTestData = new StatementTestData();
                         statementTestData.setClassName(classTestData.getName());
-                        statementTestData.setMethodName(methodTestData.getName());
+                        statementTestData.setSuperName(methodTestData.getName());
                         statementTestData.setLine(line);
+                        statementTestData.setRelativePath(relativePath);
+                        statementTestData.setSuperLine(methodTestData.getLine());
                         statementTestData.setTarantula(tarantula);
                         statementTestData.setOchiai(ochiai);
                         statementTestData.setWong2(wong2);
+                        statementTestData.setDstar(dstar);
                         statementTestData.setRank(rank);
                         statementTestData.setFaulty(faulty);
 
-                        methodTestData.getStatements().add(statementTestData);
+                        methodTestData.getElements().add(statementTestData);
                     }
 
-                    classTestData.getMethods().add(methodTestData);
+                    classTestData.getElements().add(methodTestData);
                 }
 
                 testData.getClasses().add(classTestData);
             }
         }
-
+        testData = TestData.getInstance(relativePath);
         return testData;
     }
 
@@ -328,12 +350,12 @@ public class FlServiceImpl {
                 if (e.getManager() != null) {
                     Editor editor = e.getManager().getSelectedTextEditor();
                     if (editor != null) {
-                        ColorService colorService = new ColorService();
-                        colorService.setEditor(editor);
-                        colorService.removeColorsByEditor();
+//                        ColorService colorService = new ColorService();
+//                        colorService.setEditor(editor);
+//                        colorService.removeColorsByEditor();
                         if (testDataCollected) {
                             String relativeFilePath = parseRelativeFilePath(e.getNewFile().getPath(), ProjectModule.getProjectPath());
-                            colorService.setColorsByEditor(testData, relativeFilePath);
+                            //colorService.setColorsByEditor(testData, relativeFilePath);
                         }
                     }
                 }

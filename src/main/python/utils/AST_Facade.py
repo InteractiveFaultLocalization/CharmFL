@@ -40,6 +40,7 @@ class AST_Facade():
         :return: a set of methods or classes
         """
         with open(filename) as file:
+            print(filename)
             node = ast.parse(file.read())
             functions = self.__get_elements_of_list(node, ast.FunctionDef)
             classes = self.__get_elements_of_list(node, ast.ClassDef)

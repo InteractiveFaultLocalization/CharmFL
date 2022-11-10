@@ -3,13 +3,13 @@ package ui.viewResultTableModels;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
 import org.jetbrains.annotations.Nls;
 
 import models.bean.*;
 
-public class TreeTableModel implements TableModel {
+public class TreeTableModel extends AbstractTableModel {
     private static final ImageIcon TABLE_ARROW_DOWN_ICON = new ImageIcon(TreeTableModel.class.getClassLoader().getResource("table-icons/arrow-down.png"));
     private static final ImageIcon TABLE_OPEN_EDITOR_ICON = new ImageIcon(TreeTableModel.class.getClassLoader().getResource("table-icons/open-editor.png"));
     private static final String[] columnNames = {"Name", "Line", "Action"};
@@ -23,6 +23,7 @@ public class TreeTableModel implements TableModel {
 
 
     public static final String TABLE_ROW_IDENT_PREFIX = "    ";
+
 
     public TreeTableModel(TestData testData) {
         parseData(testData);
@@ -67,7 +68,7 @@ public class TreeTableModel implements TableModel {
                         continue;
                     this.tableDataList.add(classTableData);
 
-                    for (MethodTestData methodData : classData.getMethods()) {
+                    for (ITestData methodData : classData.getElements()) {
                         TableData methodTableData = new TableData();
                         methodTableData.setName(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + methodData.getName());
                         methodTableData.setPath(relativePath);
@@ -80,7 +81,7 @@ public class TreeTableModel implements TableModel {
                         methodTableData.setLevel(TableData.METHOD_LEVEL);
                         this.tableDataList.add(methodTableData);
 
-                        for (StatementTestData statementData : methodData.getStatements()) {
+                        for (ITestData statementData : methodData.getElements()) {
                             TableData thirdData = new TableData();
                             thirdData.setName("");
                             thirdData.setPath(TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + TABLE_ROW_IDENT_PREFIX + relativePath);

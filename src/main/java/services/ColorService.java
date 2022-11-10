@@ -69,9 +69,9 @@ public class ColorService {
         if (testData != null) {
             for (int i = 0; i < testData.getClasses().size(); i++) {
                 if (testData.getClasses().get(i).getRelativePath().equals(path)) {
-                    for (int j = 0; j < testData.getClasses().get(i).getMethods().size(); j++) {
-                        for (int k = 0; k < testData.getClasses().get(i).getMethods().get(j).getStatements().size(); k++) {
-                            var statement = testData.getClasses().get(i).getMethods().get(j).getStatements().get(k);
+                    for (int j = 0; j < testData.getClasses().get(i).getElements().size(); j++) {
+                        for (int k = 0; k < testData.getClasses().get(i).getElements().get(j).getElements().size(); k++) {
+                            var statement = testData.getClasses().get(i).getElements().get(j).getElements().get(k);
                             statementNumber = statement.getLine();
                             if (PluginModule.isTarantulaSelected()) {
                                 score = statement.getTarantula();

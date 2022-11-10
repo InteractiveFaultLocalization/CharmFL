@@ -4,21 +4,21 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.event.*;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
 import modules.PluginModule;
 import org.jetbrains.annotations.Nls;
 
 import models.bean.*;
 import services.RankingService;
-import services.Resources;
 
-public class MethodTableModel implements TableModel {
-    private static final String[] columnNames = {"Name", "Score", "Rank"};
+public class MethodTableModel extends AbstractTableModel {
+    private static final String[] columnNames = {"File name", "Method name", "Score", "Line"};
 
-    public static final int NAME_COLUMN_INDEX = 0;
-    public static final int SCORE_COLUMN_INDEX = 1;
-    public static final int RANK_COLUMN_INDEX = 2;
+    public static final int FILE_NAME_COLUMN_INDEX = 0;
+    public static final int NAME_COLUMN_INDEX = 1;
+    public static final int SCORE_COLUMN_INDEX = 2;
+    public static final int RANK_COLUMN_INDEX = 3;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
 
@@ -38,9 +38,9 @@ public class MethodTableModel implements TableModel {
         for (ClassTestData classData : data.getClasses()) {
             String relativePath = classData.getRelativePath();
 
-            for (MethodTestData methodData : classData.getMethods()) {
+            for (ITestData methodData : classData.getElements()) {
                 TableData methodTableData = new TableData();
-                methodTableData.setName(relativePath + File.separator + methodData.getName());
+                methodTableData.setName(methodData.getSuperName() + File.separator + methodData.getName());
                 methodTableData.setPath(relativePath);
                 methodTableData.setLine(methodData.getLine());
                 methodTableData.setTarantulaScore(methodData.getTarantula());
@@ -97,6 +97,7 @@ public class MethodTableModel implements TableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
+            case FILE_NAME_COLUMN_INDEX:
             case NAME_COLUMN_INDEX:
                 return String.class;
             case SCORE_COLUMN_INDEX:
@@ -116,12 +117,14 @@ public class MethodTableModel implements TableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         TableData tableDataAtRowIndex = tableDataList.get(rowIndex);
         switch (columnIndex) {
-            case NAME_COLUMN_INDEX:
-                if (tableDataAtRowIndex.getLevel() == TableData.STATEMENT_LEVEL) {
+            case FILE_NAME_COLUMN_INDEX:
                     return tableDataAtRowIndex.getPath();
-                } else {
+
+
+            case NAME_COLUMN_INDEX:
+
                     return tableDataAtRowIndex.getName();
-                }
+
             case SCORE_COLUMN_INDEX:
                 if (spectraMetrics.equals(" (Tarantula)")) {
                     return tableDataAtRowIndex.getTarantulaScore();
@@ -133,7 +136,7 @@ public class MethodTableModel implements TableModel {
                     return -1;
                 }
             case RANK_COLUMN_INDEX:
-                if(selectedRankType.equals(Resources.get("titles", "average_button"))){
+                /*if(selectedRankType.equals(Resources.get("titles", "average_button"))){
                     return tableDataAtRowIndex.getAvgRank();
                 }else if (selectedRankType.equals(Resources.get("titles", "minimum_button"))){
                     return tableDataAtRowIndex.getMinRank();
@@ -141,7 +144,8 @@ public class MethodTableModel implements TableModel {
                     return tableDataAtRowIndex.getMaxRank();
                 }else {
                     return -1;
-                }
+                }*/
+                return tableDataAtRowIndex.getLine();
             default:
                 return "";
         }

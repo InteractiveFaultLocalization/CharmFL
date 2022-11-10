@@ -58,8 +58,8 @@ public class AdvancedOptions extends DialogWrapper {
         dialogPanel.add(spectraMetricsLabel);
         dialogPanel.add(tarantulaRadioButton);
         dialogPanel.add(ochiaiRadioButton);
-        dialogPanel.add(dStarRadioButton);
-        dialogPanel.add(wong2RadioButton);
+        //dialogPanel.add(dStarRadioButton);
+        //dialogPanel.add(wong2RadioButton);
 
         JLabel ranksLabel = new JLabel(Resources.get("titles", "ranks_label"));
         ranksLabel.setBorder(new EmptyBorder(10, 0, 5, 0));

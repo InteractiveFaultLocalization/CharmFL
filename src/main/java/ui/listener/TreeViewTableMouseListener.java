@@ -1,42 +1,26 @@
-package ui;
+package ui.listener;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.editor.VisualPosition;
-import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
 
 import static ui.viewResultTableModels.TreeTableModel.*;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
-
-import modules.PluginModule;
 import modules.ProjectModule;
-import services.runnables.RunAddHighlightToCallGraphRunnable;
 import ui.viewResultTableModels.TreeTableModel;
 
-import com.intellij.openapi.progress.ProgressManager;
-
-import java.lang.Thread;
-
-public final class TreeViewTableMouseListener extends MouseInputAdapter {
-    private final JTable resultTable;
-    private final TreeTableModel tableModel;
-
+public final class TreeViewTableMouseListener extends AbstractTableMouseListener {
     public TreeViewTableMouseListener(JTable resultTable, TreeTableModel tableModel) {
-        this.resultTable = resultTable;
-        this.tableModel = tableModel;
+        super(resultTable, tableModel);
     }
-
     /**
      * If you click once on a row in the table then the highlight is shown
      * If you click twice on a row then it opens the file in the editor
@@ -70,4 +54,5 @@ public final class TreeViewTableMouseListener extends MouseInputAdapter {
 
         }
     }
+
 }

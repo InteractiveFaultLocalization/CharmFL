@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2c5d45f7-704c-4c0e-9016-aff925b52df5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/main/python/test/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/main/python/test/test_metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/python/test/test_metrics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/main/python/test/test_spectrum.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/python/test/test_spectrum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/directory/example2.py" beforeDir="false" afterPath="$PROJECT_DIR$/directory/example2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example.py" beforeDir="false" afterPath="$PROJECT_DIR$/example.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/ScoresFloatingWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/ScoresFloatingWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/panels/ScorePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/panels/ScorePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.report.json" beforeDir="false" afterPath="$PROJECT_DIR$/.report.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results.json" beforeDir="false" afterPath="$PROJECT_DIR$/results.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
