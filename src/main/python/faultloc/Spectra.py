@@ -21,9 +21,14 @@ class Spectra:
             for code_element, covered_tests in cov_elements.items():
                 ef, ep = 0, 0
                 for test in covered_tests:
-                    if test in test_result:
-                        ef = ef + 1 if test_result[test] == "FAILED" else ef
-                        ep = ep + 1 if test_result[test] == "PASSED" else ep
+                    #if test in test_result:
+                    counted_tests = [t for t in test_result if str(t).endswith(test)]
+                    if len(counted_tests) == 1:
+                        ef = ef + 1 if test_result[counted_tests[0]] == "FAILED" else ef
+                        ep = ep + 1 if test_result[counted_tests[0]] == "PASSED" else ep
+                    else:
+                        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                        print(test)
                 nf = number_of_fails - ef
                 np = number_of_pass - ep
                 self.spectrum[str(file)+self.SEPARATOR_CHARACTER+str(code_element)] = {"ef": ef, "ep":ep, "nf":nf,"np":np}

@@ -1,5 +1,6 @@
 import coverage
 import os
+import fnmatch
 
 
 class Line_Coverage():
@@ -8,9 +9,17 @@ class Line_Coverage():
     def __init__(self):
         pass
 
+    def getCoveragePath(self):
+        project_path = os.getcwd()
+        for root, dirnames, filenames in os.walk(project_path):
+            for filename in fnmatch.filter(filenames, '*.coverage'):
+                print(os.path.abspath(os.path.join(root, filename)))
+                return os.path.abspath(os.path.join(root, filename))
+
 
     def get_coverage_with_context(self):
-        covdb = coverage.CoverageData()
+        cov_path = self.getCoveragePath()
+        covdb = coverage.CoverageData(basename=cov_path)
 
         covdb.read()
         measured_files = covdb.measured_files()

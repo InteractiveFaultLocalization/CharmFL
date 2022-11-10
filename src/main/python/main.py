@@ -1,5 +1,6 @@
 import os
 import argparse
+import platform
 
 from cov.Class_Coverage import Class_Coverage
 from cov.Line_Coverage import Line_Coverage
@@ -24,7 +25,7 @@ from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVER
 
 def main():
     parser = argparse.ArgumentParser(add_help=False)
-    parser.version = '1.5'
+    parser.version = 'CharmFL 1.6.5'
     parser.add_argument("-d", "--directory", action="store", metavar="PROJECT_DIRECTORY",
                         help="Project directory absolute path.", required=True)
     parser.add_argument("-fl", "--FaultLoc", help="To start the Fault Localization process", action="store_true")
@@ -41,32 +42,39 @@ def main():
 
     args = vars(parser.parse_args())
     plugin_path = os.path.dirname(os.path.abspath(__file__))
+    venv_path = ""
+    if (platform.system() == "Linux"):
+        venv_path = venv_path + "/bin" + os.path.sep
+    if(platform.system() == "Windows"):
+        venv_path = venv_path + "/venv" + os.path.sep + "Scripts" + os.path.sep
     project_path = args["directory"]
     os.chdir(project_path)
     if (args["FaultLoc"] == True):
         tests = Use_Pytest(project_path)
-        tests.run_tests()
+        tests.run_tests(venv_path)
         line_cov = Line_Coverage()
         line_spectra = Spectra()
         line_metrics = Metrics()
+        line_spectra.create_spectrum_from(line_cov, tests)
+        line_metrics.create_scores_from(line_spectra)
+
         method_cov = Method_Coverage()
         method_spectra = Spectra()
         method_metrics = Metrics()
-        class_cov = Class_Coverage()
-        class_spectra = Spectra()
-        class_metrics = Metrics()
-        result_builder = Result_Builder()
-
-        line_spectra.create_spectrum_from(line_cov, tests)
-        line_metrics.create_scores_from(line_spectra)
         method_cov.set_base_coverage(line_cov) \
-            .make_coverage_with_context()
-        class_cov.set_base_coverage(line_cov) \
             .make_coverage_with_context()
         method_spectra.create_spectrum_from(method_cov, tests)
         method_metrics.create_scores_from(method_spectra)
+
+        class_cov = Class_Coverage()
+        class_spectra = Spectra()
+        class_metrics = Metrics()
+        class_cov.set_base_coverage(line_cov) \
+            .make_coverage_with_context()
         class_spectra.create_spectrum_from(class_cov, tests)
         class_metrics.create_scores_from(class_spectra)
+
+        result_builder = Result_Builder()
         result_builder.set_path_to_root(project_path)\
             .set_line_scores(line_metrics.get_scores()) \
             .set_method_scores(method_metrics.get_scores()) \
