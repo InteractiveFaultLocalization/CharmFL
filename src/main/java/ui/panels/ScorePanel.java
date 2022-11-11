@@ -72,7 +72,11 @@ public class ScorePanel extends JPanel {
     }
 
     public void setLabel(String componentName) {
-        this.label.setText(componentName);
+        System.out.println("comp: "+componentName);
+        if(null != componentName)
+            this.label.setText(componentName);
+        else
+            this.label.setText("Component");
     }
 
     private void setScoreLabel() {
