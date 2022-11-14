@@ -32,7 +32,7 @@ public abstract class AbstractTableMouseListener extends MouseInputAdapter {
     }
 
     protected void updateIndicatorPanel(String path, String name, int lineNumber){
-        try {
+//        try {
             Component[] panels = (Component[]) getFloatingWindowComponent(0);
             ScorePanel cmp = (ScorePanel) panels[0];
             ScorePanel cls = (ScorePanel) panels[1];
@@ -45,9 +45,9 @@ public abstract class AbstractTableMouseListener extends MouseInputAdapter {
             cls.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.CLOSE_CONTEXT, PluginModule.getSelectedFormula());
             far.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.FAR_CONTEXT, PluginModule.getSelectedFormula());
             oth.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.OTHER, PluginModule.getSelectedFormula());
-        }catch(Exception e){
-            //This should fix any issue caused by non-existing components... for now at least...
-        }
+//        }catch(Exception e){
+//            //This should fix any issue caused by non-existing components... for now at least...
+//        }
     }
 
     protected static Object getFloatingWindowComponent(int order){

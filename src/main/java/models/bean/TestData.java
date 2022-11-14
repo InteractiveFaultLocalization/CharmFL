@@ -36,17 +36,18 @@ public class TestData {
         if (instance == null){
             instance = new TestData();
         }
-        String command = PluginModule.getPythonBinPath() + " " + PluginModule.getCallGraphEdges() +
-                " " + ProjectModule.getProjectPath() + File.separator + "**/"+relativePath +
-                " " + ProjectModule.getProjectPath() + " " + "-" + " " + PluginModule.getPythonBinPath();
-        ProcessResultData processResultData = ProcessService.executeCommand(command);
-        edgeArrayList = processResultData.getOutput();
+//        String command = "\"" + PluginModule.getPythonBinPath()  + "\""+ " \"" + PluginModule.getCallGraphEdges()+ "\"" +
+//                " " +  "\""+ProjectModule.getProjectPath() + File.separator + "**/"+relativePath +"\"" +
+//                " " + "\""+ ProjectModule.getProjectPath() + "\""+ " " + "-" + " " + "\"" + PluginModule.getPythonBinPath() + "\"";
+//        ProcessResultData processResultData = ProcessService.executeCommand(command);
+//        edgeArrayList = processResultData.getOutput();
 
         return instance;
     }
 
     public ArrayList<String> getEdgeArrayList(){
-        return edgeArrayList;
+        return new ArrayList<>();
+        //return edgeArrayList;
     }
 
     public HashMap<String, MethodTestData> makeEdgeTransformation(){

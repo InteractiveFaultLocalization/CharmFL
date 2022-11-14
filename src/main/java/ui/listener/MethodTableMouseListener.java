@@ -40,11 +40,12 @@ public class MethodTableMouseListener extends AbstractTableMouseListener {
             VirtualFile selectedFile = LocalFileSystem.getInstance().findFileByPath(fileNamePath);
             ArrayList<ITestData> methods = TestData.getInstance().getAllMethods();
             String fullName = resultTable.getValueAt(selectedRow, MethodTableModel.NAME_COLUMN_INDEX).toString();
-            String[] temp = fullName.split("\\\\");
+            // java.util.regex.PatternSyntaxException: Unexpected internal error near index 1
+            String separator = File.separator.replace("\\","\\\\");;
+            String[] temp = fullName.split(separator);
             String name = temp[temp.length - 1];
             System.out.println(methods.stream().anyMatch(x -> name.equals(x.getName())));
             MethodTestData selected = (MethodTestData) methods.stream().filter(x -> name.equals(x.getName())).collect(Collectors.toList()).get(0);
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             System.out.println(selected.getName());
             for (var a : selected.getFarContext()) {
                 System.out.println(a.getName());

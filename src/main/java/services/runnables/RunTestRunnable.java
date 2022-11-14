@@ -307,9 +307,7 @@ public class RunTestRunnable extends Task.Backgroundable implements Progress {
                 PluginModule.getPythonBinPath(),
                 PluginModule.getPyflBinPath(),
                 ProjectModule.getProjectPath());
-        for (var test_info : processResultData.getOutput()){
-            progressIndicator.setText2(test_info);
-        }
+
         return processResultData;
     }
 

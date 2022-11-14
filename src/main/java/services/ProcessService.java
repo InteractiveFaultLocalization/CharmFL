@@ -2,10 +2,9 @@ package services;
 
 import models.bean.ProcessResultData;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class ProcessService {
 
@@ -17,7 +16,7 @@ public class ProcessService {
     public static ProcessResultData executeCommand(String command) {
         try{
             Process process = Runtime.getRuntime().exec(command);
-            System.out.println(command);
+
             BufferedReader stdInput = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
 
@@ -34,6 +33,16 @@ public class ProcessService {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+
+            JTextArea ta = new JTextArea(10, 10);
+            ta.setText(command + " " + e.getMessage() + " " + e.getCause().toString());
+            ta.setWrapStyleWord(true);
+            ta.setLineWrap(true);
+            ta.setCaretPosition(0);
+            ta.setEditable(false);
+
+            JOptionPane.showMessageDialog(null, new JScrollPane(ta), "RESULT", JOptionPane.INFORMATION_MESSAGE);
+
             return null;
         }
     }

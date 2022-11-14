@@ -42,12 +42,13 @@ public class ClassTableMouseListener extends AbstractTableMouseListener{
             VirtualFile selectedFile = LocalFileSystem.getInstance().findFileByPath(fileNamePath);
             List<ClassTestData> classes = TestData.getInstance().getClasses();
             String fullName = resultTable.getValueAt(selectedRow, ClassTableModel.NAME_COLUMN_INDEX).toString();
-            String[] temp = fullName.split("\\\\");
+            String separator = File.separator.replace("\\","\\\\");
+            String[] temp = fullName.split(separator);
             String name = temp[temp.length-1];
 
             ClassTestData selected = classes.stream().filter(x -> name.equals(x.getName())).collect(Collectors.toList()).get(0);
 
-            int line = (int) resultTable.getValueAt(resultTable.getSelectedRow(), LINE_COLUMN_INDEX) - 1;
+            int line = (int) resultTable.getValueAt(resultTable.getSelectedRow(), ClassTableModel.LINE_COLUMN_INDEX) - 1;
             Project project = ProjectModule.getProject();
             FileEditorManager.getInstance(project).openFile(selectedFile, true);
             Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();

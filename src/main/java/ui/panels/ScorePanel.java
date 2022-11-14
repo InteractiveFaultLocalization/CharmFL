@@ -116,6 +116,8 @@ public class ScorePanel extends JPanel {
                     return .0;
                 }
             case OTHER:
+                ArrayList<ITestData> others = (ArrayList<ITestData>) element.getOtherContext();
+                others.forEach(e -> System.out.println(e.getRelativePath() + String.valueOf(e.getLine())));
                 return element.getOtherContext().stream().mapToDouble(x -> formulaScore(x, formula)).average().orElse(.0);
         }
     }
