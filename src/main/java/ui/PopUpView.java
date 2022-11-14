@@ -25,6 +25,7 @@ public class PopUpView extends DialogWrapper {
     @Override
     protected JComponent createCenterPanel() {
         String url = ProjectModule.getProjectPath() + File.separator + filename;
+        JOptionPane.showMessageDialog(null, url);
         System.out.println(url);
         return new JBCefBrowser(url).getComponent();
 

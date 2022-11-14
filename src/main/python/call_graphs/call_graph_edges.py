@@ -12,17 +12,16 @@ from glob import glob
 files = [fn for fn in glob(sys.argv[1], recursive=True)
          if 'venv' not in os.path.normpath(fn)]
 
-project_path = sys.argv[2]
-node = sys.argv[3]
-venv_script = sys.argv[4]
+project_path = sys.argv[3]
+node = sys.argv[4]
+venv_script = sys.argv[5]
 
 files_without_tests = []
 for file in files:
     file_name = file[file.find(project_path)+len(project_path):]
-    if "test" not in file_name:
+    if "test" not in file_name and "venv" not in file_name:
         files_without_tests.append(file)
-    if "venv" not in file_name:
-        files_without_tests.append(file)
+
 
 # call_graph = HTML(pyan.create_callgraph(filenames=files_without_tests, format='html'))
 #

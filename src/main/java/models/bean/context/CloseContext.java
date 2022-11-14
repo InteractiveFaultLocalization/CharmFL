@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import models.bean.ITestData;
 import models.bean.TestData;
 
+import javax.swing.*;
+
 public class CloseContext {
 
     ITestData elementData;
@@ -17,6 +19,8 @@ public class CloseContext {
     }
 
     public List<? extends ITestData> getCloseContext() {
+        //TODO: try to fix close context, so wide search rather than deep
+        // also it is not right, because on each level everything will be its close context
         for (var classInstance : testData.getClasses()) {
             if (classInstance.getLine() == elementData.getLine()) {
                 return testData.getClasses().stream().filter(element -> element.getLine() != classInstance.getLine()).collect(Collectors.toList());
