@@ -46,7 +46,7 @@ public class ClassTableMouseListener extends AbstractTableMouseListener{
             String[] temp = fullName.split(separator);
             String name = temp[temp.length-1];
 
-            ClassTestData selected = classes.stream().filter(x -> name.equals(x.getName())).collect(Collectors.toList()).get(0);
+            ClassTestData selected = classes.stream().filter(x -> fullName.equals(x.getName())).collect(Collectors.toList()).get(0);
 
             int line = (int) resultTable.getValueAt(resultTable.getSelectedRow(), ClassTableModel.LINE_COLUMN_INDEX) - 1;
             Project project = ProjectModule.getProject();

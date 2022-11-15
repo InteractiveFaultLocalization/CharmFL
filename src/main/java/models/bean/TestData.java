@@ -43,22 +43,9 @@ public class TestData {
 //                " " + "\""+ ProjectModule.getProjectPath() + "\""+ " " + "-" + " " + "\"" + PluginModule.getPythonBinPath() + "\"";
 
 
-        String command = PluginModule.getPythonBinPath() + " " + PluginModule.getCallGraphEdges() +
-                " " + ProjectModule.getProjectPath() + File.separator + "*.py" +
-                " " + ProjectModule.getProjectPath() + " " + "\"-\"" + " " + PluginModule.getPythonBinPath();
-
-        JTextArea ta = new JTextArea(10, 10);
-        ta.setText(command);
-        ta.setWrapStyleWord(true);
-        ta.setLineWrap(true);
-        ta.setCaretPosition(0);
-        ta.setEditable(false);
-
-        JOptionPane.showMessageDialog(null, new JScrollPane(ta), "RESULT", JOptionPane.INFORMATION_MESSAGE);
-
-        ProcessResultData processResultData = ProcessService.executeCommand(command);
-        edgeArrayList = processResultData.getOutput();
-
+//        String command = PluginModule.getPythonBinPath() + " " + PluginModule.getCallGraphEdges() +
+//                " " + ProjectModule.getProjectPath() + File.separator + "*.py" +
+//                " " + ProjectModule.getProjectPath() + " " + "\"-\"" + " " + PluginModule.getPythonBinPath();
 
         return instance;
     }

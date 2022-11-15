@@ -23,32 +23,46 @@ public class OtherContext {
 
         excludeLines.add(elementData.getLine());
         elementData.getCloseContext().stream().forEach(e -> excludeLines.add(e.getLine()));
-
-        for (var classInstance : testData.getClasses()) {
-            if (classInstance.getLine() == elementData.getLine()) {
+        excludeLines.stream().forEach(e -> System.out.println(e));
+        switch (elementData.getLevel()) {
+            case 1:
                 return testData.getClasses().stream()
                         .filter(element -> !excludeLines.contains(element.getLine()))
                         .collect(Collectors.toList());
-            } else {
-                for (var methodInstance : classInstance.getElements()) {
-                    if (methodInstance.getLine() == elementData.getLine()) {
-                        return testData.getAllMethods().stream()
-                                .filter(element -> !excludeLines.contains(element.getLine()))
-                                .collect(Collectors.toList());
-                    } else {
-                        for (var statementInstance : methodInstance.getElements()) {
-                            if (statementInstance.getLine() == elementData.getLine()) {
-                                return testData.getAllStatements().stream()
-                                        .filter(element -> !excludeLines.contains(element.getLine()))
-                                        .collect(Collectors.toList());
+            case 2:
+                return testData.getAllMethods().stream()
+                        .filter(element -> !excludeLines.contains(element.getLine()))
+                        .collect(Collectors.toList());
 
-                            }
-                        }
-                    }
-                }
-            }
+            case 3:
+                return testData.getAllStatements().stream()
+                        .filter(element -> !excludeLines.contains(element.getLine()))
+                        .collect(Collectors.toList());
+            default:
+                return null;
+//
+//        for (var classInstance : testData.getClasses()) {
+//            if (classInstance.getLine() == elementData.getLine()) {
+//                return testData.getClasses().stream()
+//                        .filter(element -> !excludeLines.contains(element.getLine()))
+//                        .collect(Collectors.toList());
+//            } else {
+//
+//                    } else {
+//                        for (var statementInstance : methodInstance.getElements()) {
+//                            if (statementInstance.getLine() == elementData.getLine()) {
+//                                return testData.getAllStatements().stream()
+//                                        .filter(element -> !excludeLines.contains(element.getLine()))
+//                                        .collect(Collectors.toList());
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return null;
         }
-        return null;
-    }
 
+    }
 }

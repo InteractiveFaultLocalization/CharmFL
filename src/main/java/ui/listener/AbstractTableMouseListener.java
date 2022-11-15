@@ -39,7 +39,7 @@ public abstract class AbstractTableMouseListener extends MouseInputAdapter {
             ScorePanel far = (ScorePanel) panels[2];
             ScorePanel oth = (ScorePanel) panels[3];
 
-            cmp.setLabel(name);
+            cmp.setLabel(name + String.valueOf(lineNumber));
 
             cmp.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.COMPONENT, PluginModule.getSelectedFormula());
             cls.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.CLOSE_CONTEXT, PluginModule.getSelectedFormula());

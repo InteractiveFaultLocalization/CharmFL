@@ -44,7 +44,7 @@ public class ClassTableModel extends AbstractTableModel {
                 String relativePath = classData.getRelativePath();
 
                 TableData classTableData = new TableData();
-                classTableData.setName(relativePath + File.separator + classData.getName());
+                classTableData.setName(classData.getName());
                 classTableData.setPath(relativePath);
                 classTableData.setLine(classData.getLine());
                 classTableData.setTarantulaScore(classData.getTarantula());
