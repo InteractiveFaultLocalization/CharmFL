@@ -1,4 +1,4 @@
-![Build ](https://github.com/SzatmariA/CharmFL-dev/actions/workflows/main.yml/badge.svg)
+![Build ](https://github.com/sed-szeged/CharmFL/actions/workflows/main.yml/badge.svg)
 
 
 ![](src/main/resources/CharmFL_logo_bare_little.png)
