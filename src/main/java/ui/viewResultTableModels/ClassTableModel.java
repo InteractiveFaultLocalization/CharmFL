@@ -14,12 +14,12 @@ import services.RankingService;
 import services.Resources;
 
 public class ClassTableModel extends AbstractTableModel {
-    private static final String[] columnNames = {"File name", "Class name", "Score", "Rank"};
+    private static final String[] columnNames = {"File name", "Class name", "Score", "Line"};
 
     public static final int FILE_NAME_COLUMN_INDEX = 0;
     public static final int NAME_COLUMN_INDEX = 1;
     public static final int SCORE_COLUMN_INDEX = 2;
-    public static final int RANK_COLUMN_INDEX = 3;
+    public static final int LINE_COLUMN_INDEX = 3;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
 
@@ -44,7 +44,7 @@ public class ClassTableModel extends AbstractTableModel {
                 String relativePath = classData.getRelativePath();
 
                 TableData classTableData = new TableData();
-                classTableData.setName(relativePath + File.separator + classData.getName());
+                classTableData.setName(classData.getName());
                 classTableData.setPath(relativePath);
                 classTableData.setLine(classData.getLine());
                 classTableData.setTarantulaScore(classData.getTarantula());
@@ -113,7 +113,7 @@ public class ClassTableModel extends AbstractTableModel {
             case NAME_COLUMN_INDEX:
                 return String.class;
             case SCORE_COLUMN_INDEX:
-            case RANK_COLUMN_INDEX:
+            case LINE_COLUMN_INDEX:
                 return Double.class;
             default:
                 return Object.class;
@@ -153,16 +153,17 @@ public class ClassTableModel extends AbstractTableModel {
                 } else {
                     return -1;
                 }
-            case RANK_COLUMN_INDEX:
-                if(selectedRankType.equals(Resources.get("titles", "average_button"))){
-                    return tableDataAtRowIndex.getAvgRank();
-                }else if (selectedRankType.equals(Resources.get("titles", "minimum_button"))){
-                    return tableDataAtRowIndex.getMinRank();
-                }else if(selectedRankType.equals(Resources.get("titles", "maximum_button"))){
-                    return tableDataAtRowIndex.getMaxRank();
-                }else {
-                    return -1;
-                }
+            case LINE_COLUMN_INDEX:
+//                if(selectedRankType.equals(Resources.get("titles", "average_button"))){
+//                    return tableDataAtRowIndex.getAvgRank();
+//                }else if (selectedRankType.equals(Resources.get("titles", "minimum_button"))){
+//                    return tableDataAtRowIndex.getMinRank();
+//                }else if(selectedRankType.equals(Resources.get("titles", "maximum_button"))){
+//                    return tableDataAtRowIndex.getMaxRank();
+//                }else {
+//                    return -1;
+//                }
+                return tableDataAtRowIndex.getLine();
             default:
                 return "";
         }

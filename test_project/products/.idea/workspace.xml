@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c5d45f7-704c-4c0e-9016-aff925b52df5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/ScoresFloatingWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/ScoresFloatingWindow.java" afterDir="false" />
+    <list default="true" id="ed7aaa8b-a418-4b44-99f3-a1d67a265ff3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../.idea/modules/CharmFL.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/modules/CharmFL.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.idea/modules/CharmFL.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/modules/CharmFL.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.run/Run IDE for UI Tests.run.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.run/Run IDE for UI Tests.run.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../../build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/actions/PluginCallGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/actions/PluginCallGraph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/actions/PluginTestRun.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/actions/PluginTestRun.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/models/bean/TestData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/models/bean/TestData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/services/FlServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/services/FlServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/listener/AbstractTableMouseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/listener/AbstractTableMouseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/listener/MethodTableMouseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/listener/MethodTableMouseListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../src/main/java/ui/panels/ScorePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/ui/panels/ScorePanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.report.json" beforeDir="false" afterPath="$PROJECT_DIR$/.report.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results.json" beforeDir="false" afterPath="$PROJECT_DIR$/results.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/products.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/products.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,27 +25,40 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectId" id="2FR72aho4cOWiA5NUFwOYUKUNK3" />
+  <component name="ProjectId" id="2HVGBq7fFMkzZtFKovJ7EIRFZwv" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/Szatmári Attila/Documents/CharmFL-dev/build/distributions/CharmFL-1.7.2.zip",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2c5d45f7-704c-4c0e-9016-aff925b52df5" name="Changes" comment="" />
-      <created>1664442837112</created>
+      <changelist id="ed7aaa8b-a418-4b44-99f3-a1d67a265ff3" name="Changes" comment="" />
+      <created>1668362706368</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1664442837112</updated>
+      <updated>1668362706368</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

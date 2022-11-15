@@ -11,12 +11,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.JBUI;
 import models.bean.ClassTestData;
 import models.bean.Formula;
-import models.bean.MethodTestData;
 import models.bean.StatementTestData;
 import models.bean.TestData;
 import modules.ProjectModule;
 import org.jetbrains.annotations.Nullable;
-import services.CallGraphEdgeData;
 import services.Resources;
 
 import javax.swing.*;
@@ -166,7 +164,7 @@ public class StatementOptions extends DialogWrapper {
                 }
             }
 
-            new CallGraphHighlightedView().show();
+            //new PopUpView().show();
         });
 
         initPanel(dialogPanel);

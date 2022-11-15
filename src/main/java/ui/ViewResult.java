@@ -1,9 +1,16 @@
 package ui;
 
+import com.intellij.ProjectTopics;
+import com.intellij.openapi.roots.ModuleRootEvent;
+import com.intellij.openapi.roots.ModuleRootListener;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.newvfs.BulkFileListener;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SearchTextField;
 import com.intellij.ui.components.JBScrollPane;
+import modules.ProjectModule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +31,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import java.awt.event.*;
+import java.util.List;
 
 import services.FlServiceImpl;
 import services.Resources;
@@ -184,13 +192,13 @@ public class ViewResult extends DialogWrapper {
                 ClassTableModel.FILE_NAME_COLUMN_INDEX,
                 ClassTableModel.NAME_COLUMN_INDEX,
                 ClassTableModel.SCORE_COLUMN_INDEX,
-                ClassTableModel.RANK_COLUMN_INDEX);
+                ClassTableModel.LINE_COLUMN_INDEX);
         this.methodViewTable = createSubViewTable(
                 methodTableModel,
                 methodTableModel.FILE_NAME_COLUMN_INDEX,
                 MethodTableModel.NAME_COLUMN_INDEX,
-                MethodTableModel.RANK_COLUMN_INDEX,
-                MethodTableModel.SCORE_COLUMN_INDEX);
+                MethodTableModel.SCORE_COLUMN_INDEX,
+                MethodTableModel.LINE_COLUMN_INDEX);
         this.statementViewTable = createSubViewTable(
                 statementTableModel,
                 statementTableModel.NAME_COLUMN_INDEX,

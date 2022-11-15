@@ -31,6 +31,8 @@ dependencies {
     implementation("org.json:json:20210307")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+    implementation ("org.slf4j:slf4j-api:1.7.30")
+    implementation ("org.slf4j:slf4j-simple:1.7.30")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin

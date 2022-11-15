@@ -11,7 +11,7 @@ from faultloc.Metrics import Metrics
 from utils.Result_Builder import Result_Builder
 
 
-# import call_graphs.statical_call_graph as cg
+import call_graphs.statical_call_graph as cg
 import sunburst_visualization_colours.sunburst as vs
 
 from constans import COVERAGE_RC_FILE_NAME
@@ -25,7 +25,7 @@ from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVER
 
 def main():
     parser = argparse.ArgumentParser(add_help=False)
-    parser.version = 'CharmFL 1.6.5'
+    parser.version = 'CharmFL 1.9.1'
     parser.add_argument("-d", "--directory", action="store", metavar="PROJECT_DIRECTORY",
                         help="Project directory absolute path.", required=True)
     parser.add_argument("-fl", "--FaultLoc", help="To start the Fault Localization process", action="store_true")
@@ -44,7 +44,7 @@ def main():
     plugin_path = os.path.dirname(os.path.abspath(__file__))
     venv_path = ""
     if (platform.system() == "Linux"):
-        venv_path = venv_path + "/bin" + os.path.sep
+        venv_path = venv_path + "/venv/bin" + os.path.sep
     if(platform.system() == "Windows"):
         venv_path = venv_path + "/venv" + os.path.sep + "Scripts" + os.path.sep
     project_path = args["directory"]

@@ -39,6 +39,8 @@ public class StatementInteractivity implements Interactivity {
     @Override
     public void recalculateCloseContextScores(ITestData statement, Double recalculationFactor, Formula formula) {
         for (var contextStatement : statement.getCloseContext()) {
+            System.out.println(contextStatement.getName());
+            System.out.println(contextStatement.getLine());
             setScore(contextStatement, recalculationFactor, formula);
         }
     }

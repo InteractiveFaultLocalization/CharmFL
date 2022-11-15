@@ -43,7 +43,9 @@ public class ScorePanel extends JPanel {
         this.score = .0;
         this.label = createLabel(label);
         this.slider = createSlider();
-        this.scale = createScalePanel();
+        if(label.equals("Far Context"))
+            this.slider.setEnabled(false);
+        this.scale = createScalePanel(label);
         this.interactivity = new StatementInteractivity();
         initComponents();
         initResponseArea();
@@ -72,7 +74,11 @@ public class ScorePanel extends JPanel {
     }
 
     public void setLabel(String componentName) {
-        this.label.setText(componentName);
+        System.out.println("comp: "+componentName);
+        if(null != componentName)
+            this.label.setText(componentName);
+        else
+            this.label.setText("Component");
     }
 
     private void setScoreLabel() {
@@ -112,6 +118,8 @@ public class ScorePanel extends JPanel {
                     return .0;
                 }
             case OTHER:
+                ArrayList<ITestData> others = (ArrayList<ITestData>) element.getOtherContext();
+                others.forEach(e -> System.out.println(e.getRelativePath() + String.valueOf(e.getLine())));
                 return element.getOtherContext().stream().mapToDouble(x -> formulaScore(x, formula)).average().orElse(.0);
         }
     }
@@ -203,9 +211,11 @@ public class ScorePanel extends JPanel {
      * @param action an ActionListener that defines which action shall the JButton perform on click
      * @return a composed JButton component with a specific name and behavior
      */
-    private JButton createButton(String name, ActionListener action) {
+    private JButton createButton(String name, ActionListener action, String label) {
         JButton button = new JButton(name);
         button.addActionListener(action);
+        if(label.equals("Far Context"))
+            button.setEnabled(false);
         //button.setPreferredSize(new Dimension(50,50));
         return button;
     }
@@ -213,14 +223,14 @@ public class ScorePanel extends JPanel {
     /**
      * @return a JPanel component which is the main area of the panel This contains the maximize/minimize buttons and the suspiciousness indicator area
      */
-    private JPanel createScalePanel() {
+    private JPanel createScalePanel(String label) {
         JPanel scalePanel = new JPanel(new BorderLayout());
         JPanel center = new JPanel(new GridLayout(1, 2));
         center.add(createResponseArea(12));
         center.add(slider);
-        scalePanel.add(createButton("Faulty", (ac -> slider.setValue(100))), BorderLayout.NORTH);
+        scalePanel.add(createButton("Max", (ac -> slider.setValue(100)), label), BorderLayout.NORTH);
         scalePanel.add(center, BorderLayout.CENTER);
-        scalePanel.add(createButton("Not Faulty", (ac -> slider.setValue(-100))), BorderLayout.SOUTH);
+        scalePanel.add(createButton("Min", (ac -> slider.setValue(-100)), label), BorderLayout.SOUTH );
 
         return scalePanel;
     }

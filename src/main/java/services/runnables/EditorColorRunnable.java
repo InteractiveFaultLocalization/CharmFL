@@ -40,9 +40,9 @@ public class EditorColorRunnable implements Runnable {
 
             ColorService colorService = new ColorService();
 
-            colorService.setEditor(editor);
-            colorService.removeColorsByEditor();
-            colorService.setColorsByEditor(flService.getTestData(), relativeFilePath);
+//            colorService.setEditor(editor);
+//            colorService.removeColorsByEditor();
+//            colorService.setColorsByEditor(flService.getTestData(), relativeFilePath);
         }
 
         flService.startFileEditorManagerListener(ProjectModule.getProject());

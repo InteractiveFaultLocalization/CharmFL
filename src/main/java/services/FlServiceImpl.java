@@ -9,6 +9,7 @@ import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBus;
 import models.bean.*;
+import modules.PluginModule;
 import org.jetbrains.annotations.NotNull;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -28,23 +29,54 @@ public class FlServiceImpl {
 
     /**
      * This calls the subprocess of executing the call graph
-     * @param callGraphScriptName
+     *
+     * @param pyflPath
      * @param projectPath
      * @param mainFileName
      * @param pythonBinPath
      * @return
      */
-    public ProcessResultData executeCallGraph(String callGraphScriptName, String projectPath, Object mainFileName, String pythonBinPath) {
+    public ProcessResultData executeCallGraph(String pyflPath, String projectPath, Object mainFileName, String pythonBinPath) {
         String command = "";
-        if (SystemUtils.IS_OS_WINDOWS) {
-            command = "\"" + pythonBinPath + "\" " + "\"" + callGraphScriptName + "\" " + "\"" + projectPath + "\" " + "\"" + mainFileName + "\" " + " -cg";
-    }
+        File file = new File(ProjectModule.getProjectPath() + File.separator +
+                "static_call_graph.html");
+        Writer fileWriter;
+        try {
+            if (!file.exists()) {
 
-        return executeCommand(command);
+                file.createNewFile();
+
+            }
+            fileWriter = new FileWriter(ProjectModule.getProjectPath() + File.separator +
+                    "static_call_graph.html", false);
+
+            if (SystemUtils.IS_OS_WINDOWS) {
+
+                command = "\"" + PluginModule.getPythonBinPath() + "\" "
+                        + "-m pyan " + ProjectModule.getProjectPath() + File.separator + "*.py --uses --no-defines --colored --grouped --annotated --html ";
+            } else if (SystemUtils.IS_OS_LINUX) {
+                command = "\"" + PluginModule.getPythonBinPath().replaceAll(" ", "\\ ") + "\" "
+                        + "-m pyan " + ProjectModule.getProjectPath() + File.separator + "*.py --uses --no-defines --colored --grouped --annotated --html";
+            }
+
+            var outputHtml = executeCommand(command).getOutput();
+            outputHtml.forEach(m -> {
+                try {
+                    fileWriter.write(m + System.lineSeparator());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+            fileWriter.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return null;
     }
 
     /**
      * This calls the subprocess of executing the call graph highlight
+     *
      * @param callGraphScriptName
      * @param projectPath
      * @param methodName
@@ -62,6 +94,7 @@ public class FlServiceImpl {
 
     /**
      * This calls the subprocess which executed the main.py
+     *
      * @param pythonBinPath
      * @param pyflPath
      * @param projectPath
@@ -83,8 +116,25 @@ public class FlServiceImpl {
         return executeCommand(command);
     }
 
+    public ProcessResultData executeSunburst(String pythonBinPath, String pyflPath, String projectPath) {
+        String command = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " +
+                    "\"" + pyflPath + "\" -d " +
+                    "\"" + projectPath + "\"" +
+                    " -vs";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
+                    pyflPath.replaceAll(" ", "\\ ") + " -d " +
+                    projectPath.replaceAll(" ", "\\ ") + " -vs";
+        }
+
+        return executeCommand(command);
+    }
+
     /**
      * This checks whether the packages are installed
+     *
      * @param pythonBinPath
      * @param pipBinPath
      * @param requirementsPath
@@ -109,6 +159,7 @@ public class FlServiceImpl {
 
     /**
      * This executes the subprocess which gets the pip path
+     *
      * @param pythonBinPath
      * @param checkPipBinPath
      * @return
@@ -127,6 +178,7 @@ public class FlServiceImpl {
 
     /**
      * This reads the file (e.g. results.json)
+     *
      * @param fileName
      * @return
      */
@@ -150,9 +202,11 @@ public class FlServiceImpl {
     }
 
     //TODO: composite design pattern
+
     /**
      * This parses the results.json to Test Data
      * Gets the classes methods and statements and make the connections.
+     *
      * @param lines the lines of the document that will be parsed
      * @return
      */
@@ -167,7 +221,7 @@ public class FlServiceImpl {
         double tarantula, ochiai, wong2, dstar;
         int rank;
         boolean faulty;
-        String relativePath = "" ;
+        String relativePath = "";
         ClassTestData classTestData;
         MethodTestData methodTestData;
         StatementTestData statementTestData;
@@ -198,14 +252,12 @@ public class FlServiceImpl {
                 }
                 if (classObject.has("wong2")) {
                     wong2 = classObject.getDouble("wong2");
-                }
-                else {
+                } else {
                     wong2 = 0;
                 }
                 if (classObject.has("dstar")) {
                     dstar = classObject.getDouble("dstar");
-                }
-                else {
+                } else {
                     dstar = 0;
                 }
                 if (classObject.has("rank")) {
@@ -339,6 +391,7 @@ public class FlServiceImpl {
 
     /**
      * Sets the file to be editable and colorable.
+     *
      * @param project
      */
     public void startFileEditorManagerListener(Project project) {
@@ -365,6 +418,7 @@ public class FlServiceImpl {
 
     /**
      * This will replace the separator charachters to the separator charachters used in the current system
+     *
      * @param currentFilePath
      * @param projectPath
      * @return
