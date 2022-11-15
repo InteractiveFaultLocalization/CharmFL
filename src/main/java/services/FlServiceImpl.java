@@ -1,188 +1,414 @@
 package services;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBus;
+import models.bean.*;
+import modules.PluginModule;
 import org.jetbrains.annotations.NotNull;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import models.bean.FileLineScoreData;
-import models.bean.ProcessResult;
 import modules.ProjectModule;
 
-public class FlServiceImpl implements FlService {
-    static HashMap<String, ArrayList<FileLineScoreData>> testData = null;
-    static boolean testDataCollected = false;
-    static boolean fileEditorColoringEnabled = false;
-    static boolean coloringTurnOn = true;
-    static boolean viewResultTableDialogOpened = false;
-    static boolean testDataCollecting = false;
+import static services.ProcessService.executeCommand;
 
-    @Override
-    public ProcessResult executeCommand(String command) {
+public class FlServiceImpl {
+    private static TestData testData = null;
+    private static boolean testDataCollected = false;
+    private static boolean fileEditorColoringEnabled = false;
+    private static boolean viewResultTableDialogOpened = false;
+    private static boolean testDataCollecting = false;
+
+    /**
+     * This calls the subprocess of executing the call graph
+     *
+     * @param pyflPath
+     * @param projectPath
+     * @param mainFileName
+     * @param pythonBinPath
+     * @return
+     */
+    public ProcessResultData executeCallGraph(String pyflPath, String projectPath, Object mainFileName, String pythonBinPath) {
+        String command = "";
+        File file = new File(ProjectModule.getProjectPath() + File.separator +
+                "static_call_graph.html");
+        Writer fileWriter;
         try {
-            Runtime run = Runtime.getRuntime();
-            Process proc = run.exec(command);
+            if (!file.exists()) {
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            String line;
-            ArrayList<String> lines = new ArrayList<>();
-            while ((line = in.readLine()) != null) {
-                lines.add(line);
-                // Only for debug!
-                //System.out.println(line);
+                file.createNewFile();
+
             }
-            proc.waitFor();
-            in.close();
-            return new ProcessResult(lines, proc.exitValue());
+            fileWriter = new FileWriter(ProjectModule.getProjectPath() + File.separator +
+                    "static_call_graph.html", false);
+
+            if (SystemUtils.IS_OS_WINDOWS) {
+
+                command = "\"" + PluginModule.getPythonBinPath() + "\" "
+                        + "-m pyan " + ProjectModule.getProjectPath() + File.separator + "*.py --uses --no-defines --colored --grouped --annotated --html ";
+            } else if (SystemUtils.IS_OS_LINUX) {
+                command = "\"" + PluginModule.getPythonBinPath().replaceAll(" ", "\\ ") + "\" "
+                        + "-m pyan " + ProjectModule.getProjectPath() + File.separator + "*.py --uses --no-defines --colored --grouped --annotated --html";
+            }
+
+            var outputHtml = executeCommand(command).getOutput();
+            outputHtml.forEach(m -> {
+                try {
+                    fileWriter.write(m + System.lineSeparator());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+            fileWriter.close();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-        catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return null;
     }
 
-    @Override
-    public ProcessResult executeTest(String pythonBinPath, String pyflPath, String projectPath) {
+    /**
+     * This calls the subprocess of executing the call graph highlight
+     *
+     * @param callGraphScriptName
+     * @param projectPath
+     * @param methodName
+     * @param pythonBinPath
+     * @return
+     */
+    public ProcessResultData executeAddHighlightToCallGraph(String callGraphScriptName, String projectPath, Object methodName, String pythonBinPath) {
         String command = "";
-        if(SystemUtils.IS_OS_WINDOWS) {
-            command = "\"" + pythonBinPath + "\" " +
-                    "\"" + pyflPath + "\" -d " +
-                    "\"" + projectPath + "\"";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " + "\"" + callGraphScriptName + "\" " + "\"" + projectPath + "\" " + methodName + " -cg";
         }
-        else if(SystemUtils.IS_OS_LINUX) {
-            command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
-                    pyflPath.replaceAll(" ", "\\ ") + " -d " +
-                    projectPath.replaceAll(" ", "\\ ");
-        }
-        // Only for debug!
-        System.out.println(command);
+
         return executeCommand(command);
     }
 
-    @Override
-    public ProcessResult executeRequirementsInstall(String pythonBinPath, String pipBinPath, String requirementsPath, String projectPath) {
+    /**
+     * This calls the subprocess which executed the main.py
+     *
+     * @param pythonBinPath
+     * @param pyflPath
+     * @param projectPath
+     * @return
+     */
+    public ProcessResultData executeTest(String pythonBinPath, String pyflPath, String projectPath) {
         String command = "";
-        if(SystemUtils.IS_OS_WINDOWS) {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " +
+                    "\"" + pyflPath + "\" -d " +
+                    "\"" + projectPath + "\"" +
+                    " -fl";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
+                    pyflPath.replaceAll(" ", "\\ ") + " -d " +
+                    projectPath.replaceAll(" ", "\\ ") + " -fl";
+        }
+
+        return executeCommand(command);
+    }
+
+    public ProcessResultData executeSunburst(String pythonBinPath, String pyflPath, String projectPath) {
+        String command = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command = "\"" + pythonBinPath + "\" " +
+                    "\"" + pyflPath + "\" -d " +
+                    "\"" + projectPath + "\"" +
+                    " -vs";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
+                    pyflPath.replaceAll(" ", "\\ ") + " -d " +
+                    projectPath.replaceAll(" ", "\\ ") + " -vs";
+        }
+
+        return executeCommand(command);
+    }
+
+    /**
+     * This checks whether the packages are installed
+     *
+     * @param pythonBinPath
+     * @param pipBinPath
+     * @param requirementsPath
+     * @param projectPath
+     * @return
+     */
+    public ProcessResultData executeRequirementsInstall(String pythonBinPath, String pipBinPath, String requirementsPath, String projectPath) {
+        String command = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
             command = "\"" + pythonBinPath + "\" " +
                     "\"" + pipBinPath + "\" " +
                     "install -r " +
                     "\"" + requirementsPath + "\"";
-        }
-        else if(SystemUtils.IS_OS_LINUX) {
+        } else if (SystemUtils.IS_OS_LINUX) {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     pipBinPath.replaceAll(" ", "\\ ") + " " +
                     "install -r " +
                     requirementsPath.replaceAll(" ", "\\ ");
         }
-        // Only for debug!
-        System.out.println(command);
         return executeCommand(command);
     }
 
-    @Override
-    public ProcessResult executeGetPipBinPath(String pythonBinPath, String checkPipBinPath) {
+    /**
+     * This executes the subprocess which gets the pip path
+     *
+     * @param pythonBinPath
+     * @param checkPipBinPath
+     * @return
+     */
+    public ProcessResultData executeGetPipBinPath(String pythonBinPath, String checkPipBinPath) {
         String command = "";
-        if(SystemUtils.IS_OS_WINDOWS) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             command = "\"" + pythonBinPath + "\" " +
                     "\"" + checkPipBinPath + "\"";
-        }
-        else if(SystemUtils.IS_OS_LINUX) {
+        } else if (SystemUtils.IS_OS_LINUX) {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     checkPipBinPath.replaceAll(" ", "\\ ");
         }
-        // Only for debug!
-        System.out.println(command);
         return executeCommand(command);
     }
 
-    @Override
-    public HashMap<String, ArrayList<FileLineScoreData>> parseTestOutput(ArrayList<String> lines) {
-        HashMap<String, ArrayList<FileLineScoreData>> testData = new HashMap<>();
-        String dataMarker = "----------";
-        boolean dataProcess = false;
-        for(int i = 0; i < lines.size(); i++) {
-            if(lines.get(i).equals(dataMarker) && dataProcess) {
-                dataProcess = false;
-            }
-            if(dataProcess) {
-                int fileIndex = lines.get(i).lastIndexOf(":");
-                if (fileIndex != -1) {
-                    String fileName = lines.get(i).substring(0, fileIndex);
-                    String subLine = lines.get(i).substring(lines.get(i).lastIndexOf(":") + 1);
-                    String[] splitLine = subLine.split(" ");
-                    int lineNumber = Integer.parseInt(splitLine[0]);
-                    double lineScore = round(Double.parseDouble(splitLine[1]), 2);
+    /**
+     * This reads the file (e.g. results.json)
+     *
+     * @param fileName
+     * @return
+     */
+    public ArrayList<String> readTextFile(String fileName) {
+        ArrayList<String> lines = new ArrayList<>();
 
-                    if(!testData.containsKey(fileName)) {
-                        testData.put(fileName, new ArrayList<>());
-                    }
-                    testData.get(fileName).add(new FileLineScoreData(lineNumber, lineScore));
+        File file = new File(fileName);
+        try {
+            if (file.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    lines.add(line);
                 }
             }
-            if(lines.get(i).equals(dataMarker) && !dataProcess) {
-                dataProcess = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
+
+    //TODO: composite design pattern
+
+    /**
+     * This parses the results.json to Test Data
+     * Gets the classes methods and statements and make the connections.
+     *
+     * @param lines the lines of the document that will be parsed
+     * @return
+     */
+    public TestData parseTestDataJSON(ArrayList<String> lines) {
+        TestData testData = TestData.getInstance();
+        String json = String.join(" ", lines);
+        JSONObject jsonObject = new JSONObject(json);
+
+        JSONObject fileObject, classObject, methodObject, statementObject;
+        String name;
+        int line;
+        double tarantula, ochiai, wong2, dstar;
+        int rank;
+        boolean faulty;
+        String relativePath = "";
+        ClassTestData classTestData;
+        MethodTestData methodTestData;
+        StatementTestData statementTestData;
+        JSONArray filesArray, classesArray, methodsArray, statementsArray;
+
+        filesArray = jsonObject.getJSONArray("files");
+        for (int i = 0; i < filesArray.length(); i++) {
+            fileObject = filesArray.getJSONObject(i);
+            classesArray = fileObject.getJSONArray("classes");
+            relativePath = fileObject.getString("relativePath");
+            //TestData.getInstance(relativePath);
+            for (int j = 0; j < classesArray.length(); j++) {
+                classObject = classesArray.getJSONObject(j);
+                name = classObject.getString("name");
+                if (name.equals("")) {
+                    name = "<not_class>";
+                }
+                line = classObject.getInt("line");
+                if (classObject.has("tar")) {
+                    tarantula = classObject.getDouble("tar");
+                } else {
+                    tarantula = 0;
+                }
+                if (classObject.has("och")) {
+                    ochiai = classObject.getDouble("och");
+                } else {
+                    ochiai = 0;
+                }
+                if (classObject.has("wong2")) {
+                    wong2 = classObject.getDouble("wong2");
+                } else {
+                    wong2 = 0;
+                }
+                if (classObject.has("dstar")) {
+                    dstar = classObject.getDouble("dstar");
+                } else {
+                    dstar = 0;
+                }
+                if (classObject.has("rank")) {
+                    rank = classObject.getInt("rank");
+                } else {
+                    rank = 0;
+                }
+                if (classObject.has("faulty")) {
+                    faulty = classObject.getBoolean("faulty");
+                } else {
+                    faulty = false;
+                }
+
+                classTestData = new ClassTestData();
+                classTestData.setName(name);
+                classTestData.setLine(line);
+                classTestData.setTarantula(tarantula);
+                classTestData.setOchiai(ochiai);
+                classTestData.setWong2(wong2);
+                classTestData.setDstar(dstar);
+                classTestData.setRank(rank);
+                classTestData.setFaulty(faulty);
+                classTestData.setRelativePath(relativePath);
+
+                methodsArray = classObject.getJSONArray("methods");
+                for (int k = 0; k < methodsArray.length(); k++) {
+                    methodObject = methodsArray.getJSONObject(k);
+                    name = methodObject.getString("name");
+                    if (name.equals("")) {
+                        name = "<not_method>";
+                    }
+                    line = methodObject.getInt("line");
+                    if (methodObject.has("tar")) {
+                        tarantula = methodObject.getDouble("tar");
+                    } else {
+                        tarantula = 0;
+                    }
+                    if (methodObject.has("och")) {
+                        ochiai = methodObject.getDouble("och");
+                    } else {
+                        ochiai = 0;
+                    }
+                    if (methodObject.has("wong2")) {
+                        wong2 = methodObject.getDouble("wong2");
+                    } else {
+                        wong2 = 0;
+                    }
+                    if (methodObject.has("dstar")) {
+                        dstar = methodObject.getDouble("dstar");
+                    } else {
+                        dstar = 0;
+                    }
+                    if (methodObject.has("rank")) {
+                        rank = methodObject.getInt("rank");
+                    } else {
+                        rank = 0;
+                    }
+                    if (methodObject.has("faulty")) {
+                        faulty = methodObject.getBoolean("faulty");
+                    } else {
+                        faulty = false;
+                    }
+
+                    methodTestData = new MethodTestData();
+                    methodTestData.setName(name);
+                    methodTestData.setRelativePath(relativePath);
+                    methodTestData.setSuperName(classTestData.getName());
+                    methodTestData.setLine(line);
+                    methodTestData.setSuperLine(classTestData.getLine());
+                    methodTestData.setTarantula(tarantula);
+                    methodTestData.setOchiai(ochiai);
+                    methodTestData.setWong2(wong2);
+                    methodTestData.setDstar(dstar);
+                    methodTestData.setRank(rank);
+                    methodTestData.setFaulty(faulty);
+
+                    statementsArray = methodObject.getJSONArray("statements");
+                    for (int l = 0; l < statementsArray.length(); l++) {
+                        statementObject = statementsArray.getJSONObject(l);
+                        line = statementObject.getInt("line");
+                        tarantula = statementObject.getDouble("tar");
+                        ochiai = statementObject.getDouble("och");
+                        wong2 = statementObject.getDouble("wong2");
+                        dstar = statementObject.getDouble("dstar");
+                        if (statementObject.has("rank")) {
+                            rank = statementObject.getInt("rank");
+                        } else {
+                            rank = 0;
+                        }
+                        faulty = statementObject.getBoolean("faulty");
+
+                        statementTestData = new StatementTestData();
+                        statementTestData.setClassName(classTestData.getName());
+                        statementTestData.setSuperName(methodTestData.getName());
+                        statementTestData.setLine(line);
+                        statementTestData.setRelativePath(relativePath);
+                        statementTestData.setSuperLine(methodTestData.getLine());
+                        statementTestData.setTarantula(tarantula);
+                        statementTestData.setOchiai(ochiai);
+                        statementTestData.setWong2(wong2);
+                        statementTestData.setDstar(dstar);
+                        statementTestData.setRank(rank);
+                        statementTestData.setFaulty(faulty);
+
+                        methodTestData.getElements().add(statementTestData);
+                    }
+
+                    classTestData.getElements().add(methodTestData);
+                }
+
+                testData.getClasses().add(classTestData);
             }
         }
-
+        testData = TestData.getInstance(relativePath);
         return testData;
     }
 
-    @Override
-    public HashMap<String, ArrayList<FileLineScoreData>> getTestData() {
+    public TestData getTestData() {
         return FlServiceImpl.testData;
     }
 
-    @Override
-    public void setTestData(HashMap<String, ArrayList<FileLineScoreData>> testData) {
+    public void setTestData(TestData testData) {
         FlServiceImpl.testData = testData;
     }
 
-    @Override
     public void clearTestData() {
-        if(FlServiceImpl.testData != null) {
-            FlServiceImpl.testData.clear();
+        if (FlServiceImpl.testData != null) {
+            FlServiceImpl.testData.getClasses().clear();
         }
     }
 
-    @Override
+    /**
+     * Sets the file to be editable and colorable.
+     *
+     * @param project
+     */
     public void startFileEditorManagerListener(Project project) {
         MessageBus messageBus = project.getMessageBus();
         messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-            /*@Override
-            public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-                System.out.println(file.getName() + " is opened!");
-            }
-
-            @Override
-            public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-                System.out.println(file.getName() + " is closed!");
-            }*/
 
             @Override
             public void selectionChanged(@NotNull FileEditorManagerEvent e) {
-                if(e.getManager() != null) {
+                if (e.getManager() != null) {
                     Editor editor = e.getManager().getSelectedTextEditor();
-                    if(editor != null) {
-                        ColorService colorService = new ColorService();
-                        colorService.setEditor(editor);
-                        colorService.removeColorsByEditor();
-                        if (testDataCollected && coloringTurnOn) {
+                    if (editor != null) {
+//                        ColorService colorService = new ColorService();
+//                        colorService.setEditor(editor);
+//                        colorService.removeColorsByEditor();
+                        if (testDataCollected) {
                             String relativeFilePath = parseRelativeFilePath(e.getNewFile().getPath(), ProjectModule.getProjectPath());
-                            colorService.setColorsByEditor(testData.get(relativeFilePath));
+                            //colorService.setColorsByEditor(testData, relativeFilePath);
                         }
                     }
                 }
@@ -190,7 +416,13 @@ public class FlServiceImpl implements FlService {
         });
     }
 
-    @Override
+    /**
+     * This will replace the separator charachters to the separator charachters used in the current system
+     *
+     * @param currentFilePath
+     * @param projectPath
+     * @return
+     */
     public String parseRelativeFilePath(String currentFilePath, String projectPath) {
         String relativeFilePath = currentFilePath.substring(projectPath.length() + 1);
         relativeFilePath = relativeFilePath.replace("\\", File.separator);
@@ -198,114 +430,35 @@ public class FlServiceImpl implements FlService {
         return relativeFilePath;
     }
 
-    @Override
     public boolean isTestDataCollected() {
         return testDataCollected;
     }
 
-    @Override
     public boolean isFileEditorColoringEnabled() {
         return fileEditorColoringEnabled;
     }
 
-    @Override
     public void setTestDataCollected(boolean status) {
         testDataCollected = status;
     }
 
-    @Override
     public void setFileEditorColoringEnabled(boolean status) {
         fileEditorColoringEnabled = status;
     }
 
-    @Override
-    public boolean isColoringTurnOn() {
-        return coloringTurnOn;
-    }
-
-    @Override
-    public void setColoringTurnOn(boolean coloringTurnOn) {
-        FlServiceImpl.coloringTurnOn = coloringTurnOn;
-    }
-
-    @Override
     public boolean isViewResultTableDialogOpened() {
         return viewResultTableDialogOpened;
     }
 
-    @Override
     public void setViewResultTableDialogOpened(boolean viewResultTableDialogOpened) {
         FlServiceImpl.viewResultTableDialogOpened = viewResultTableDialogOpened;
     }
 
-    @Override
     public boolean isTestDataCollecting() {
         return testDataCollecting;
     }
 
-    @Override
     public void setTestDataCollecting(boolean testDataCollecting) {
         FlServiceImpl.testDataCollecting = testDataCollecting;
-    }
-
-    @Override
-    public int getTestDataRowCount() {
-        if(testData == null) {
-            return 0;
-        }
-
-        int sum = 0;
-        for(Map.Entry<String, ArrayList<FileLineScoreData>> entry : testData.entrySet()) {
-            sum += testData.get(entry.getKey()).size();
-        }
-        return sum;
-    }
-
-    public String[][] prepareTestDataForTable() {
-        String[][] data = new String[getTestDataRowCount()][3];
-        int rowIndex = 0;
-        for(Map.Entry<String, ArrayList<FileLineScoreData>> entry : testData.entrySet()) {
-            for(int i = 0; i < entry.getValue().size(); i++) {
-                data[rowIndex][0] = entry.getKey();
-                data[rowIndex][1] = String.valueOf(entry.getValue().get(i).getLineNumber());
-                data[rowIndex][2] = String.valueOf(entry.getValue().get(i).getLineScore());
-                rowIndex++;
-            }
-        }
-
-        int minindex = -1;
-        String tmpFileName = "";
-        String tmpLineNumber = "";
-        String tmpLineScore = "";
-        for(int i = 0; i < data.length - 1; i++){
-            minindex = i;
-            for(int j = i + 1 ;j < data.length; j++){
-                if(Double.parseDouble(data[j][2]) > Double.parseDouble(data[minindex][2])){
-                    minindex = j;
-                }
-            }
-
-            tmpFileName = data[i][0];
-            tmpLineNumber = data[i][1];
-            tmpLineScore = data[i][2];
-
-            data[i][0] = data[minindex][0];
-            data[i][1] = data[minindex][1];
-            data[i][2] = data[minindex][2];
-
-            data[minindex][0] = tmpFileName;
-            data[minindex][1] = tmpLineNumber;
-            data[minindex][2] = tmpLineScore;
-        }
-
-        return data;
-    }
-
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 }

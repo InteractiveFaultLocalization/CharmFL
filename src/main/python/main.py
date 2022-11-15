@@ -1,265 +1,97 @@
-import getopt
 import os
-import re
-import json
-import subprocess
-import math
-import sys
-import shutil
+import argparse
+import platform
 
-import numpy as np
-from scipy.stats import rankdata
-
-res_dict = {}
-cov_matrix = {}
-basic_statistics = {}
-tests_folder = ""
-test_folder = ""
-tests_files = []
-test_files = []
-
-def main(argv):
-    try:
-        opts, args = getopt.getopt(argv, "hd:", "--directory")
-    except getopt.GetoptError:
-        print('main.py -d <your_projects_directory>')
-        sys.exit(1)
-    for opt, arg in opts:
-        if opt == '-h':
-            print('main.py -d <your_projects_directory>')
-            sys.exit()
-        elif opt in ("-d", "--directory"):
-            path = arg
-    copy_rc_file(path)
-    get_test_files(path)
-    os.chdir(path)
-    get_coverage_json(path)
-    get_test_results(path)
-    make_cov_matrix()
-
-    print("----------")
-    basic_stats()
-    tarantula()
-    print("----------")
-
-def run_this_command(command):
-    command = str(' ').join(command)
-    subprocess.run(command, shell=True)
+from cov.Class_Coverage import Class_Coverage
+from cov.Line_Coverage import Line_Coverage
+from cov.Method_Coverage import Method_Coverage
+from testing.Use_PyTest import Use_Pytest
+from faultloc.Spectra import Spectra
+from faultloc.Metrics import Metrics
+from utils.Result_Builder import Result_Builder
 
 
-def copy_rc_file(path):
-    if ".coveragerc" not in os.listdir(path):
-        shutil.copyfile(os.path.dirname(os.path.abspath(__file__))+os.path.sep + ".coveragerc", path + ".coveragerc")
-    else:
-        f = open(path + os.path.sep + ".coveragerc", "r")
-        if("[run]" not in f.read()):
-            f.close()
-            f = open(path + os.path.sep + ".coveragerc", "a")
-            f.write("\n")
-            f.write("[run]\n")
-            f.write("dynamic_context = test_function")
-        f.close()
+import call_graphs.statical_call_graph as cg
+import sunburst_visualization_colours.sunburst as vs
+
+from constans import COVERAGE_RC_FILE_NAME
+from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVERAGE_RC_FILE
 
 
-def get_test_files(path):
-    global tests_folder
-    global test_folder
-    
-    if os.path.isdir(path + os.path.sep + "tests"):
-        tests_folder = "tests"
-    if os.path.isdir(path + os.path.sep + "test"):
-        test_folder = "test"
-    if tests_folder == "" and test_folder == "":
-        sys.exit(2)
-        
-    if tests_folder != "":
-        with os.scandir(path + os.path.sep + tests_folder) as it:
-            for entry in it:
-                if not entry.name.startswith('.') and not entry.name == "__init__.py" and entry.is_file():
-                    tests_files.append(entry.name)
-    
-    if test_folder != "":
-        with os.scandir(path + os.path.sep + test_folder) as it:
-            for entry in it:
-                if not entry.name.startswith('.') and not entry.name == "__init__.py" and entry.is_file():
-                    test_files.append(entry.name)
+# from call_graph_maker import make_call_graph
+
+# logging.basicConfig(filename='charmfl.log', level=logging.INFO, format='%(levelname)s:%(filename)s:%(lineno)d:%(message)s')
 
 
-def get_coverage_json(path):
-    # if "coverage.json" not in os.listdir(path):
-    command = ["coverage", "run", "--source=\"" + path + "\"", "--rcfile=.coveragerc", "-m", "pytest"]
-    for file in tests_files:
-        command.extend([ "\"" + path + os.path.sep + tests_folder + os.path.sep + file + "\""])
-    for file in test_files:
-        command.extend([ "\"" + path + os.path.sep + test_folder + os.path.sep + file + "\""])
-    run_this_command(command)
-    command = ['coverage', 'json', '--show-contexts']
-    run_this_command(command)
+def main():
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.version = 'CharmFL 1.9.1'
+    parser.add_argument("-d", "--directory", action="store", metavar="PROJECT_DIRECTORY",
+                        help="Project directory absolute path.", required=True)
+    parser.add_argument("-fl", "--FaultLoc", help="To start the Fault Localization process", action="store_true")
+    parser.add_argument("-cg", "--CallGraph", help="To start the statical call graph construction", action="store_true")
+    parser.add_argument("-c", "--class-cov", action="store", metavar="CLASS_COVERAGE_FILENAME",
+                        help="To get class cov.")
+    parser.add_argument("-m", "--method-cov", action="store", metavar="METHOD_COVERAGE_FILENAME",
+                        help="To get method cov.")
+    parser.add_argument("-s", "--spectrum", action="store", metavar="SPECTRUM", help="To get the spectrum.")
+    parser.add_argument("-h", "--help", action="help", help="Show this help message.")
+    parser.add_argument("-v", "--version", action="version", help="Show version number.")
+    parser.add_argument("-vs", "--SunBurst", help="To visalize the sunburst chart", action="store_true")
 
 
-def get_test_results(path):
-    command = ["pytest"]
-    for file in tests_files:
-        command.extend([ "\"" + path + os.path.sep + tests_folder + os.path.sep + file +"\""])
-    for file in test_files:
-        command.extend([ "\"" + path + os.path.sep + test_folder + os.path.sep + file +"\""])
-    command.extend(["-v"])
-    command = str(' ').join(command)
-    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE)  # shell=True to support wildchars
-    test_report = result.stdout.decode("utf-8")  # test_res stores test report (test file name, test case name, test case result)
-    temp = str(test_report).split("\n")
-    #temp = temp[3:len(temp) - 3]
-    #print(temp)
-    
-    count = 0
-    for item in temp:
-        if len(item) == 1 and item == "\r":
-            count = count + 1
-            continue
-        if count == 1:
-            testName_testResult = item.split(" ", 2)[:2]
-            if len(testName_testResult) == 0:
-                sys.exit(3)
-            complete_test_name = testName_testResult[0]
-            complete_test_name = str(complete_test_name).replace("::", ".")
-            complete_test_name = str(complete_test_name).replace("/", ".")
-            complete_test_name = str(complete_test_name).replace(".py", "")
-            test_result = testName_testResult[1]
-            res_dict[complete_test_name] = test_result
-        if count == 2:
-            break
-    #print(res_dict)
+    args = vars(parser.parse_args())
+    plugin_path = os.path.dirname(os.path.abspath(__file__))
+    venv_path = ""
+    if (platform.system() == "Linux"):
+        venv_path = venv_path + "/venv/bin" + os.path.sep
+    if(platform.system() == "Windows"):
+        venv_path = venv_path + "/venv" + os.path.sep + "Scripts" + os.path.sep
+    project_path = args["directory"]
+    os.chdir(project_path)
+    if (args["FaultLoc"] == True):
+        tests = Use_Pytest(project_path)
+        tests.run_tests(venv_path)
+        line_cov = Line_Coverage()
+        line_spectra = Spectra()
+        line_metrics = Metrics()
+        line_spectra.create_spectrum_from(line_cov, tests)
+        line_metrics.create_scores_from(line_spectra)
+
+        method_cov = Method_Coverage()
+        method_spectra = Spectra()
+        method_metrics = Metrics()
+        method_cov.set_base_coverage(line_cov) \
+            .make_coverage_with_context()
+        method_spectra.create_spectrum_from(method_cov, tests)
+        method_metrics.create_scores_from(method_spectra)
+
+        class_cov = Class_Coverage()
+        class_spectra = Spectra()
+        class_metrics = Metrics()
+        class_cov.set_base_coverage(line_cov) \
+            .make_coverage_with_context()
+        class_spectra.create_spectrum_from(class_cov, tests)
+        class_metrics.create_scores_from(class_spectra)
+
+        result_builder = Result_Builder()
+        result_builder.set_path_to_root(project_path)\
+            .set_line_scores(line_metrics.get_scores()) \
+            .set_method_scores(method_metrics.get_scores()) \
+            .set_class_scores(class_metrics.get_scores()) \
+            .produce_results()
+
+        with open("results.json", "w") as output:
+            output.write(result_builder.toJSON())
+
+    if (args["CallGraph"] == True):
+        call_graph = cg.StaticalCallGraph()
+        call_graph.createHTML()
+
+    if (args["SunBurst"] == True):
+        sunburst = vs.SunBurstVisualization(project_path)
+        sunburst.createHTML()
 
 
-def init_cov_matrix():
-    for key in res_dict.keys():
-        cov_matrix[key] = []
-
-
-def make_cov_matrix():
-    init_cov_matrix()
-    with open("coverage.json", 'r') as cov_json:
-        data = json.load(cov_json)
-        for file in data["files"]:
-            for statement in data["files"][file]["contexts"]:
-                tcs = data["files"][file]["contexts"][statement]
-                try:
-                    for tc in tcs:
-                        cov_matrix[tc].append(str(file + ":" + statement))
-                except:
-                    pass
-
-
-def basic_stats():
-    # This makes the dict that contains the ef, ep etc.
-    #print(cov_matrix)
-    for test in cov_matrix:
-        for statement in cov_matrix[test]:  # init
-            if statement not in basic_statistics:
-                #if (("test_" or "_test") not in statement):
-                basic_statistics[statement] = {"ef": 0, "ep": 0, "nf": 0, "np": 0}
-    #print(basic_statistics)
-
-    for statement in basic_statistics:
-        #if (("test_" or "_test") not in statement):
-            for test in cov_matrix:
-                if statement in cov_matrix[test]:
-                    if res_dict[test] == "FAILED":  # Executed Failed
-                        basic_statistics[statement]["ef"] = basic_statistics[statement]["ef"] + 1
-                    if res_dict[test] == "PASSED":  # Executed Passed
-                        basic_statistics[statement]["ep"] = basic_statistics[statement]["ep"] + 1
-                if statement not in cov_matrix[test]:
-                    if res_dict[test] == "FAILED":  # Not executed Failed
-                        basic_statistics[statement]["nf"] = basic_statistics[statement]["nf"] + 1
-                    if res_dict[test] == "PASSED":  # Not executed Passed
-                        basic_statistics[statement]["np"] = basic_statistics[statement]["np"] + 1
-    #print(basic_statistics)
-
-
-scores=[]
-statements=[]
-def tarantula():
-    for statement in basic_statistics:
-        ef = float(basic_statistics[statement]["ef"])
-        ep = float(basic_statistics[statement]["ep"])
-        nf = float(basic_statistics[statement]["nf"])
-        np = float(basic_statistics[statement]["np"])
-        #print(statement)
-        try:
-            score = (ef / (ef + nf)) / ((ef / (ef + nf)) + (ep / (ep + np)))
-            #score = round(score, 3)
-        except ZeroDivisionError:
-            score = 0.0
-        if score != 0.0:
-            #print(str(statement) + " tar " + str(score))
-            statements.append(statement)
-            scores.append(score)
-            print(statement, score)
-
-    #print(statements)
-    #print(scores)
-    
-
-def ochiai():
-    for statement in basic_statistics:
-        ef = float(basic_statistics[statement]["ef"])
-        ep = float(basic_statistics[statement]["ep"])
-        nf = float(basic_statistics[statement]["nf"])
-        np = float(basic_statistics[statement]["np"])
-        try:
-            score = ef / math.sqrt((ef + nf) * (ef + ep))
-        except ZeroDivisionError:
-            score = 0.0
-        if score != 0.0:
-            print(str(statement) + " ochiai " + str(score))
-
-
-def wongII():
-    for statement in basic_statistics:
-        ef = float(basic_statistics[statement]["ef"])
-        ep = float(basic_statistics[statement]["ep"])
-        nf = float(basic_statistics[statement]["nf"])
-        np = float(basic_statistics[statement]["np"])
-        score = ef - ep
-        try:
-            score = ef / math.sqrt((ef + nf) * (ef + ep))
-        except ZeroDivisionError:
-            score = 0.0
-        if score != 0.0:
-            print(str(statement) + " wongII " + str(score))
-
-
-sorted_scores=[]
-sorted_statements=[]
-def scores_sorting(): # This function later will be called by each spectra metric with its own name, info, etc.
-    a = np.array(scores)
-    b = np.array(statements)
-    a_inds = a.argsort()
-    sorted_scrs = a[a_inds[::-1]]
-    sorted_stats = b[a_inds[::-1]]
-    for i in range(len(sorted_scrs)):
-        sorted_scores.append(round(sorted_scrs[i], 3))
-        sorted_statements.append(sorted_stats[i])
-
-        
-temp=[]
-def scores_ranking():  
-    rank_type="min" # rank_type = "min" or "max" or "average"
-    max_value = max(sorted_scores )
-    for i in range(len(sorted_scores)):
-        temp.append(max_value - sorted_scores[i])
-
-    ranks = rankdata(temp, method=rank_type)
-    for i in range(len(ranks)): 
-        print(ranks[i], sorted_scores[i], sorted_statements[i], " ")
-    
 if __name__ == "__main__":
-    main(sys.argv[1:])
-
-# This is the core
-
-#scores_sorting()
-#scores_ranking()
-# ochiai()
-# wongII()
-
+    main()
