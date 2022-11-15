@@ -44,7 +44,7 @@ This is aggregated down to statement level, i.e. for each statement in the metho
 - Click on Plugins
 - Click on the Gear Icon
 - Select "Install Plugin from Disk..."
-- Select <path-to-charmfl-zip>/CharmFL-1.7.0.zip
+- Select <path-to-charmfl-zip>/CharmFL-1.9.1.zip
 
 ## Preconditions
 
