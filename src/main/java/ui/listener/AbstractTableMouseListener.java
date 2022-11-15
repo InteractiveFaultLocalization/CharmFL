@@ -39,15 +39,13 @@ public abstract class AbstractTableMouseListener extends MouseInputAdapter {
             ScorePanel far = (ScorePanel) panels[2];
             ScorePanel oth = (ScorePanel) panels[3];
 
-            cmp.setLabel(name + String.valueOf(lineNumber));
+            cmp.setLabel(name + ":"+ String.valueOf(lineNumber));
 
             cmp.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.COMPONENT, PluginModule.getSelectedFormula());
             cls.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.CLOSE_CONTEXT, PluginModule.getSelectedFormula());
             far.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.FAR_CONTEXT, PluginModule.getSelectedFormula());
             oth.calculateScore(TestData.getInstance().getElement(path, lineNumber), Context.OTHER, PluginModule.getSelectedFormula());
-//        }catch(Exception e){
-//            //This should fix any issue caused by non-existing components... for now at least...
-//        }
+
     }
 
     protected static Object getFloatingWindowComponent(int order){

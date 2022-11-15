@@ -36,6 +36,8 @@ class Line_Coverage():
                 # TODO: it excludes too many things, e.g. if the absolute path has two test folders then the whole program will be ignored
                 # I leave it as is, and report it in a bug ticket
                 continue
+            if "venv" + os.path.sep in file_name:
+                continue
             for code_element, covered_test_list in coverage_data.items():
                 covered_test_list = self.__clean_empty_context_from(covered_test_list)
 
