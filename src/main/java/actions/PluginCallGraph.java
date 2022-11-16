@@ -53,10 +53,10 @@ public class PluginCallGraph extends DumbAwareAction {
                 if (SystemUtils.IS_OS_WINDOWS) {
 
                     command = "\"" + PluginModule.getPythonBinPath() + "\""
-                            + " -m pyan " + "\"" + ProjectModule.getProjectPath() + File.separator + "**/*.py " + "\"" + " --uses --no-defines --colored --grouped --annotated --html ";
+                            + " -m pyan " + "\"" + ProjectModule.getProjectPath() + File.separator + "*.py " + "\"" + " --uses --no-defines --colored --grouped --annotated --html ";
                 } else if (SystemUtils.IS_OS_LINUX) {
                     command = PluginModule.getPythonBinPath().replaceAll(" ", "\\ ")
-                            + " -m pyan " + ProjectModule.getProjectPath() + File.separator + "**/*.py --uses --no-defines --colored --grouped --annotated --html";
+                            + " -m pyan " + ProjectModule.getProjectPath() + File.separator + "*.py --uses --no-defines --colored --grouped --annotated --html";
                 }
 
                 var proc = executeCommand(command);
