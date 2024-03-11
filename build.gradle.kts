@@ -7,14 +7,23 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.6.0"
+    id("org.jetbrains.kotlin.jvm") version "1.9.21"
     // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.3.0"
+    id("org.jetbrains.intellij") version "1.16.1"
     // Gradle Changelog Plugin
-    id("org.jetbrains.changelog") version "1.3.1"
+    id("org.jetbrains.changelog") version "2.2.0"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
 }
+
+//plugins {
+//    id("java") // Java support
+//    alias(libs.plugins.kotlin) // Kotlin support
+//    alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
+//    alias(libs.plugins.changelog) // Gradle Changelog Plugin
+//    alias(libs.plugins.qodana) // Gradle Qodana Plugin
+//    alias(libs.plugins.kover) // Gradle Kover Plugin
+//}
 
 group = properties("pluginGroup")
 version = properties("pluginVersion")
@@ -33,6 +42,11 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
     implementation ("org.slf4j:slf4j-api:1.7.30")
     implementation ("org.slf4j:slf4j-simple:1.7.30")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
