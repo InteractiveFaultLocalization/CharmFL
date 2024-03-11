@@ -28,7 +28,7 @@ public class ProcessService {
 
             process.waitFor();
             stdInput.close();
-            System.out.println(process.exitValue());
+            System.out.println(command + " " + process.exitValue());
             return new ProcessResultData(lines, process.exitValue());
 
         } catch (IOException | InterruptedException e) {

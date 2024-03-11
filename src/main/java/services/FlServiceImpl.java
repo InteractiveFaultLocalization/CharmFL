@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBus;
 import models.bean.*;
 import modules.PluginModule;
+import org.apache.commons.collections.bag.SynchronizedSortedBag;
 import org.jetbrains.annotations.NotNull;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -54,6 +55,7 @@ public class FlServiceImpl {
 
                 command = "\"" + PluginModule.getPythonBinPath() + "\" "
                         + "-m pyan " + ProjectModule.getProjectPath() + File.separator + "*.py --uses --no-defines --colored --grouped --annotated --html ";
+
             } else if (SystemUtils.IS_OS_LINUX) {
                 command = "\"" + PluginModule.getPythonBinPath().replaceAll(" ", "\\ ") + "\" "
                         + "-m pyan " + ProjectModule.getProjectPath() + File.separator + "*.py --uses --no-defines --colored --grouped --annotated --html";
@@ -107,6 +109,7 @@ public class FlServiceImpl {
                     "\"" + pyflPath + "\" -d " +
                     "\"" + projectPath + "\"" +
                     " -fl";
+            System.out.println(command);
         } else if (SystemUtils.IS_OS_LINUX) {
             command = pythonBinPath.replaceAll(" ", "\\ ") + " " +
                     pyflPath.replaceAll(" ", "\\ ") + " -d " +

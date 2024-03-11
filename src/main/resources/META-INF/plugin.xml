@@ -8,14 +8,14 @@
     <depends>com.intellij.modules.platform</depends>
 
     <actions>
-        <group id="CharmFl.MainMenu" text="CharmFL" description="CharmFL Menu">
-            <add-to-group group-id="MainMenu" anchor="last" />
+        <group id="CharmFl.MainMenu" text="CharmFL" description="CharmFL Menu" popup="true" icon="menu-icons/pluginIcon.svg">
+            <add-to-group group-id="ToolsMenu" anchor="last" />
             <action id="CharmFl.Run" class="actions.PluginTestRun" text="Start Fault Localization" description="Run test" icon="menu-icons/run.png" />
             <action id="CharmFl.Clear" class="actions.PluginTestClear" text="Clear Data" description="Clear test" icon="menu-icons/clear.png" />
             <separator>Visualization</separator>
             <action id="CharmFl.View" class="actions.PluginTableView" text="View Fault Localization Table" description="View results" icon="menu-icons/view.png" />
-            <action id="CharmFl.CallGraph" class="actions.PluginCallGraph" text="Generate Static Call Graph" description="View Static Call Graph" icon="menu-icons/graph.png" />
-            <action id="CharmFl.Sunburst" class="actions.PluginSunburst" text="Generate Sunburst Diagram" description="View Sunburst Diagram" icon="menu-icons/sunburst.png" />
+<!--            <action id="CharmFl.CallGraph" class="actions.PluginCallGraph" text="Generate Static Call Graph" description="View Static Call Graph" icon="menu-icons/graph.png" />-->
+<!--            <action id="CharmFl.Sunburst" class="actions.PluginSunburst" text="Generate Sunburst Diagram" description="View Sunburst Diagram" icon="menu-icons/sunburst.png" />-->
             <separator>Settings</separator>
             <action id="CharmFl.AdvancedOptions" class="actions.PluginAdvancedOptions" text="Settings" description="Advanced options" icon="menu-icons/options.png" />
 

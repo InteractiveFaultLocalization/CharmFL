@@ -117,7 +117,7 @@ public class RunTestRunnable extends Task.Backgroundable implements Progress {
             return;
         }
 
-        executeVisualizing(flService, progressIndicator);
+        //executeVisualizing(flService, progressIndicator);
 
         flService.setTestDataCollected(true);
 

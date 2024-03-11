@@ -25,7 +25,7 @@ from error_codes import FAILED_COPY_COVERAGE_RC_FILE, FAILED_WRITE_PROJECT_COVER
 
 def main():
     parser = argparse.ArgumentParser(add_help=False)
-    parser.version = 'CharmFL 1.9.1'
+    parser.version = 'CharmFL 1.9.2'
     parser.add_argument("-d", "--directory", action="store", metavar="PROJECT_DIRECTORY",
                         help="Project directory absolute path.", required=True)
     parser.add_argument("-fl", "--FaultLoc", help="To start the Fault Localization process", action="store_true")
@@ -80,8 +80,9 @@ def main():
             .set_method_scores(method_metrics.get_scores()) \
             .set_class_scores(class_metrics.get_scores()) \
             .produce_results()
-
-        with open("results.json", "w") as output:
+        result_filename = "CharmFL/results.json"
+        os.makedirs(os.path.dirname(result_filename), exist_ok=True)
+        with open(result_filename, "w") as output:
             output.write(result_builder.toJSON())
 
     if (args["CallGraph"] == True):
@@ -95,3 +96,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
