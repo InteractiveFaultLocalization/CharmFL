@@ -12,6 +12,11 @@ public interface ITestData {
 
     void setLine(int line);
 
+    double getBarinel();
+    void setBarinel(double barinel);
+
+    double getBarinelModified();
+    void setBarinelModified(double barinelModified);
     double getTarantula();
 
     void setTarantula(double tarantula);

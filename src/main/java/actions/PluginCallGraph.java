@@ -1,5 +1,6 @@
 package actions;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import modules.ProjectModule;
 import org.apache.commons.lang3.SystemUtils;
@@ -35,7 +36,7 @@ public class PluginCallGraph extends DumbAwareAction {
         FlServiceImpl flService = new FlServiceImpl();
         if (flService.isTestDataCollected()) {
 
-
+            /*
             File file = new File(ProjectModule.getProjectPath() + File.separator +
                     "static_call_graph.html");
             Writer fileWriter;
@@ -92,7 +93,11 @@ public class PluginCallGraph extends DumbAwareAction {
             }
             JOptionPane.showMessageDialog(null, "Creating call graph was successful.\nYou may open the generated html file in any browser." +
                     "\nThe file is located at " + ProjectModule.getProjectPath() + File.separator + "static_call_graph.html", "Call Graph is ready", JOptionPane.PLAIN_MESSAGE);
+            */
             //new PopUpView("static_call_graph.html").show();
+            String path = "/html/";
+            String filename = "callchains.html";
+            new CallGraphView(path + filename, e.getProject()).show();
         } else {
             Messages.showMessageDialog(
                     e.getProject(),

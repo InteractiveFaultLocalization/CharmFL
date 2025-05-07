@@ -2,6 +2,7 @@ package services;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
@@ -23,9 +24,11 @@ import static services.ProcessService.executeCommand;
 
 public class FlServiceImpl {
     private static TestData testData = null;
+    private static ViewTestData viewTestData = null;
     private static boolean testDataCollected = false;
     private static boolean fileEditorColoringEnabled = false;
     private static boolean viewResultTableDialogOpened = false;
+    private static boolean viewTestTableDialogOpened = false;
     private static boolean testDataCollecting = false;
 
     /**
@@ -221,7 +224,7 @@ public class FlServiceImpl {
         JSONObject fileObject, classObject, methodObject, statementObject;
         String name;
         int line;
-        double tarantula, ochiai, wong2, dstar;
+        double tarantula, ochiai, wong2, dstar, barinel, barinelModified;
         int rank;
         boolean faulty;
         String relativePath = "";
@@ -313,6 +316,17 @@ public class FlServiceImpl {
                     } else {
                         dstar = 0;
                     }
+                    if (methodObject.has("barinel")){
+                        barinel = methodObject.getDouble("barinel");
+                    } else {
+                        barinel = 0;
+                    }
+                    if (methodObject.has("modified_barinel")){
+                        barinelModified = methodObject.getDouble("modified_barinel");
+                    } else{
+                        barinelModified = 0;
+                    }
+
                     if (methodObject.has("rank")) {
                         rank = methodObject.getInt("rank");
                     } else {
@@ -334,6 +348,8 @@ public class FlServiceImpl {
                     methodTestData.setOchiai(ochiai);
                     methodTestData.setWong2(wong2);
                     methodTestData.setDstar(dstar);
+                    methodTestData.setBarinel(barinel);
+                    methodTestData.setBarinelModified(barinelModified);
                     methodTestData.setRank(rank);
                     methodTestData.setFaulty(faulty);
 
@@ -376,6 +392,42 @@ public class FlServiceImpl {
         }
         testData = TestData.getInstance(relativePath);
         return testData;
+    }
+
+
+    public ViewTestData parseViewTestDataJSON(ArrayList<String> lines) {
+        ViewTestData viewTestData = ViewTestData.getInstance();
+        String json = String.join(" ", lines);
+        JSONObject jsonObject = new JSONObject(json);
+        HashMap<String, ArrayList<String>> hash= new HashMap<>();
+
+        for (String testname : jsonObject.keySet()) {
+            JSONArray arr = jsonObject.getJSONArray(testname);
+            String result = arr.optString(0);
+            String heuristic = arr.optString(1);
+
+            TestResultData testResult = new TestResultData();
+            testResult.setTestname(testname);
+            ArrayList<String> list = new ArrayList<>();
+            list.add(result);
+            list.add(heuristic);
+            testResult.setList(list);
+
+            hash.put(testResult.getTestname(), testResult.getList());
+
+            viewTestData.setTests(hash);
+        }
+
+        return viewTestData;
+    }
+
+
+    public static ViewTestData getViewTestData() {
+        return viewTestData;
+    }
+
+    public static void setViewTestData(ViewTestData viewTestData) {
+        FlServiceImpl.viewTestData = viewTestData;
     }
 
     public TestData getTestData() {
@@ -455,6 +507,14 @@ public class FlServiceImpl {
 
     public void setViewResultTableDialogOpened(boolean viewResultTableDialogOpened) {
         FlServiceImpl.viewResultTableDialogOpened = viewResultTableDialogOpened;
+    }
+
+    public static boolean isViewTestTableDialogOpened() {
+        return viewTestTableDialogOpened;
+    }
+
+    public static void setViewTestTableDialogOpened(boolean viewTestTableDialogOpened) {
+        FlServiceImpl.viewTestTableDialogOpened = viewTestTableDialogOpened;
     }
 
     public boolean isTestDataCollecting() {

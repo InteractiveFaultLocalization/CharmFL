@@ -29,7 +29,7 @@ class Use_Pytest(Test_Utils):
             pytest_args.append(self.project_path + os.path.sep + test_folder + os.path.sep + file)
 
         current_test_folder = test_folder if test_folder != '' else tests_folder
-        cmd = self.project_path + venv_path + "coverage run -m pytest --json-report "+str(current_test_folder)
+        cmd = self.project_path + venv_path + "python -m coverage run -m pytest --json-report "+str(current_test_folder)
         print("-------------> ", current_test_folder)
         print("-------------> ", cmd)
         sp.call(cmd, shell=True)
@@ -42,7 +42,7 @@ class Use_Pytest(Test_Utils):
         # cov.save()
         # sp.call("coverage combine")
 
-        sp.call(self.project_path + venv_path +"coverage combine", shell=True)
+        sp.call(self.project_path + venv_path +"python -m coverage combine", shell=True)
 
 
         self.__get_test_results_from_json(self.results_dict)

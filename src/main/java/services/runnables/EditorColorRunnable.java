@@ -47,6 +47,7 @@ public class EditorColorRunnable implements Runnable {
 
         flService.startFileEditorManagerListener(ProjectModule.getProject());
         flService.setViewResultTableDialogOpened(true);
+        flService.setViewTestTableDialogOpened(true);
         flService.setTestDataCollecting(false);
         //new ViewResult().show();
         ViewResultHolder.reOpen();

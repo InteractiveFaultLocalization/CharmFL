@@ -81,6 +81,8 @@ public class ViewResult extends DialogWrapper {
             spectraMetrics = " (WongII)";
         } else if (PluginModule.isDStarSelected()) {
             spectraMetrics = " (DStar)";
+        } else if (PluginModule.isBarinelSelected()) {
+            spectraMetrics = " (Barinel)";
         }
         title += spectraMetrics;
 
@@ -192,18 +194,21 @@ public class ViewResult extends DialogWrapper {
                 ClassTableModel.FILE_NAME_COLUMN_INDEX,
                 ClassTableModel.NAME_COLUMN_INDEX,
                 ClassTableModel.SCORE_COLUMN_INDEX,
+                ClassTableModel.MODIFIED_SCORE_COLUMN_INDEX,
                 ClassTableModel.LINE_COLUMN_INDEX);
         this.methodViewTable = createSubViewTable(
                 methodTableModel,
-                methodTableModel.FILE_NAME_COLUMN_INDEX,
+                MethodTableModel.FILE_NAME_COLUMN_INDEX,
                 MethodTableModel.NAME_COLUMN_INDEX,
                 MethodTableModel.SCORE_COLUMN_INDEX,
+                MethodTableModel.MODIFIED_SCORE_COLUMN_INDEX,
                 MethodTableModel.LINE_COLUMN_INDEX);
         this.statementViewTable = createSubViewTable(
                 statementTableModel,
-                statementTableModel.NAME_COLUMN_INDEX,
+                StatementTableModel.NAME_COLUMN_INDEX,
                 StatementTableModel.LINE_COLUMN_INDEX,
                 StatementTableModel.SCORE_COLUMN_INDEX,
+                StatementTableModel.MODIFIED_SCORE_COLUMN_INDEX,
                 StatementTableModel.RANK_COLUMN_INDEX);
 
         statementViewTable.addMouseListener(new StatementTableMouseListener(statementViewTable, testData));
@@ -220,13 +225,14 @@ public class ViewResult extends DialogWrapper {
         return tabsPane;
     }
 
-    private JBTable createSubViewTable(TableModel tableModel, int fileNameIndex, int nameColumnIndex, int scoreColumnIndex, int rankColumnIndex) {
+    private JBTable createSubViewTable(TableModel tableModel, int fileNameIndex, int nameColumnIndex, int scoreColumnIndex, int modifiedScoreColumnIndex, int rankColumnIndex) {
         JBTable table = new JBTable(tableModel);
         table.setAutoCreateRowSorter(true);
 
-        table.getColumnModel().getColumn(nameColumnIndex).setPreferredWidth(120);
-        table.getColumnModel().getColumn(fileNameIndex).setPreferredWidth(120);
+        table.getColumnModel().getColumn(nameColumnIndex).setPreferredWidth(80);
+        table.getColumnModel().getColumn(fileNameIndex).setPreferredWidth(115);
         table.getColumnModel().getColumn(scoreColumnIndex).setPreferredWidth(5);
+        table.getColumnModel().getColumn(modifiedScoreColumnIndex).setPreferredWidth(80);
         table.getColumnModel().getColumn(rankColumnIndex).setPreferredWidth(5);
 
         return table;

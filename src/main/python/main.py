@@ -46,7 +46,7 @@ def main():
     if (platform.system() == "Linux"):
         venv_path = venv_path + "/venv/bin" + os.path.sep
     if(platform.system() == "Windows"):
-        venv_path = venv_path + "/venv" + os.path.sep + "Scripts" + os.path.sep
+        venv_path = venv_path + "\\.venv" + os.path.sep + "Scripts" + os.path.sep
     project_path = args["directory"]
     os.chdir(project_path)
     if (args["FaultLoc"] == True):

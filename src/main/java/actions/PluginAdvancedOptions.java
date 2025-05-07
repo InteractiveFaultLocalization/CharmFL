@@ -26,6 +26,7 @@ public class PluginAdvancedOptions extends DumbAwareAction {
         FlServiceImpl flService = new FlServiceImpl();
 
         if (dialog.showAndGet()) {
+            PluginModule.setBarinelSelected(dialog.isBarinelRadioButtonSelected());
             PluginModule.setTarantulaSelected(dialog.isTarantulaRadioButtonSelected());
             PluginModule.setOchiaiSelected(dialog.isOchiaiRadioButtonSelected());
             PluginModule.setDStarSelected(dialog.isDStarRadioButtonSelected());

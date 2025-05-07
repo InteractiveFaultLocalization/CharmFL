@@ -38,18 +38,22 @@ class Result_Builder():
             file_name = str(key).split(self.SEPARATOR_CHARACTER)[self.FILE_NAME_INDEX]
             absolute_path_to_root, relative_path = self.__separate_absolute_and_relative_path(file_name)
             line_num = str(key).split(self.SEPARATOR_CHARACTER)[LINE_NUMBER_INDEX]
-            class_name, class_start_line_num, class_tar, class_och, class_wong2, class_dstar = self.__get_lines_context_info(
+            (class_name, class_start_line_num, class_tar, class_och, class_wong2, class_dstar, class_barinel,
+             class_modified_barinel) = self.__get_lines_context_info(
                 self.class_scores, file_name, line_num)
-            method_name, method_start_line_num, method_tar, method_och, method_wong2, method_dstar = self.__get_lines_context_info(
+            (method_name, method_start_line_num, method_tar, method_och, method_wong2, method_dstar, method_barinel,
+             method_modified_barinel) = self.__get_lines_context_info(
                 self.method_scores, file_name, line_num)
             context_scores_and_info = {"absolute_path_to_root": absolute_path_to_root, "relative_path": relative_path,
                                        "line_num": line_num,
                                        "class_name": class_name, "class_start_line_num": class_start_line_num,
                                        "class_tar": class_tar,
                                        "class_och": class_och, "class_wong2": class_wong2, "class_dstar": class_dstar,
+                                       "class_barinel": class_barinel, "class_modified_barinel": class_modified_barinel,
                                        "method_name": method_name, "method_start_line_num": method_start_line_num,
                                        "method_tar": method_tar, "method_och": method_och, "method_wong2": method_wong2,
-                                       "method_dstar": method_dstar}
+                                       "method_dstar": method_dstar, "method_barinel": method_barinel,
+                                       "method_modified_barinel": method_modified_barinel}
             self.__put_line_scores_to_place(context_scores_and_info, line_scores)
         return self
 
@@ -105,6 +109,8 @@ class Result_Builder():
                 "line": context_scores_and_info["class_start_line_num"],
                 "tar": context_scores_and_info["class_tar"], "och": context_scores_and_info["class_och"],
                 "wong2": context_scores_and_info["class_wong2"], "dstar": context_scores_and_info["class_dstar"],
+                "barinel": context_scores_and_info["class_barinel"],
+                "modified_barinel": context_scores_and_info["class_modified_barinel"],
                 "methods": [self.__get_method_scores_dictionary(context_scores_and_info, line_scores)
                             ]}
 
@@ -115,6 +121,8 @@ class Result_Builder():
                 "och": context_scores_and_info["method_och"],
                 "wong2": context_scores_and_info["method_wong2"],
                 "dstar": context_scores_and_info["method_dstar"],
+                "barinel": context_scores_and_info["method_barinel"],
+                "modified_barinel": context_scores_and_info["method_modified_barinel"],
                 "statements": [self.__get_line_scores_dictionary(context_scores_and_info, line_scores)
                                ]}
 
@@ -123,6 +131,8 @@ class Result_Builder():
                 "och": line_scores["och"],
                 "wong2": line_scores["wong2"],
                 "dstar": line_scores["dstar"],
+                "barinel": line_scores["barinel"],
+                "modified_barinel": line_scores["modified_barinel"],
                 "faulty": "false"}
 
     def __get_index_of_context_containing_property(self, list_in_dict, property_name, context_value):
@@ -141,10 +151,13 @@ class Result_Builder():
             och_score = context_scores[key]["och"]
             wong2_score = context_scores[key]["wong2"]
             dstar_score = context_scores[key]["dstar"]
+            barinel_score = context_scores[key]["barinel"]
+            modified_barinel_score = context_scores[key]["modified_barinel"]
 
             if context_file_name == file_name and int(context_start_line_number) < int(line_number) <= int(
                     context_end_line_number):
-                return context_name, context_start_line_number, tar_score, och_score, wong2_score, dstar_score
+                return (context_name, context_start_line_number, tar_score, och_score, wong2_score, dstar_score,
+                        barinel_score, modified_barinel_score)
 
         context_name = ""
         context_start_line_number = 0
@@ -152,4 +165,7 @@ class Result_Builder():
         och_score = 0
         wong2_score = 0
         dstar_score = 0
-        return context_name, context_start_line_number, tar_score, och_score, wong2_score, dstar_score
+        barinel_score = 0
+        modified_barinel_score = 0
+        return (context_name, context_start_line_number, tar_score, och_score, wong2_score, dstar_score,
+                barinel_score, modified_barinel_score)

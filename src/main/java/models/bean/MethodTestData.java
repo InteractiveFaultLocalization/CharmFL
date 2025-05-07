@@ -17,6 +17,8 @@ public class MethodTestData implements ITestData {
     private double ochiai;
     private double wong2;
     private double dstar;
+    private double barinel;
+    private double barinelModified;
     private int rank;
     private boolean faulty;
     private ArrayList<ITestData> statements;
@@ -36,6 +38,8 @@ public class MethodTestData implements ITestData {
         ochiai = 0;
         wong2 = 0;
         dstar = 0;
+        barinel = 0;
+        barinelModified = 0;
         rank = 0;
         faulty = false;
         statements = new ArrayList<>();
@@ -176,6 +180,21 @@ public class MethodTestData implements ITestData {
         this.dstar = dstar;
     }
 
+    public double getBarinel() {
+        return barinel;
+    }
+
+    public void setBarinel(double barinel) {
+        this.barinel = barinel;
+    }
+
+    public double getBarinelModified() {
+        return barinelModified;
+    }
+
+    public void setBarinelModified(double barinelModified) {
+        this.barinelModified = barinelModified;
+    }
 
     public int getRank() {
         return rank;

@@ -400,7 +400,11 @@ public class RunTestRunnable extends Task.Backgroundable implements Progress {
 
         ArrayList<String> lines = flService.readTextFile(
                 ProjectModule.getProjectPath() + File.separator + PluginModule.getResultsJsonFileName());
-        if (lines.size() == 0) {
+
+        ArrayList<String> lines2 = flService.readTextFile(
+                ProjectModule.getProjectPath() + File.separator + PluginModule.getCcJsonFileName());
+
+        if (lines.isEmpty() || lines2.isEmpty()) {
             ApplicationManager.getApplication().invokeLater(() -> {
                 Messages.showMessageDialog(
                         ProjectModule.getProject(),
@@ -413,6 +417,7 @@ public class RunTestRunnable extends Task.Backgroundable implements Progress {
         }
         flService.clearTestData();
         flService.setTestData(flService.parseTestDataJSON(lines));
+        flService.setViewTestData(flService.parseViewTestDataJSON(lines2));
     }
 
 

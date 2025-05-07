@@ -16,6 +16,8 @@ public class TableData {
     private double tarantulaScore;
     private double ochiaiScore;
     private double wong2Score;
+    private double barinelScore;
+    private double barinelModifiedScore;
     private double minRank;
     private double maxRank;
     private double avgRank;
@@ -24,6 +26,12 @@ public class TableData {
     private int level;
     private boolean hide;
 
+    private String testName;
+
+    private String testResult;
+
+    private String testHeuristic;
+
     public TableData() {
         name = "";
         path = "";
@@ -31,6 +39,8 @@ public class TableData {
         tarantulaScore = 0;
         ochiaiScore = 0;
         wong2Score = 0;
+        barinelScore = 0;
+        barinelModifiedScore = 0;
         minRank = 0;
         maxRank = 0;
         avgRank = 0;
@@ -38,6 +48,9 @@ public class TableData {
         icon = null;
         level = 0;
         hide = false;
+        testName = "";
+        testResult = "";
+        testHeuristic = "";
     }
 
     public String getName() {
@@ -88,6 +101,22 @@ public class TableData {
         this.wong2Score = wong2Score;
     }
 
+    public double getBarinelScore() {
+        return barinelScore;
+    }
+
+    public void setBarinelScore(double barinelScore) {
+        this.barinelScore = barinelScore;
+    }
+
+    public double getBarinelModifiedScore() {
+        return barinelModifiedScore;
+    }
+
+    public void setBarinelModifiedScore(double barinelModifiedScore) {
+        this.barinelModifiedScore = barinelModifiedScore;
+    }
+
     public double getMinRank() {
         return minRank;
     }
@@ -134,6 +163,30 @@ public class TableData {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public String getTestName() {
+        return testName;
+    }
+
+    public void setTestName(String testName) {
+        this.testName = testName;
+    }
+
+    public String getTestResult() {
+        return testResult;
+    }
+
+    public void setTestResult(String testResult) {
+        this.testResult = testResult;
+    }
+
+    public String getTestHeuristic() {
+        return testHeuristic;
+    }
+
+    public void setTestHeuristic(String testHeuristic) {
+        this.testHeuristic = testHeuristic;
     }
 
     /**

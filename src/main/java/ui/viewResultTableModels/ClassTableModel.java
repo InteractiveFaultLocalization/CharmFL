@@ -14,12 +14,13 @@ import services.RankingService;
 import services.Resources;
 
 public class ClassTableModel extends AbstractTableModel {
-    private static final String[] columnNames = {"File name", "Class name", "Score", "Line"};
+    private static final String[] columnNames = {"File name", "Class name", "Score", "Modified Score", "Line"};
 
     public static final int FILE_NAME_COLUMN_INDEX = 0;
     public static final int NAME_COLUMN_INDEX = 1;
     public static final int SCORE_COLUMN_INDEX = 2;
-    public static final int LINE_COLUMN_INDEX = 3;
+    public static final int MODIFIED_SCORE_COLUMN_INDEX = 3;
+    public static final int LINE_COLUMN_INDEX = 4;
 
     private final ArrayList<TableData> tableDataList = new ArrayList<>();
 
@@ -47,6 +48,7 @@ public class ClassTableModel extends AbstractTableModel {
                 classTableData.setName(classData.getName());
                 classTableData.setPath(relativePath);
                 classTableData.setLine(classData.getLine());
+                classTableData.setBarinelScore(classData.getBarinel());
                 classTableData.setTarantulaScore(classData.getTarantula());
                 classTableData.setOchiaiScore(classData.getOchiai());
                 classTableData.setWong2Score(classData.getWong2());
@@ -71,6 +73,8 @@ public class ClassTableModel extends AbstractTableModel {
                 scoreList.add(tableData.getOchiaiScore());
             } else if (PluginModule.isWongIISelected() || PluginModule.isDStarSelected()) {
                 scoreList.add(tableData.getWong2Score());
+            } else if (PluginModule.isBarinelSelected()){
+                scoreList.add(tableData.getBarinelScore());
             }
         }
 
@@ -113,6 +117,7 @@ public class ClassTableModel extends AbstractTableModel {
             case NAME_COLUMN_INDEX:
                 return String.class;
             case SCORE_COLUMN_INDEX:
+            case MODIFIED_SCORE_COLUMN_INDEX:
             case LINE_COLUMN_INDEX:
                 return Double.class;
             default:
@@ -150,8 +155,15 @@ public class ClassTableModel extends AbstractTableModel {
                     return tableDataAtRowIndex.getOchiaiScore();
                 } else if (spectraMetrics.equals(" (WongII)") || spectraMetrics.equals(" (DStar)")) {
                     return tableDataAtRowIndex.getWong2Score();
-                } else {
+                } else if (spectraMetrics.equals(" (Barinel)")){
+                    return tableDataAtRowIndex.getBarinelScore();
+                }
+                else {
                     return -1;
+                }
+            case MODIFIED_SCORE_COLUMN_INDEX:
+                if (spectraMetrics.equals(" (Barinel)")){
+                    return tableDataAtRowIndex.getBarinelModifiedScore();
                 }
             case LINE_COLUMN_INDEX:
 //                if(selectedRankType.equals(Resources.get("titles", "average_button"))){

@@ -13,11 +13,11 @@ import java.awt.*;
  * This class represents the Options window.
  */
 public class AdvancedOptions extends DialogWrapper {
+    private JRadioButton barinelRadioButton;
     private JRadioButton tarantulaRadioButton;
     private JRadioButton ochiaiRadioButton;
     private JRadioButton dStarRadioButton;
     private JRadioButton wong2RadioButton;
-
     private JRadioButton minimumRadioButton;
     private JRadioButton maximumRadioButton;
     private JRadioButton averageRadioButton;
@@ -44,18 +44,21 @@ public class AdvancedOptions extends DialogWrapper {
 
         JLabel spectraMetricsLabel = new JLabel(Resources.get("titles", "spectra_metrics_label"));
         spectraMetricsLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
+        barinelRadioButton = new JRadioButton(Resources.get("titles", "barinel_button"));
         tarantulaRadioButton = new JRadioButton(Resources.get("titles", "tarantula_button"));
         ochiaiRadioButton = new JRadioButton(Resources.get("titles", "ochiai_button"));
         dStarRadioButton = new JRadioButton(Resources.get("titles", "dstar_button"));
         wong2RadioButton = new JRadioButton(Resources.get("titles", "wong_button"));
 
         ButtonGroup spectraMetricsButtonGroup = new ButtonGroup();
+        spectraMetricsButtonGroup.add(barinelRadioButton);
         spectraMetricsButtonGroup.add(tarantulaRadioButton);
         spectraMetricsButtonGroup.add(ochiaiRadioButton);
         spectraMetricsButtonGroup.add(dStarRadioButton);
         spectraMetricsButtonGroup.add(wong2RadioButton);
 
         dialogPanel.add(spectraMetricsLabel);
+        dialogPanel.add(barinelRadioButton);
         dialogPanel.add(tarantulaRadioButton);
         dialogPanel.add(ochiaiRadioButton);
         //dialogPanel.add(dStarRadioButton);
@@ -77,6 +80,7 @@ public class AdvancedOptions extends DialogWrapper {
         dialogPanel.add(maximumRadioButton);
         dialogPanel.add(averageRadioButton);
 
+        barinelRadioButton.setSelected(PluginModule.isBarinelSelected());
         tarantulaRadioButton.setSelected(PluginModule.isTarantulaSelected());
         ochiaiRadioButton.setSelected(PluginModule.isOchiaiSelected());
         dStarRadioButton.setSelected(PluginModule.isDStarSelected());
@@ -89,6 +93,9 @@ public class AdvancedOptions extends DialogWrapper {
         return dialogPanel;
     }
 
+    public boolean isBarinelRadioButtonSelected(){
+        return barinelRadioButton.isSelected();
+    }
     /**
      * Tells you whether the button was selected
      * @return true if it is

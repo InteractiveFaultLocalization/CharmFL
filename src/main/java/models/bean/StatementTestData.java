@@ -15,6 +15,8 @@ public class StatementTestData implements ITestData {
     private double ochiai;
     private double wong2;
     private double dstar;
+    private double barinel;
+    private double barinelModified;
     private int rank;
     private boolean faulty;
     private CloseContext closeContext;
@@ -31,6 +33,8 @@ public class StatementTestData implements ITestData {
         ochiai = 0;
         wong2 = 0;
         dstar = 0;
+        barinel = 0;
+        barinelModified = 0;
         rank = 0;
         faulty = false;
         closeContext = new CloseContext(this);
@@ -98,6 +102,18 @@ public class StatementTestData implements ITestData {
         this.line = line;
     }
 
+    public double getBarinel() {
+        return barinel;
+    }
+    public void setBarinel(double barinel) {
+        this.barinel = barinel;
+    }
+    public double getBarinelModified() {
+        return barinelModified;
+    }
+    public void setBarinelModified(double barinelModified) {
+        this.barinelModified = barinelModified;
+    }
     /**
      * This provides the tarantula score of the class.
      *

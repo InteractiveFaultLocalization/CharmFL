@@ -13,6 +13,8 @@ public class ClassTestData  implements ITestData{
     private double ochiai;
     private double wong2;
     private double dstar;
+    private double barinel;
+    private double barinelModified;
     private int rank;
     private boolean faulty;
     private String relativePath;
@@ -27,6 +29,8 @@ public class ClassTestData  implements ITestData{
         ochiai = 0;
         wong2 = 0;
         dstar = 0;
+        barinel = 0;
+        barinelModified = 0;
         rank = 0;
         faulty = false;
         relativePath = "";
@@ -61,6 +65,24 @@ public class ClassTestData  implements ITestData{
      */
     public void setLine(int line) {
         this.line = line;
+    }
+
+    @Override
+    public double getBarinel() {
+        return barinel;
+    }
+
+    @Override
+    public void setBarinel(double barinel) {
+        this.barinel = barinel;
+    }
+
+    public double getBarinelModified() {
+        return barinelModified;
+    }
+
+    public void setBarinelModified(double barinelModified) {
+        this.barinelModified = barinelModified;
     }
 
     /**

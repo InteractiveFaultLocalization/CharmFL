@@ -4,6 +4,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.components.JBTabbedPane;
 import models.bean.TestData;
+import models.bean.ViewTestData;
 import models.bean.context.Context;
 import modules.PluginModule;
 import modules.ProjectModule;
@@ -17,18 +18,27 @@ import java.awt.*;
 public abstract class AbstractTableMouseListener extends MouseInputAdapter {
     protected final JTable resultTable;
     protected final TestData testData;
+    protected final ViewTestData viewTestData;
     protected final TreeTableModel tableModel;
 
     public AbstractTableMouseListener(JTable resultTable, TestData testData) {
         this.resultTable = resultTable;
         this.testData = testData;
         this.tableModel = null;
+        this.viewTestData = null;
     }
 
+    public AbstractTableMouseListener(JTable resultTable, ViewTestData viewTestData) {
+        this.resultTable = resultTable;
+        this.viewTestData = viewTestData;
+        this.testData = null;
+        this.tableModel = null;
+    }
     public AbstractTableMouseListener(JTable resultTable, TreeTableModel tableModel) {
         this.resultTable = resultTable;
         this.tableModel = tableModel;
         this.testData = null;
+        this.viewTestData = null;
     }
 
     protected void updateIndicatorPanel(String path, String name, int lineNumber){
